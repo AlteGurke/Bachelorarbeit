@@ -4,9 +4,60 @@
 \end{itemize}
 
 \section{Evaluierung von Methoden zur dynamischen Deadlockerkennung}
-\begin{itemize}
-  \item Vergleich zwischen MultiCoreSDK und MagicLock
-\end{itemize}
+Methoden zur dynamischen Deadlockerkennung laufen in drei Schritten ab.
+\begin{enumerate}
+  \item Erstellung einer Trace-Datei
+  \item Erstellung eines Graphens basierend auf den Informationen aus der
+  Trace-Datei
+  \item Finden von potenziellen Deadlocks durch das Identifizieren von Zyklen
+  innerhalb des Graphens
+\end{enumerate}
+
+Eine Trace-Datei enthält einen \textit{execution trace} des ausführenden
+Programme. Ein \textit{execution trace} ist eine Abfolge von Events. Ein Event
+\textit{e\textsubscript{i}} wird durch eine der folgenden Methoden definiert:
+starten eines Threads, Inbesitznahme eines Lockobjekts und Freigabe eines
+Lockobjekts. Das Starten eines neues Threads ist definiert durch:
+\begin{quote}
+\texttt{s(Programmstelle, ausführender Thread, Name des neuen Threads)}
+\end{quote}
+Zum Beispiel bedeutet \texttt{s(2,main,T1)}, dass an der Programmstelle
+\textit{2} der Thread \textit{main} den Thread \textit{T1} gestartet hat. 
+Die Inbesitznahme eines Lockobjekts ist definiert durch:
+\begin{quote}
+\texttt{l(Programmstelle, ausführender Thread, Name des Lockobjekts)}
+\end{quote}
+Zum Beispiel bedeutet \texttt{l(24,T1,L3)}, dass
+an der Programmstelle \textit{24} hat der Thread \textit{T1} das Lockobjekt
+\textit{L3} in Besitz genommen. Die Freigabe eines Lockobjekts ist definiert
+durch:
+\begin{quote}
+\texttt{u(Programmstelle, ausführender Thread, Name des Lockobjekts)}
+\end{quote}
+Zum Beispiel bedeutet \texttt{u(30, T1, L3)}, dass an der Programmstelle
+\textit{30} der Thread \textit{T1} das Lockobjekt \textit{L3} freigegeben hat.
+
+Die Menge aller während der Laufzeit des Programmes aufgetretenen Events
+definieren einen möglichen \textit{execution trace} des Programmes.
+Programme welche mit mehreren Threads arbeiten, haben keinen deterministischen
+\textit{execution trace}. Jede Ausführung eines solchen Programmen kann zu
+unterschiedlichen \textit{execution traces} führen. 
+
+Im zweiten Schritt wird aus dem vorher erzeugten \textit{execution trace} ein
+Lockgraph erstellt. Ein Lockgraph ist definiert durch:
+\begin{quote}
+\textit{LG = (L,R)}
+\end{quote}
+\textit{L} ist die Menge aller Lockobjekte im \textit{execution trace} und
+\textit{R} die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel
+\textit{(l\textsubscript{1}, l\textsubscript{2})} für das gilt: Es existiert ein
+Thread, welche das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
+den Lock \textit{l\textsubscript{2}} anfordert.
+
+In \cref{fig:CodeExample} ist ein Beispielprogramm in der Programmiersprache
+OpenPEARL dargestellt.
+
+
 
 \section{Ergebnis}\label{Ergebnis}
 \begin{itemize}
