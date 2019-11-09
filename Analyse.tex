@@ -1,10 +1,51 @@
 \section{Deadlockerkennung allgemein}
-\begin{itemize}
-  \item Unterschiede zwischen statischer und dynamischer Deadlockerkennung
-\end{itemize}
+Im Gegensatz zu Singlethreaded Applikationen sind Multithreaded Anwendungen
+nicht deterministisch. Dies kann zu \textit{race conditions} führen. Eine
+\textit{race condition} tritt zum Beispiel dann auf, wenn zwei Threads einen
+Zähler jeweils um eins erhöhen wollen. Angenommen der Zähler hat zu Beginn den
+Wert drei. Beide Threads wollen jetzt nahezu gleichzeitig den Zähler um eins
+erhöhen. Dazu lesen beide Threads den aktuellen Wert des Zählers, in diesem Fall
+drei, aus. Anschließend addieren beide eins hinzu und schreiben den neuen Wert,
+in diesem Fall vier, in den Zähler. Erwartet wurde jedoch der Wert fünf, da
+beide Threads den Zähler um jeweils eins erhöhen sollten. Um solche
+\textit{race conditions} zu verhindert werden Synchronisierungsmechanismen
+benötigt.
 
-\section{Evaluierung von Methoden zur dynamischen Deadlockerkennung}
-Methoden zur dynamischen Deadlockerkennung laufen in drei Schritten ab.
+Eine Möglichkeit um den Zugriff auf eine gemeinsame Resource zu synchronisieren
+sind Locks. Ein Lock ist ein exklusiver Zugriff auf ein Objekt, ein sogenanntes
+Lockobjekt. Das bedeutet, dass während ein Thread einen Lock auf ein Objekt
+besitzt, andere Threads, welche auf dasselbe Objekt zugreifen wollen, warten
+müssen bis es freigegeben wurde.
+
+Betrachtet man das Beispiel mit dem Zähler erneut, dieses Mal mit Locks als
+Synchronisierunsmittel, kann es zu folgender Ausführung kommen. Der Zähler hat
+zu Beginn wieder den Wert drei. Die Threads \textit{T1} und \textit{T2} wollen
+erneut den Zähler nahezu gleichzeitig erhöhen. Dieses Mal versuchen beide das
+Lockobjekt \textit{L1} in Besitz zu nehmen. Der Thread \textit{T2} nimmt
+\textit{L1} zuerst in Besitz, daraus folgt \textit{T1} muss warten. \textit{T2}
+liest den aktuellen Wert des Zählers aus, erhöht diesen um eins und schreibt den
+neuen Wert vier in den Zähler. Anschließend gibt \textit{T2} das Lockobjekt
+\textit{L1} frei. Jetzt erhält der Thread \textit{T1} den Zugriff auf
+\textit{L1} und liest ebenfalls den Zähler, jetzt vier, aus, erhöht diesen und
+schreibt den neuen Wert fünf in den Zähler. Anschließend gibt \textit{T1} das
+Lockobjekt \textit{L1} frei.
+
+Die Verwendung von Locks in Verbindung mit der nicht deterministischen
+Ausführung von Multithreaded Anwendungen, kann zu folgender Situation führen:
+Angenommen es existieren zwei Threads \textit{T1} und \textit{T2} und zwei
+Lockobjekte \textit{L1} und \textit{L2}. Angenommen \textit{T1} besitzt
+\textit{L1} und zu gleichen Zeit erlangt \textit{T2} das Lockobjekt \textit{L2}.
+Wenn jetzt der Thread \textit{T1} das Lockobjekt \textit{L2} anfordert und der
+Thread \textit{T2} das Lockobjekt \textit{L1}, kommt es zu einem
+\textit{Deadlock}. Die Ausführung des Programmes terminiert nicht, da beide
+Threads auf den jeweils anderen Thread warten und sich gegenseitig
+blockieren.
+
+Solche potenziellen Deadlocks zu erkennen ist die Aufgabe von statischen und
+dynamischen Methoden zur Deadlockerkennung. Die statische Deadlockerkennung
+analysiert den Quellcode und wird hier nicht näher betrachtet. Die dynamische
+Deadlockerkennung analysiert eine Anwendung zur Laufzeit. Dabei laufen diese in
+drei Schritten ab.
 \begin{enumerate}
   \item Erstellung einer Trace-Datei
   \item Erstellung eines Graphens basierend auf den Informationen aus der
@@ -14,7 +55,7 @@ Methoden zur dynamischen Deadlockerkennung laufen in drei Schritten ab.
 \end{enumerate}
 
 Eine Trace-Datei enthält einen \textit{execution trace} des ausführenden
-Programme. Ein \textit{execution trace} ist eine Abfolge von Events. Ein Event
+Programms. Ein \textit{execution trace} ist eine Abfolge von Events. Ein Event
 \textit{e\textsubscript{i}} wird durch eine der folgenden Methoden definiert:
 starten eines Threads, Inbesitznahme eines Lockobjekts und Freigabe eines
 Lockobjekts. Das Starten eines neues Threads ist definiert durch:
@@ -40,7 +81,7 @@ Zum Beispiel bedeutet \texttt{u(30, T1, L3)}, dass an der Programmstelle
 Die Menge aller während der Laufzeit des Programmes aufgetretenen Events
 definieren einen möglichen \textit{execution trace} des Programmes.
 Programme welche mit mehreren Threads arbeiten, haben keinen deterministischen
-\textit{execution trace}. Jede Ausführung eines solchen Programmen kann zu
+\textit{execution trace}. Jede Ausführung eines solchen Programms kann zu
 unterschiedlichen \textit{execution traces} führen. 
 
 Im zweiten Schritt wird aus dem vorher erzeugten \textit{execution trace} ein
@@ -51,13 +92,13 @@ Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 \textit{L} ist die Menge aller Lockobjekte im \textit{execution trace} und
 \textit{R} die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel
 \textit{(l\textsubscript{1}, l\textsubscript{2})} für das gilt: Es existiert ein
-Thread, welche das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
+Thread, welcher das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
 den Lock \textit{l\textsubscript{2}} anfordert.
 
 In \cref{fig:CodeExample} ist ein Beispielprogramm in der Programmiersprache
 OpenPEARL dargestellt.
 
-
+\section{Evaluierung von Methoden zur dynamischen Deadlockerkennung}
 
 \section{Ergebnis}\label{Ergebnis}
 \begin{itemize}
