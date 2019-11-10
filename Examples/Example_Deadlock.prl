@@ -1,0 +1,37 @@
+MODULE(test);
+
+SYSTEM;
+   stdout: StdOut;
+
+PROBLEM;
+    SPC stdout DATION OUT SYSTEM ALPHIC GLOBAL;
+    DCL termout DATION OUT ALPHIC DIM(*,80) FORWARD STREAM CREATED(stdout);
+    DCL L1 SEMA;
+    DCL L2 SEMA;
+
+T1: TASK MAIN;
+   RELEASE L1;
+   RELEASE L2;
+END;
+
+T2: TASK MAIN;
+   REQUEST L1;
+   REQUEST L2;
+   OPEN termout;
+   PUT 'Hello World T2' TO termout BY A, SKIP;
+   CLOSE termout;
+   RELEASE L2;
+   RELEASE L1;
+END;
+
+T3: TASK MAIN;
+   REQUEST L2;
+   REQUEST L1;
+   OPEN termout;
+   PUT 'Hello World T3' TO termout BY A, SKIP;
+   CLOSE termout;
+   RELEASE L1;
+   RELEASE L2;
+END;
+
+MODEND;

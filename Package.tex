@@ -24,6 +24,16 @@
 %\usepackage{sidenotes}
 %\usepackage{mwe}
 \usepackage[utf8]{inputenc}
+
+%custom packages not from template
+\usepackage{silence}
+\WarningFilter{scrbook}{Usage of package `fancyhdr'}
+
+\usepackage{minted}
+\usepackage{microtype}
+\usepackage{cleveref}
+%end of custom packages not from template
+
 \usepackage[bookmarks,hypertexnames=false,debug,hidelinks]{hyperref}
 \usepackage{bookmark}
 \usepackage{nameref} 
@@ -41,6 +51,3 @@
 \setlength{\cfttabnumwidth}{-15pt}
 \DeclareCaptionType{formel}[][Formelverzeichnis]
 \captionsetup[formeln]{labelformat=empty}
-
-\usepackage{microtype}
-\usepackage{cleveref}
