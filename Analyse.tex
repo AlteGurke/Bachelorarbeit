@@ -1,4 +1,5 @@
 \section{Deadlockerkennung allgemein}
+\label{section:Deadlockerkennung allgemein}
 Im Gegensatz zu Singlethreaded Applikationen sind Multithreaded Anwendungen
 nicht deterministisch. Dies kann zu \textit{race conditions} führen. Eine
 \textit{race condition} tritt zum Beispiel dann auf, wenn zwei Threads einen
@@ -95,16 +96,18 @@ Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 Thread, welcher das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
 den Lock \textit{l\textsubscript{2}} anfordert.
 
-\inputminted[caption={Beispiel einer
+\lstinputlisting[caption={Beispiel einer
 OpenPEARL Anwendung mit einem potenziellen Deadlock},
-label={lst:ExampleDeadlock}]{vim}{/Examples/Example_Deadlock.prl}
+label={lst:ExampleDeadlock}]{./Examples/Example_Deadlock.prl}
 
 In \cref{lst:ExampleDeadlock} ist ein Beispielprogramm in der Programmiersprache
 OpenPEARL dargestellt.
 
 \section{Evaluierung von Methoden zur dynamischen Deadlockerkennung}
+\label{section:Evaluierung von Methoden zur dynamischen Deadlockerkennung}
 
-\section{Ergebnis}\label{Ergebnis}
+\section{Ergebnis}
+\label{section:Ergebnis}
 \begin{itemize}
-  \item Auswahl MagicLock\cite{MagicLock}
+  \item Auswahl MagicLock\autocite{MagicLock}
 \end{itemize}

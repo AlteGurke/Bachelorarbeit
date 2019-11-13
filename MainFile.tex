@@ -1,6 +1,9 @@
 \documentclass[twoside,bibliography=totoc,openany]{scrbook}
 \include{Package}
+\usepackage[style=numeric, citestyle=numeric, backend=biber]{biblatex}
 \input{Marginalie}
+
+\addbibresource{literatur.bib}
 
 \begin{document}
 \input{Titelseite}
@@ -50,7 +53,6 @@
 \stopcontents
 
 
-\bibliographystyle{abbrv}
-\bibliography{literatur}
+\printbibliography
 
 \end{document}
