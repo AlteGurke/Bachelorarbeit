@@ -1,6 +1,6 @@
 \documentclass[twoside,bibliography=totoc,openany]{scrbook}
 \include{Package}
-\usepackage[style=numeric, citestyle=numeric, backend=biber]{biblatex}
+\usepackage[style=numeric,citestyle=numeric,backref=true,urldate=long,backend=biber]{biblatex}
 \input{Marginalie}
 
 \addbibresource{literatur.bib}
@@ -13,12 +13,14 @@
 
 \startcontents
 \chapter{Motivation}
+\label{chapter:Motivation}
 \thispagestyle{fancy}
 \input{Motivation} 
 \stopcontents
 
 \startcontents
 \chapter{Analyse}
+\label{chapter:Analyse}
 \thispagestyle{fancy}
 \printcontents{l}{1}{\setcounter{tocdepth}{5}}
 \input{Analyse}
@@ -26,6 +28,7 @@
 
 \startcontents
 \chapter{Design}
+\label{chapter:Design}
 \thispagestyle{fancy}
 \printcontents{l}{1}{\setcounter{tocdepth}{5}}
 \input{Design}
@@ -33,6 +36,7 @@
 
 \startcontents
 \chapter{Implementierung}
+\label{chapter:Implementierung}
 \thispagestyle{fancy}
 \printcontents{l}{1}{\setcounter{tocdepth}{5}}
 \input{Implementierung}
@@ -40,6 +44,7 @@
 
 \startcontents
 \chapter{Validierung}
+\label{chapter:Validierung}
 \thispagestyle{fancy}
 \printcontents{l}{1}{\setcounter{tocdepth}{5}}
 \input{Validierung}
@@ -47,6 +52,7 @@
 
 \startcontents
 \chapter{Ausblick}
+\label{chapter:Ausblick}
 \thispagestyle{fancy}
 \printcontents{l}{1}{\setcounter{tocdepth}{5}}
 \input{Ausblick}

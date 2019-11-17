@@ -94,18 +94,28 @@ Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 Thread, welcher das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
 den Lock \textit{l\textsubscript{2}} anfordert.
 
-\inputminted[frame=lines,linenos]{vim}{./Examples/Example_Deadlock.prl}
-%\caption{Beispiel einer OpenPEARL Anwendung mit einem potenziellen Deadlock}
-\label{lst:ExampleDeadlock}
+\section{PEARL}
+\label{section:PEARL}
+\begin{itemize}
+    \item Kurze Beschreibung der Programmiersprache PEARL
+    \item Aufzeigen der Möglichkeiten von Synchronisationsmitteln in PEARL
+\end{itemize}
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos]{vim}{./Examples/Example_Deadlock.prl}
+  \caption{Beispiel einer OpenPEARL Anwendung mit einem potenziellen Deadlock}    
+  \label{lst:ExampleDeadlock}   
+\end{listing} 
 
 In \cref{lst:ExampleDeadlock} ist ein Beispielprogramm in der Programmiersprache
-PEARL dargestellt.
+PEARL dargestellt. Das Programm startet zwei parallele Aufgaben welche beide eine Zeichenfolge auf der Standardausgabe ausgeben. Der Zugriff auf die Standardausgabe muss dabei synchronisiert erfolgen.
 
-\section{Evaluierung von Methoden zur dynamischen Deadlockerkennung}
-\label{section:Evaluierung von Methoden zur dynamischen Deadlockerkennung}
+In den Zeilen 1 bis 11 werden Variablen definiert, wie zum Beispiel die Ausgabe über die Standardausgabe und die zwei \textit{SEMA} Variablen \textit{L1} und \textit{L2} in den Zeilen 9 und 10. Ein \textit{SEMA} Objekt ist ein Semaphore und dient als Synchronisationsmittel. Es kann als Wert nicht negative ganze Zahlen besitzen, wobei null den Zustand "gesperrt" und positive Zahlen den Zustand "frei" bedeuten \autocite[9--17]{PEARL}. Eine \textit{SEMA} Variable hat zu Beginn den Wert null und den Zustand "gesperrt". In den Zeilen 12 bis 17 ist ein \textit{TASK} definiert. Durch die Kennzeichnung \textit{MAIN} wird der \textit{TASK} direkt beim Start des Programms ausgeführt. Die Befehle \textit{RELEASE} in den Zeilen 13 und 14 erhöhen den Wert der jeweiligen \textit{SEMA} Variable um eins, wodurch der Zustand von "gesperrt" auf "frei" gesetzt wird. Anschließend werden in den Zeilen 15 und 16 die \textit{TASKS} \textit{T2} und \textit{T3} gestartet.
 
-\section{Ergebnis}
-\label{section:Ergebnis}
+Die \textit{TASKS} \textit{T2} und \textit{T3} geben in den Zeilen 22 bis 24 und in den Zeilen 32 bis 34 die Zeichenfolge "Hello World T2" bzw. "Hello World T3" auf der Standardausgabe aus. Die Synchronisierung des Zugriffs auf die Standardausgabe erfolgt mittels den \textit{SEMA} Variablen \textit{L1} und \textit{L2}. Mit dem \textit{REQUEST} Befehl wird der Wert einer \textit{SEMA} Variable um eins verringert. Ist der Wert einer \textit{SEMA} Variable null wird der \textit{TASK} angehalten und in eine Warteschlange eingereiht. Sobald die Variable über den Befehl \textit{RELEASE} wieder freigeben wird, wird der nächste \textit{TASK} in der Warteschlange gemäß seiner Priorität fortgeführt. Beide \textit{TASKS} versuchen beide \textit{SEMA} Variablen in Besitz zu nehmen. \textit{T2} versucht in den Zeilen 20 und 21 zuerst \textit{L1} und dann \textit{L2} in Besitz zu nehmen. \textit{T3} versucht in den Zeilen 30 und 31 zuerst \textit{L2} und dann \textit{L1} in Besitz zu nehmen. Da beide \textit{TASKS} parallel laufen, kann es passieren, dass \textit{T2} \textit{L1} in Zeile 20 in Besitz nimmt und gleichzeitig \textit{T3} in Zeile 30 \textit{L2} in Besitz nimmt. Beide \textit{SEMA} Variablen haben jetzt den Wert null und den Zustand "gesperrt". Der \textit{TASK} \textit{T2} wartet jetzt darauf, dass \textit{L2} freigegeben wird und \textit{T3} wartet darauf, dass \textit{L1} freigegeben wird. Beide \textit{TASKS} warten auf den jeweils anderen. Diese Situation wird als Deadlock bezeichnet.
+
+\section{MagicLock}
+\label{section:MagicLock}
 \begin{itemize}
-  \item Auswahl MagicLock\autocite{MagicLock}
+  \item Beschreibung des MagicLock\autocite{MagicLock} Algorithmus
 \end{itemize}
