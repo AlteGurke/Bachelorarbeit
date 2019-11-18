@@ -1,6 +1,6 @@
 \section{Deadlockerkennung allgemein}
 \label{section:Deadlockerkennung allgemein}
-Im Gegensatz zu Singlethreaded Applikationen sind Multithreaded Anwendungen
+Im Gegensatz zu Single-Threaded-Applikationen sind Multi-Threaded-Anwendungen
 nicht deterministisch. Dies kann zu \textit{race conditions} führen. Eine
 \textit{race condition} tritt zum Beispiel dann auf, wenn zwei Threads einen
 Zähler jeweils um eins erhöhen wollen. Angenommen der Zähler hat zu Beginn den
@@ -31,7 +31,7 @@ schreibt den neuen Wert fünf in den Zähler. Anschließend gibt \textit{T1} das
 Lockobjekt \textit{L1} frei.
 
 Die Verwendung von Locks in Verbindung mit der nicht deterministischen
-Ausführung von Multithreaded Anwendungen, kann zu folgender Situation führen:
+Ausführung von Multi-Threaded-Anwendungen, kann zu folgender Situation führen:
 Angenommen es existieren zwei Threads \textit{T1} und \textit{T2} und zwei
 Lockobjekte \textit{L1} und \textit{L2}. Angenommen \textit{T1} besitzt
 \textit{L1} und zu gleichen Zeit erlangt \textit{T2} das Lockobjekt \textit{L2}.
@@ -47,10 +47,10 @@ Deadlockerkennung analysiert eine Anwendung zur Laufzeit und läuft in folgenden
 drei Schritten ab:
 \begin{enumerate}
   \item Erstellung einer Trace-Datei
-  \item Erstellung eines Graphens basierend auf den Informationen aus der
+  \item Erstellung eines Graphen basierend auf den Informationen aus der
   Trace-Datei
   \item Finden von potenziellen Deadlocks durch das Identifizieren von Zyklen
-  innerhalb des Graphens
+  innerhalb des Graphen
 \end{enumerate}
 
 Eine Trace-Datei enthält einen \textit{execution trace} des ausführenden
