@@ -10,6 +10,7 @@
 \fancyhead[R]{\thepage}
 \fancyfoot{}
 \addcontentsline{toc}{chapter}{Inhaltsverzeichnis}
+
 \newpage \phantomsection \listoffigures
 \thispagestyle{fancy}
 % clear all header fields
@@ -18,6 +19,7 @@
 \fancyhead[R]{\thepage}
 \fancyfoot{}
 \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+
 \newpage \phantomsection \listoftables
 \thispagestyle{fancy}
 % clear all header fields
@@ -26,11 +28,22 @@
 \fancyhead[R]{\thepage}
 \fancyfoot{}
 \addcontentsline{toc}{chapter}{Tabellenverzeichnis}
-\newpage \phantomsection
+
+%\newpage \phantomsection
 % \listofformel \thispagestyle{fancy} \fancyhead{} clear all header fields
 % \fancyhead[RO,LE]{\thepage} \fancyfoot{}
 % \addcontentsline{toc}{chapter}{Formelverzeichnis} \newpage
+
+\newpage \phantomsection \listoflistings
+\thispagestyle{fancy}
+% clear all header fields
+\fancyhead{} 
+%\fancyhead[RO,LE]{\thepage}
+\fancyhead[R]{\thepage}
+\fancyfoot{}
+\addcontentsline{toc}{chapter}{List of Listings}
+
 \clearpage
 \pagenumbering{arabic}  
-\setcounter{page}{6}
+\setcounter{page}{7}
 \parindent 0pt
