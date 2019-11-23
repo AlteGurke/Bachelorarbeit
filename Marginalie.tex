@@ -1,0 +1,32 @@
+\geometry{top=25mm, left=25mm, right=35mm, bottom=20mm}
+\setlength{\marginparwidth}{10mm}
+
+\newlength{\tempParIndent}
+\newcommand{\textBody}[1]{%
+    \begin{minipage}[t]{\linewidth-5cm-\marginparsep}
+    \setlength{\parindent}{\tempParIndent}%
+        #1
+    \end{minipage}%
+    }
+\newcommand{\noteBody}[1]{%
+    \begin{minipage}[t]{50mm}
+        #1
+    \end{minipage}%
+}
+\newcommand{\textAndNote}[2]{%
+    % input:
+    % #1: The main text
+    % #2: The note
+    \setlength{\tempParIndent}{\parindent}
+    \begin{adjustwidth*}{}{-\marginparwidth-\marginparsep}%
+    \checkoddpage%
+\ifoddpage%
+    \textBody{#1}%
+    \hspace{\marginparsep}%
+    \noteBody{#2}%
+\else%
+    \noteBody{#2}%
+    \hspace{\marginparsep}%
+    \textBody{#1}%
+\fi%
+    \end{adjustwidth*}}
