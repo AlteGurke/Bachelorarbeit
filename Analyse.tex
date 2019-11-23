@@ -30,8 +30,8 @@ neuen Wert vier in den Zähler. Anschließend gibt \textit{T2} das Lockobjekt
 schreibt den neuen Wert fünf in den Zähler. Anschließend gibt \textit{T1} das
 Lockobjekt \textit{L1} frei.
 
-Die Verwendung von Locks in Verbindung mit der nicht deterministischen
-Ausführung von Multi-Threaded-Anwendungen, kann zu folgender Situation führen:
+Die Verwendung von Locks kann in Verbindung mit der nicht deterministischen Ausführung
+von Multi-Threaded-Anwendungen zu Problemen führen.
 Angenommen es existieren zwei Threads \textit{T1} und \textit{T2} und zwei
 Lockobjekte \textit{L1} und \textit{L2}. Angenommen \textit{T1} besitzt
 \textit{L1} und zu gleichen Zeit erlangt \textit{T2} das Lockobjekt \textit{L2}.
@@ -49,7 +49,7 @@ drei Schritten ab:
   \item Erstellung einer Trace-Datei
   \item Erstellung eines Graphen basierend auf den Informationen aus der
   Trace-Datei
-  \item Finden von potenziellen Deadlocks durch das Identifizieren von Zyklen
+  \item Auffinden von potenziellen Deadlocks durch die Identifizierung von Zyklen
   innerhalb des Graphen
 \end{enumerate}
 
@@ -68,7 +68,7 @@ Die Inbesitznahme eines Lockobjekts ist definiert durch:
 \texttt{l(Programmstelle, ausführender Thread, Name des Lockobjekts)}
 \end{quote}
 Zum Beispiel bedeutet \texttt{l(24,T1,L3)}, dass
-an der Programmstelle \textit{24} hat der Thread \textit{T1} das Lockobjekt
+an der Programmstelle \textit{24} der Thread \textit{T1} das Lockobjekt
 \textit{L3} in Besitz genommen. Die Freigabe eines Lockobjekts ist definiert
 durch:
 \begin{quote}
@@ -77,10 +77,10 @@ durch:
 Zum Beispiel bedeutet \texttt{u(30, T1, L3)}, dass an der Programmstelle
 \textit{30} der Thread \textit{T1} das Lockobjekt \textit{L3} freigegeben hat.
 
-Die Menge aller während der Laufzeit des Programms aufgetretenen Events
+Die Abfolge aller während der Laufzeit des Programms aufgetretenen Events
 definieren einen möglichen \textit{execution trace} des Programms.
-Programme welche mit mehreren Threads arbeiten, haben keinen deterministischen
-\textit{execution trace}. Jede Ausführung eines solchen Programms kann zu
+Programme welche mit mehreren Threads arbeiten, liefern keine deterministische
+Abfolge. Jede Ausführung eines solchen Programms kann zu
 unterschiedlichen \textit{execution traces} führen. 
 
 Im zweiten Schritt wird aus dem vorher erzeugten \textit{execution trace} ein
@@ -90,9 +90,9 @@ Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 \end{quote}
 \textit{L} ist die Menge aller Lockobjekte im \textit{execution trace} und
 \textit{R} die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel
-\textit{(l\textsubscript{1}, l\textsubscript{2})} für das gilt: Es existiert ein
-Thread, welcher das Lockobjekt \textit{l\textsubscript{1}} besitzt, während er
-den Lock \textit{l\textsubscript{2}} anfordert.
+\textit{(L1, L2} für das gilt: Es existiert ein
+Thread, welcher das Lockobjekt \textit{L1} besitzt, während er
+den Lock \textit{L2} anfordert.
 
 \section{PEARL}
 \label{section:PEARL}

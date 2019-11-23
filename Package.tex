@@ -51,16 +51,20 @@
 %custom packages not from template
 \usepackage{scrhack}
 \usepackage[newfloat]{minted}
+\addto\captionsngerman{%
+  \renewcommand{\listlistingname}{Quellcodeverzeichnis}%
+  \renewcommand{\listingname}{Quellcode}%
+}
 \usepackage{microtype}
 \usepackage[capitalise,ngerman]{cleveref}
+\addto\captionsngerman{
+    % Second argument is singular, third is plural
+    \crefname{listing}{Quellcode}{Quellcodes}
+    \Crefname{listing}{Quellcode}{Quellcodes}
+}
 
 \usepackage{csquotes}
 \MakeOuterQuote{"}
 
 \usepackage[onehalfspacing]{setspace} 
-
-\addto\captionsngerman{%
-  \renewcommand{\listlistingname}{Quellcodeverzeichnis}%
-  \renewcommand{\listingname}{Quellcode}%
-}
 %end of custom packages not from template
