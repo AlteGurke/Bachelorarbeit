@@ -119,16 +119,24 @@ Eine \textit{SEMA} Variable ist ein Semaphore und dient als Synchronisationsmitt
 \section{OpenPEARL}
 \label{section:OpenPEARL}
 Um PEARL Programme auf einem System auszuführen wird ein Compiler benötigt.
-Das OpenSource Projekt OpenPEARL besteht aus einem Compiler und einer Laufzeitumgebung für PEARL90.
+Das OpenSource Projekt OpenPEARL besteht aus einem Compiler und einer Laufzeitumgebung für PEARL \autocite{OpenPEARL}. Unterstützt wird der PEARL90 Standard bis auf einige wenige Unterschiede \autocite{OpenPEARL_Differences_To_PEARL90}.
 
-\begin{listing}[ht]
-  \inputminted[frame=lines,linenos]{vim}{./Examples/Example_Deadlock.prl}
-  \caption{Beispiel einer OpenPEARL Anwendung mit einem potenziellen Deadlock}    
-  \label{lst:ExampleDeadlock}   
-\end{listing} 
+OpenPEARL besteht aus drei wesentlichen Komponenten:
+\begin{enumerate}
+  \item Compiler
+  \item Laufzeitumgebung
+  \item Inter Module Checker
+\end{enumerate}
+Der Compiler ist in Java geschrieben und übersetzt PEARL Code in C++ Code. Die Laufzeitumgebung stellt dem Compiler eine API zur Verfügung. Dem Compiler werden durch die API sichere Implementierungen der PEARL Datentypen zur Verfügung gestellt. Zusätzlich enthält die Laufzeitumgebung plattformspezifische Anteile für zum Beispiel die Implementierung für das Scheduling der Tasks. PEARL Anwendungen können aus mehreren Modulen bestehen, welche unabhängig voneinander kompiliert werden. Um Inkonsistenzen bei der Erstellung der Anwendung zu verhindern, prüft der Inter Module Checker die Export- und Importschnittstellen aller Module und prüft deren Kompatibilität.
 
 In \cref{lst:ExampleDeadlock} ist ein Beispielprogramm in der Programmiersprache
 PEARL dargestellt. Das Programm startet zwei parallele Aufgaben welche beide eine Zeichenfolge auf der Standardausgabe ausgeben. Der Zugriff auf die Standardausgabe muss dabei synchronisiert erfolgen.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos]{vim}{./Examples/Example_Deadlock.prl}
+  \caption{Beispiel einer OpenPEARL Anwendung mit einem potenziellen Deadlock}
+  \label{lst:ExampleDeadlock}   
+\end{listing} 
 
 In den Zeilen 1 bis 11 werden Variablen definiert, wie zum Beispiel die Ausgabe über die Standardausgabe und die zwei \textit{SEMA} Variablen \textit{L1} und \textit{L2} in den Zeilen 9 und 10. In den Zeilen 12 bis 17 ist ein \textit{TASK} definiert. Durch die Kennzeichnung \textit{MAIN} wird der \textit{TASK} direkt beim Start des Programms ausgeführt. Die Befehle \textit{RELEASE} in den Zeilen 13 und 14 erhöhen den Wert der jeweiligen \textit{SEMA} Variable um eins, wodurch der Zustand von "gesperrt" auf "frei" gesetzt wird. Anschließend werden in den Zeilen 15 und 16 die \textit{TASKS} \textit{T2} und \textit{T3} gestartet.
 
