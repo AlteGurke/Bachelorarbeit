@@ -53,29 +53,26 @@ drei Schritten ab:
   innerhalb des Graphen
 \end{enumerate}
 
-Eine Trace-Datei enthält einen \textit{execution trace} des ausführenden
+Eine Trace-Datei enthält einen \textit{execution trace}\label{text:ExecutionTrace} des ausführenden
 Programms. Ein \textit{execution trace} ist eine Abfolge von Events. Ein Event
 \textit{e\textsubscript{i}} wird durch eine der folgenden Methoden definiert:
 starten eines Threads, Inbesitznahme eines Lockobjekts und Freigabe eines
-Lockobjekts. Das Starten eines neues Threads ist definiert durch:
+Lockobjekts. Das Starten eines neues Threads ist definiert durch ein Thread-Start-Event:
 \begin{quote}
-\texttt{s(Programmstelle, ausführender Thread, Name des neuen Threads)}
+\texttt{s(ausführender Thread, Name des neuen Threads)}
 \end{quote}
-Zum Beispiel bedeutet \texttt{s(2,main,T1)}, dass an der Programmstelle
-\textit{2} der Thread \textit{main} den Thread \textit{T1} gestartet hat. 
-Die Inbesitznahme eines Lockobjekts ist definiert durch:
+Zum Beispiel bedeutet \texttt{s(main,T1)}, dass der Thread \textit{main} den Thread \textit{T1} gestartet hat. 
+Die Inbesitznahme eines Lockobjekts ist definiert durch ein Lock-Event:
 \begin{quote}
-\texttt{l(Programmstelle, ausführender Thread, Name des Lockobjekts)}
+\texttt{l(ausführender Thread, Name des Lockobjekts)}
 \end{quote}
-Zum Beispiel bedeutet \texttt{l(24,T1,L3)}, dass
-an der Programmstelle \textit{24} der Thread \textit{T1} das Lockobjekt
-\textit{L3} in Besitz genommen. Die Freigabe eines Lockobjekts ist definiert
-durch:
+Zum Beispiel bedeutet \texttt{l(T1,L3)}, dass der Thread \textit{T1} das Lockobjekt
+\textit{L3} in Besitz genommen hat. Die Freigabe eines Lockobjekts ist definiert
+durch ein Unlock-Event:
 \begin{quote}
-\texttt{u(Programmstelle, ausführender Thread, Name des Lockobjekts)}
+\texttt{u(ausführender Thread, Name des Lockobjekts)}
 \end{quote}
-Zum Beispiel bedeutet \texttt{u(30, T1, L3)}, dass an der Programmstelle
-\textit{30} der Thread \textit{T1} das Lockobjekt \textit{L3} freigegeben hat.
+Zum Beispiel bedeutet \texttt{u(T1, L3)}, dass der Thread \textit{T1} das Lockobjekt \textit{L3} freigegeben hat.
 
 Die Abfolge aller während der Laufzeit des Programms aufgetretenen Events
 definieren einen möglichen \textit{execution trace} des Programms.
@@ -86,7 +83,7 @@ unterschiedlichen \textit{execution traces} führen.
 Im zweiten Schritt wird aus dem vorher erzeugten \textit{execution trace} ein
 Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 \begin{quote}
-\textit{LG = (L,R)}
+\textbf{LG} = (L,R)
 \end{quote}
 \textit{L} ist die Menge aller Lockobjekte im \textit{execution trace} und
 \textit{R} die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel
@@ -144,6 +141,24 @@ Die \textit{TASKS} \textit{T2} und \textit{T3} geben in den Zeilen 22 bis 24 und
 
 \section{MagicLock}
 \label{section:MagicLock}
-\begin{itemize}
-  \item Beschreibung des MagicLock \autocite{MagicLock} Algorithmus
-\end{itemize}
+Der nachfolgende Abschnitt basiert auf den Ausführungen in \autocite{MagicLock}.
+
+MagicLock ist ein Algorithmus zur dynamischen Deadlockerkennung. Während der Entwicklung wurde der Fokus auf die Skalierung und Effizienz des Algorithmus gesetzt. Ziel war es mit großen Multithreaded Anwendungen skalieren und diese effizient analysieren zu können.
+
+MagicLock analysiert einen \textit{execution trace}\footnote{siehe \cref{text:ExecutionTrace}} einer Programmausführung ohne Deadlocks. Ein möglicher \textit{execution trace} von dem Beispielprogramm aus \cref{lst:ExampleDeadlock} ist:
+\begin{quote}
+  \textbf{$\sigma$} = s(main,T1), u(T1,L1), u(T1,L2), s(T1,T2), s(T1,T3), l(T2,L1), l(T2,L2), u(T2,L2), u(T2,L1), l(T3,L2), l(T3,L1), u(T3,L1), u(T3,L2)
+\end{quote}
+Der \textit{execution trace} in MagicLock wird durch eine Lock-Dependency-Relation definiert. Eine Lock-Dependency-Relation D besteht aus einer Sequenz von Lock-Dependencies. Eine Lock-Dependency ist ein Triple \textit{r = (t,m,L)} in dem \textit{t} ein Thread ist, \textit{m} ein Lock-Objekt und \textit{L} eine Menge von Lock-Objekten. Das Triple sagt aus, dass der Thread \textit{t} das Lock-Objekt \textit{m} in Besitz nimmt, während er jedes Lock-Objekt in \textit{L} besitzt.
+
+Bei einem Thread-Start-Event wird ein neuer Thread-Identifier und eine leere Menge an Locks für den neu erzeugten Thread erstellt. Zum Beispiel wird bei den Event \textit{s(main,T1)} ein neuer Thread-Identifier für T1 erzeugt und eine leere Menge L\textsubscript{T1}. Bei einem Lock-Event \textit{l(T2,L1)} wird zuerst die Lock-Dependency \textit{(T2,L1,L\textsubscript{T2})} an den \textit{execution trace} angehängt und anschließend L1 in die Menge der Locks L\textsubscript{T2} eingefügt. Bei einem Unlock-Event \textit{u(T2,L2)} wird das Lock-Objekt L2 aus der Menge L\textsubscript{T2} entfernt. Daraus folgt die Lock-Dependency-Relation:
+\begin{quote}
+  \textbf{$D_\sigma$} = (T2,L1,\{\}), (T2,L2,\{L1\}), (T3,L2,\{\}), (T3,L1,\{L2\})
+\end{quote}
+Anschließend wird ein reduzierter \textit{execution trace} erzeugt. Dazu verwendet MagicLock einen Algorithmus zur Reduzierung von Lock-Objekten im \textit{execution trace}. Der Algorithmus entfernt alle Lock-Objekte aus der Menge aller Lock-Objekte \textit{Locks} aus \textit{$D_\sigma$} die entweder keine eingehenden \textit{indegree(m) = 0} oder keine ausgehenden \textit{outdegree(m) = 0} Kanten im Lockgraph besitzen. Die Annahme ist, dass ein Lock-Objekt nur Teil eines Zyklus sein kann, wenn dieses mindestens eine eingehende und mindestens eine ausgehende Kante besitzt. Zusätzlich werden alle Lock-Objekte entfernt, welche nur von einem einzigen Thread in Besitz genommen bzw. freigegeben wurden. Wenn nur ein Thread ein Lock-Objekt benutzt, kann dieses Lock-Objekt nicht Teil eines Deadlocks sein. MagicLock klassifiziert dazu jedes Lock-Objekt in eine der folgenden Mengen:
+\begin{enumerate}
+  \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land outdegree(m) = 0\}$
+  \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0 \lor outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) = 0)\}$
+  \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D, \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup \text{Inner-set})\}$
+  \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
+\end{enumerate}
