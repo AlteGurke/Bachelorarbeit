@@ -16,5 +16,12 @@
 \begin{itemize}
   \item Vorstellung der Implementierung des Algorithmus zur Erkennung von
   potenziellen Deadlocks
+  MagicLock klassifiziert dazu jedes Lock-Objekt in eine der folgenden Mengen:
+  \begin{enumerate}
+    \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land outdegree(m) = 0\}$
+    \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0 \lor outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) = 0)\}$
+    \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D, \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup \text{Inner-set})\}$
+    \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
+  \end{enumerate}
   \item Grafiken/Screenshots mit Analyse Beispielen
 \end{itemize}

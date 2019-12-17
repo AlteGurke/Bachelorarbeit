@@ -1,7 +1,7 @@
 {
     "cSpell.enabled": true,
     "editor.cursorBlinking": "solid",
-    "editor.wordWrap": "on",
+    "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 80,
     "editor.wrappingIndent": "same",
     "telemetry.enableCrashReporter": false,

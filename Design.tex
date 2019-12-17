@@ -9,31 +9,47 @@
     \item Laufzeit des Programms soll sich um maximal x\% erhöhen
     \item Speicherauslastung des Programms soll sich um maximal y\% erhöhen
   \end{itemize}
-    \item Aktuelle Idee:
-    Das Erstellen der Trace-Datei wird in der Laufzeitumgebung umgesetzt. Die Implementierung erfolgt in einer eigenen Klasse. Die Klasse kann optional von der Semaphore Implementierung der Laufzeitumgebung verwendet werden.
-    Beim Aufruf von Request oder Release wird geprüft, ob die Informationen geloggt werden sollen. Falls das Logging aktiviert ist, werden die Informationen in eine Warteschlange eingereiht. Die Warteschlange wird über eine einfach verkettete Liste realisiert.
-    Das Einfügen in eine einfach verkettete Liste ist konstant und geschieht daher in O(1).
-    Bei jeder x-ten Aktivierung, wobei x die maximale Größe der Warteschlange ist, werden alle vorhanden Einträge aus der Warteschlange entfernt und in die Trace-Datei geschrieben.
-    Das Entfernen des ersten Eintrags aus der Warteschlange (einfach verkettete Liste) ist wieder konstant und daher O(1). Die Liste wird für jeden Eintrag einmal durchlaufen.
-    Die Laufzeit beträgt daher O(x). Das Öffnen und Schließen der Trace-Datei hat die Laufzeit y.
-    Das Schreiben eines Logeintrags, also eine Zeile in die Trace-Datei, hat die Laufzeit z.
-    Damit hat jeder x-te Request/Release Aufruf die Laufzeit O(y + x $\cdot$ z). Somit hat jeder Request/Release Aufruf die Laufzeit O($\frac{y + x \cdot z}{x}$).
+    \item Aktuelle Idee: Das Erstellen der Trace-Datei wird in der
+    Laufzeitumgebung umgesetzt. Die Implementierung erfolgt in einer eigenen
+    Klasse. Die Klasse kann optional von der Semaphore Implementierung der
+    Laufzeitumgebung verwendet werden. Beim Aufruf von Request oder Release wird
+    geprüft, ob die Informationen geloggt werden sollen. Falls das Logging
+    aktiviert ist, werden die Informationen in eine Warteschlange eingereiht.
+    Die Warteschlange wird über eine einfach verkettete Liste realisiert. Das
+    Einfügen in eine einfach verkettete Liste ist konstant und geschieht daher
+    in O(1). Bei jeder x-ten Aktivierung, wobei x die maximale Größe der
+    Warteschlange ist, werden alle vorhanden Einträge aus der Warteschlange
+    entfernt und in die Trace-Datei geschrieben. Das Entfernen des ersten
+    Eintrags aus der Warteschlange (einfach verkettete Liste) ist wieder
+    konstant und daher O(1). Die Liste wird für jeden Eintrag einmal
+    durchlaufen. Die Laufzeit beträgt daher O(x). Das Öffnen und Schließen der
+    Trace-Datei hat die Laufzeit y. Das Schreiben eines Logeintrags, also eine
+    Zeile in die Trace-Datei, hat die Laufzeit z. Damit hat jeder x-te
+    Request/Release Aufruf die Laufzeit O(y + x $\cdot$ z). Somit hat jeder
+    Request/Release Aufruf die Laufzeit O($\frac{y + x \cdot z}{x}$).
 
-    Zusätzlich zu jedem x-ten Request/Release Aufruf das Schreiben in die Trace-Datei auch zeitich angestoßen werden.
-    Zum Beispiel sollte alle 60 Sekunden oder nach x Aufrufen die Warteschlange geleert und in die Trace-Datei geschrieben werden. Bei jedem x-ten Request/Release Aufruf muss der Timer der Warteschlange wieder zurückgesetzt werden.
-    Bedeutet wenn nach 50 Sekunden der x-te Aufruf kommt, muss der Timer wieder von vorne beginnen, damit die Trace-Datei nicht nach 10 Sekunden erneut beschrieben wird.
+    Zusätzlich zu jedem x-ten Request/Release Aufruf das Schreiben in die
+    Trace-Datei auch zeitich angestoßen werden. Zum Beispiel sollte alle 60
+    Sekunden oder nach x Aufrufen die Warteschlange geleert und in die
+    Trace-Datei geschrieben werden. Bei jedem x-ten Request/Release Aufruf muss
+    der Timer der Warteschlange wieder zurückgesetzt werden. Bedeutet wenn nach
+    50 Sekunden der x-te Aufruf kommt, muss der Timer wieder von vorne beginnen,
+    damit die Trace-Datei nicht nach 10 Sekunden erneut beschrieben wird.
 
-    Der zusätzliche Speicherbedarf beträgt $x \cdot i$, wobei i die Größe der Information eines Logeintrags entspricht.
-    Ein Logeintrag benötigt die Informationen:
+    Der zusätzliche Speicherbedarf beträgt $x \cdot i$, wobei i die Größe der
+    Information eines Logeintrags entspricht. Ein Logeintrag benötigt die
+    Informationen:
     \begin{enumerate}
       \item Aktion (REQUEST oder RELEASE) => 1 Bit
-      \item ID des Threads => 16-Bit Ganzzahl (maximale Thread Id für Linux beträgt 32768) theoretisch über 15 Bit abbildbar, da immer positiv
-      \item Name des Lockobjekts => 11 Bit Ganzzahl (maximal Variablennamenlänge für C++ beträgt 2048)
+      \item ID des Threads => 16-Bit Ganzzahl (maximale Thread Id für Linux
+      beträgt 32768) theoretisch über 15 Bit abbildbar, da immer positiv
+      \item Name des Lockobjekts => 11 Bit Ganzzahl (maximal Variablennamenlänge
+      für C++ beträgt 2048)
     \end{enumerate}
-    Mindestgröße für i beträgt 1 + 16 + 11 = 28 Bit.
-    Die Größe eines Zeigers in C++ beträgt auf einem 64 Bit System 64 Bit.
-    Ein Eintrag in der Warteschlange benötigt somit 28 Bit + 64 Bit = 92 Bit Speicher.
-    Die Warteschlange benötigt maximal daher 92 Bit $\cdot$ x zusätzlichen Speicher.
+    Mindestgröße für i beträgt 1 + 16 + 11 = 28 Bit. Die Größe eines Zeigers in
+    C++ beträgt auf einem 64 Bit System 64 Bit. Ein Eintrag in der Warteschlange
+    benötigt somit 28 Bit + 64 Bit = 92 Bit Speicher. Die Warteschlange benötigt
+    maximal daher 92 Bit $\cdot$ x zusätzlichen Speicher.
 \end{itemize}
 
 \section{Analysieren der Trace-Datei}
