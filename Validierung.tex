@@ -4,11 +4,23 @@
   \item Anforderungen validieren:
   \begin{itemize}
     \item Laufzeiten der einzelnen Programme mit und ohne Trace Funktionalität
-    bestimmen und vergleichen
+    bestimmen und vergleichen, mit Python Programm \cref{lst:Python_Benchmark_CPU}
     \item Speicherauslastung der einzelnen Programme mit und ohne Trace
-    Funktionalität bestimmen und vergleichen
+    Funktionalität bestimmen und vergleichen, mit Python Programm \cref{lst:Python_Benchmark_Memory}
   \end{itemize}
 \end{itemize}
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos]{python}{./Python/benchmark_cpu.py}
+  \caption{Pythonskipt zur Messung der Laufzeit}
+  \label{lst:Python_Benchmark_CPU}   
+\end{listing} 
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos]{python}{./Python/benchmark_memory.py}
+  \caption{Pythonskipt zur Messung der Speicherauslastung}
+  \label{lst:Python_Benchmark_Memory}   
+\end{listing} 
 
 \section{Analyse Programm}
 \begin{itemize}
@@ -19,6 +31,6 @@
 \section{Visualisierung von potenziellen Deadlocks}
 \begin{itemize}
   \item Die aus \cref{Validierung:Trace Funktion} erstellten Trace-Dateien
-  auswerten und die potenziellen Deadlocks visuell als gerichtete
-  Graphen aufzeigen
+  auswerten und die potenziellen Deadlocks visuell als gerichtete Graphen
+  aufzeigen
 \end{itemize}
