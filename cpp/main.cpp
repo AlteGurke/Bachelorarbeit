@@ -14,7 +14,7 @@ int main()
     cout << "LockTracingEnabled: " << getenv("OpenPEARL_LockTracer_Enabled") << endl;
     cout << "LockTracingPath: " << getenv("OpenPEARL_LockTracer_Path") << endl << endl;
 
-    LockTracer logger = LockTracer::GetInstance();
+    LockTracer& logger = LockTracer::GetInstance();
 
     LockTraceEntry entry = LockTraceEntry(std::chrono::system_clock::from_time_t(0), LockTraceEntryType::ThreadStart, 0, "1");
     logger.Add(entry);
