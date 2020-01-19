@@ -17,6 +17,7 @@ namespace pearlrt {
             LockTraceEntryType get_EntryType();
             unsigned short get_ThreadId();
             std::string get_ObjectName();
+            LockTraceEntry();
             LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, unsigned short ti, std::string on);
     };
 }

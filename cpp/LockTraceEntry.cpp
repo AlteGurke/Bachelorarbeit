@@ -1,6 +1,10 @@
 #include "LockTraceEntry.h"
 
 namespace pearlrt {
+
+    LockTraceEntry::LockTraceEntry() {
+    }
+
     LockTraceEntry::LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, unsigned short ti, std::string on){
         dateTime = dt;
         entryType = et;

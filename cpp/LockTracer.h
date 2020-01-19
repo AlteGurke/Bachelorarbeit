@@ -1,24 +1,26 @@
 #pragma once
 
-#include <queue>
 #include "LockTraceEntry.h"
 #include "LockTraceEntryFormatter.h"
+#include "concurrentqueue.h"
 
 namespace pearlrt {
     class LockTracer {
         private:
-            const unsigned short numberOfMaxEntries = 20;
-            const char* nameOfEnvironmentVariableForActivation = "OpenPEARL_LockTracer_Enabled";
-            const char* nameOfEnvironmentVariableFilePath = "OpenPEARL_LockTracer_Path";
-            
+            unsigned short numberOfMaxEntries = 20;
+            const unsigned short DefaultNumberOfMaxEntries = 20;
+            const char* NameOfEnvironmentVariableForActivation = "OpenPEARL_LockTracer_Enabled";
+            const char* NameOfEnvironmentVariableFilePath = "OpenPEARL_LockTracer_Path";
+            const char* NameOfEnvironmentVariableNumberOfMaxEntries = "OpenPEARL_LockTracer_MaxEntries";            
             bool isActivated;
             std::string filePath;
-            std::queue<LockTraceEntry> queue;
+            moodycamel::ConcurrentQueue<LockTraceEntry> queue;
             std::mutex flushMutex;
 
             LockTraceEntryFormatter formatter;
             
             LockTracer();
+            void SetNumberOfMaxEntries();
             void flushIfNeeded();
             void flush();
         public:

@@ -10,9 +10,9 @@ namespace pearlrt {
     LockTracer::LockTracer() : formatter() {
         isActivated = false;
 
-        char* envVar = std::getenv(nameOfEnvironmentVariableForActivation);
+        char* envVar = std::getenv(NameOfEnvironmentVariableForActivation);
         if(envVar != NULL && strcmp(envVar, "true") == 0) {
-            envVar = std::getenv(nameOfEnvironmentVariableFilePath);
+            envVar = std::getenv(NameOfEnvironmentVariableFilePath);
             if(envVar != NULL && std::filesystem::exists(envVar)) {
                 std::time_t t = std::time(nullptr);
                 std::tm tm = *std::localtime(&t);
@@ -22,13 +22,32 @@ namespace pearlrt {
                 std::string str = oss.str();
 
                 filePath = std::string(envVar) + str;
+
+                SetNumberOfMaxEntries();
                 isActivated = true;
             }   
         }
     }
 
+    void LockTracer::SetNumberOfMaxEntries() {
+        char* envVar = std::getenv(NameOfEnvironmentVariableNumberOfMaxEntries);
+        if(envVar != NULL) {
+            try
+            {
+                numberOfMaxEntries = std::stoi(envVar);
+            }
+            catch(const std::exception& e)
+            {
+                numberOfMaxEntries = DefaultNumberOfMaxEntries;
+            }
+        }
+        else {
+            numberOfMaxEntries = DefaultNumberOfMaxEntries;
+        }
+    }
+
     void LockTracer::flushIfNeeded() {
-        if(queue.size() >= numberOfMaxEntries) {
+        if(queue.size_approx() >= numberOfMaxEntries) {
             LockTracer::flush();
         }
     }
@@ -41,9 +60,10 @@ namespace pearlrt {
             fileStream.open(filePath, std::ios_base::app);
             for (int i = 0; i < numberOfMaxEntries; i++)
             {
-                LockTraceEntry entry = queue.front();
-                fileStream << formatter.FormatLogTraceEntry(entry);
-                queue.pop();
+                LockTraceEntry entry;
+                if(queue.try_dequeue(entry)) {
+                    fileStream << formatter.FormatLogTraceEntry(entry);
+                }
             }
             fileStream.close();
         }
@@ -63,7 +83,7 @@ namespace pearlrt {
             return;
         }        
 
-        queue.push(entry);
+        queue.enqueue(entry);
         LockTracer::flushIfNeeded();
     }
 }
