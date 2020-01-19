@@ -36,4 +36,10 @@ namespace pearlrt {
     std::string LockTraceEntryFormatter::createDateTimeEntry(std::chrono::time_point<std::chrono::system_clock> timePoint) {
         return date::format("%F %T", date::floor<milliseconds>(timePoint)) + ":";
     }
+
+    LockTraceEntryFormatter& LockTraceEntryFormatter::GetInstance()
+    {
+        static LockTraceEntryFormatter instance;
+        return instance;
+    }
 }

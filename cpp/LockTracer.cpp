@@ -7,12 +7,12 @@
 
 namespace pearlrt {
 
-    LockTracer::LockTracer() : formatter() {
-        isActivated = false;
+    LockTracer::LockTracer() {
+        isEnabled = false;
 
-        char* envVar = std::getenv(NameOfEnvironmentVariableForActivation);
+        char* envVar = std::getenv(NameOfEnvironmentVariableEnabled);
         if(envVar != NULL && strcmp(envVar, "true") == 0) {
-            envVar = std::getenv(NameOfEnvironmentVariableFilePath);
+            envVar = std::getenv(NameOfEnvironmentVariablePath);
             if(envVar != NULL && std::filesystem::exists(envVar)) {
                 std::time_t t = std::time(nullptr);
                 std::tm tm = *std::localtime(&t);
@@ -23,13 +23,13 @@ namespace pearlrt {
 
                 filePath = std::string(envVar) + str;
 
-                SetNumberOfMaxEntries();
-                isActivated = true;
+                setNumberOfMaxEntries();
+                isEnabled = true;
             }   
         }
     }
 
-    void LockTracer::SetNumberOfMaxEntries() {
+    void LockTracer::setNumberOfMaxEntries() {
         char* envVar = std::getenv(NameOfEnvironmentVariableNumberOfMaxEntries);
         if(envVar != NULL) {
             try
@@ -62,7 +62,7 @@ namespace pearlrt {
             {
                 LockTraceEntry entry;
                 if(queue.try_dequeue(entry)) {
-                    fileStream << formatter.FormatLogTraceEntry(entry);
+                    fileStream << LockTraceEntryFormatter::GetInstance().FormatLogTraceEntry(entry);
                 }
             }
             fileStream.close();
@@ -79,7 +79,7 @@ namespace pearlrt {
     }
 
     void LockTracer::Add(LockTraceEntry& entry) {
-        if(isActivated == false) {
+        if(isEnabled == false) {
             return;
         }        
 

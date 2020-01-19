@@ -7,20 +7,18 @@
 namespace pearlrt {
     class LockTracer {
         private:
+            const char* NameOfEnvironmentVariableEnabled = "OpenPEARL_LockTracer_Enabled";
+            const char* NameOfEnvironmentVariablePath = "OpenPEARL_LockTracer_Path";
+            const char* NameOfEnvironmentVariableNumberOfMaxEntries = "OpenPEARL_LockTracer_MaxEntries";  
+            const unsigned short DefaultNumberOfMaxEntries = 20; 
+            bool isEnabled;
             unsigned short numberOfMaxEntries = 20;
-            const unsigned short DefaultNumberOfMaxEntries = 20;
-            const char* NameOfEnvironmentVariableForActivation = "OpenPEARL_LockTracer_Enabled";
-            const char* NameOfEnvironmentVariableFilePath = "OpenPEARL_LockTracer_Path";
-            const char* NameOfEnvironmentVariableNumberOfMaxEntries = "OpenPEARL_LockTracer_MaxEntries";            
-            bool isActivated;
             std::string filePath;
             moodycamel::ConcurrentQueue<LockTraceEntry> queue;
             std::mutex flushMutex;
-
-            LockTraceEntryFormatter formatter;
             
             LockTracer();
-            void SetNumberOfMaxEntries();
+            void setNumberOfMaxEntries();
             void flushIfNeeded();
             void flush();
         public:
