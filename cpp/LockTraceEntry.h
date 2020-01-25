@@ -10,14 +10,14 @@ namespace pearlrt {
         private:
             std::chrono::time_point<std::chrono::system_clock> dateTime;
             LockTraceEntryType entryType;
-            unsigned short threadId;
+            std::string threadName;
             std::string objectName;
         public:
             std::chrono::time_point<std::chrono::system_clock> get_DateTime();
             LockTraceEntryType get_EntryType();
-            unsigned short get_ThreadId();
+            std::string get_ThreadName();
             std::string get_ObjectName();
             LockTraceEntry();
-            LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, unsigned short ti, std::string on);
+            LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, std::string tn, std::string on);
     };
 }

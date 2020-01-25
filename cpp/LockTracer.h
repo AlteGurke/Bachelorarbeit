@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include "LockTraceEntry.h"
 #include "LockTraceEntryFormatter.h"
 #include "concurrentqueue.h"

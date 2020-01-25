@@ -5,10 +5,10 @@ namespace pearlrt {
     LockTraceEntry::LockTraceEntry() {
     }
 
-    LockTraceEntry::LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, unsigned short ti, std::string on){
+    LockTraceEntry::LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, std::string tn, std::string on){
         dateTime = dt;
         entryType = et;
-        threadId = ti;
+        threadName = tn;
         objectName = on;
     }
 
@@ -20,8 +20,8 @@ namespace pearlrt {
         return entryType;
     }
 
-    unsigned short LockTraceEntry::get_ThreadId() {
-        return threadId;
+    std::string LockTraceEntry::get_ThreadName() {
+        return threadName;
     }
 
     std::string LockTraceEntry::get_ObjectName() {

@@ -29,7 +29,7 @@ namespace pearlrt {
         }
 
         return LockTraceEntryFormatter::createDateTimeEntry(logTraceEntry.get_DateTime())
-        + prefix + "(" + std::to_string(logTraceEntry.get_ThreadId()) + "," + logTraceEntry.get_ObjectName() + ")"
+        + prefix + "(" + logTraceEntry.get_ThreadName() + "," + logTraceEntry.get_ObjectName() + ")"
         + endMarker;
     }
 
