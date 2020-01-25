@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
-#include "LockTracer.cpp"
-#include "LockTraceEntry.cpp"
-#include "LockTraceEntryFormatter.cpp"
+#include "LockTracer.cc"
+#include "LockTraceEntry.cc"
+#include "LockTraceEntryFormatter.cc"
 using namespace std;
 
 int main() 
@@ -17,64 +17,64 @@ int main()
 
     pearlrt::LockTracer& logger = pearlrt::LockTracer::GetInstance();
 
-    pearlrt::LockTraceEntry entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::ThreadStart, "0", "1");
+    pearlrt::LockTraceEntry entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "1");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::ThreadStart, "0", "2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::ThreadStart, "0", "3");
-    logger.Add(entry);
-
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "1", "L1");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "1", "L2");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "1", "L2");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "1", "L1");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "1", "L3");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "1", "L3");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "1", "L1");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "3");
     logger.Add(entry);
 
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "2", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "L1");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "2", "L3");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "L2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "2", "L1");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "1", "L2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "2", "L1");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "L1");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "2", "L3");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "L3");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "2", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "1", "L3");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "1", "L1");
+    logger.Add(entry);
+
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "2", "L2");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "2", "L3");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "2", "L1");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "2", "L1");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "2", "L3");
+    logger.Add(entry);
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "2", "L2");
     logger.Add(entry);
     
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L5");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L5");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L6");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L6");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L6");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L6");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L5");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L5");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L2");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L7");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L7");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Lock, "3", "L8");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Lock, "3", "L8");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L8");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L8");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L7");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L7");
     logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::from_time_t(0), pearlrt::LockTraceEntryType::Unlock, "3", "L2");
+    entry = pearlrt::LockTraceEntry(std::chrono::system_clock::now(), pearlrt::LockTraceEntryType::Unlock, "3", "L2");
     logger.Add(entry);
 
     cout << endl << "End" << endl;

@@ -19,6 +19,7 @@ namespace pearlrt {
             std::mutex flushMutex;
             
             LockTracer();
+            bool is_file_exist(const char *fileName);
             void setNumberOfMaxEntries();
             void flushIfNeeded();
             void flush();

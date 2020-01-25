@@ -1,8 +1,9 @@
-#include <filesystem>
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <sstream>
+#include <string.h>
+#include <iomanip>
 #include "LockTracer.h"
 
 namespace pearlrt {
@@ -13,7 +14,7 @@ namespace pearlrt {
         char* envVar = std::getenv(NameOfEnvironmentVariableEnabled);
         if(envVar != NULL && strcmp(envVar, "true") == 0) {
             envVar = std::getenv(NameOfEnvironmentVariablePath);
-            if(envVar != NULL && std::filesystem::exists(envVar)) {
+            if(envVar != NULL && is_file_exist(envVar)) {
                 std::time_t t = std::time(nullptr);
                 std::tm tm = *std::localtime(&t);
 
@@ -27,6 +28,12 @@ namespace pearlrt {
                 isEnabled = true;
             }   
         }
+    }
+
+    bool LockTracer::is_file_exist(const char *fileName)
+    {
+        std::ifstream infile(fileName);
+        return infile.good();
     }
 
     void LockTracer::setNumberOfMaxEntries() {
@@ -53,7 +60,7 @@ namespace pearlrt {
     }
 
     void LockTracer::flush() {
-        std::lock_guard lock(flushMutex);
+        std::lock_guard<std::mutex> lock(flushMutex);
         try
         {
             std::ofstream fileStream;
