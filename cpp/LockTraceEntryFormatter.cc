@@ -1,9 +1,7 @@
 #include "LockTraceEntryFormatter.h"
-#include "date.h"
 
 namespace pearlrt {
 
-    using namespace date;
     using namespace std::chrono;
     using namespace std;
 
@@ -33,8 +31,8 @@ namespace pearlrt {
         + endMarker;
     }
 
-    std::string LockTraceEntryFormatter::createDateTimeEntry(std::chrono::time_point<std::chrono::system_clock> timePoint) {
-        return date::format("%F %T", date::floor<milliseconds>(timePoint)) + ":";
+    std::string LockTraceEntryFormatter::createDateTimeEntry(std::chrono::time_point<std::chrono::high_resolution_clock> timePoint) {
+        return std::to_string(std::chrono::time_point_cast<std::chrono::microseconds>(timePoint).time_since_epoch().count()) + ":";
     }
 
     LockTraceEntryFormatter& LockTraceEntryFormatter::GetInstance()

@@ -60,24 +60,22 @@ namespace pearlrt {
     }
 
     void LockTracer::flush() {
+        std::lock_guard<std::mutex> lock(flushMutex);
+        try
         {
-            std::lock_guard<std::mutex> lock(flushMutex);
-            try
+            std::ofstream fileStream;
+            fileStream.open(filePath, std::ios_base::out | std::ios_base::app);
+            for (int i = 0; i < numberOfMaxEntries; i++)
             {
-                std::ofstream fileStream;
-                fileStream.open(filePath, std::ios_base::out | std::ios_base::app);
-                for (int i = 0; i < numberOfMaxEntries; i++)
-                {
-                    LockTraceEntry entry;
-                    if(queue.try_dequeue(entry)) {
-                        fileStream << LockTraceEntryFormatter::GetInstance().FormatLogTraceEntry(entry);
-                    }
+                LockTraceEntry entry;
+                if(queue.try_dequeue(entry)) {
+                    fileStream << LockTraceEntryFormatter::GetInstance().FormatLogTraceEntry(entry);
                 }
-                fileStream.close();
             }
-            catch(const std::exception& e)
-            {
-            }
+            fileStream.close();
+        }
+        catch(const std::exception& e)
+        {
         }
     }
 

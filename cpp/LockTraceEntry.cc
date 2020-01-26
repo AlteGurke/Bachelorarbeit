@@ -5,14 +5,14 @@ namespace pearlrt {
     LockTraceEntry::LockTraceEntry() {
     }
 
-    LockTraceEntry::LockTraceEntry(std::chrono::time_point<std::chrono::system_clock> dt, LockTraceEntryType et, std::string tn, std::string on){
+    LockTraceEntry::LockTraceEntry(std::chrono::time_point<std::chrono::high_resolution_clock> dt, LockTraceEntryType et, std::string tn, std::string on){
         dateTime = dt;
         entryType = et;
         threadName = tn;
         objectName = on;
     }
 
-    std::chrono::time_point<std::chrono::system_clock> LockTraceEntry::get_DateTime() {
+    std::chrono::time_point<std::chrono::high_resolution_clock> LockTraceEntry::get_DateTime() {
         return dateTime;
     }
 

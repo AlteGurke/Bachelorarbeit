@@ -8,7 +8,7 @@ namespace pearlrt {
         private:
             const std::string endMarker = "\r\n";
             const std::string emptyReturnValue = "";
-            std::string createDateTimeEntry(std::chrono::time_point<std::chrono::system_clock> timePoint);
+            std::string createDateTimeEntry(std::chrono::time_point<std::chrono::high_resolution_clock> timePoint);
             LockTraceEntryFormatter();
         public:
             static LockTraceEntryFormatter& GetInstance();
