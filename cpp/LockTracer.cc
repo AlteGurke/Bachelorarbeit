@@ -14,7 +14,7 @@ namespace pearlrt {
         char* envVar = std::getenv(NameOfEnvironmentVariableEnabled);
         if(envVar != NULL && strcmp(envVar, "true") == 0) {
             envVar = std::getenv(NameOfEnvironmentVariablePath);
-            if(envVar != NULL && is_file_exist(envVar)) {
+            if(envVar != NULL && directoryExists(envVar)) {
                 std::time_t t = std::time(nullptr);
                 std::tm tm = *std::localtime(&t);
 
@@ -30,7 +30,7 @@ namespace pearlrt {
         }
     }
 
-    bool LockTracer::is_file_exist(const char *fileName)
+    bool LockTracer::directoryExists(const char *fileName)
     {
         std::ifstream infile(fileName);
         return infile.good();
@@ -92,5 +92,9 @@ namespace pearlrt {
 
         queue.enqueue(entry);
         LockTracer::flushIfNeeded();
+    }
+
+    LockTracer::~LockTracer() {
+        LockTracer::flush();
     }
 }

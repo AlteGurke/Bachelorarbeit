@@ -10,7 +10,7 @@ int main()
     cout << "Start" << endl;
     setenv("OpenPEARL_LockTracer_Enabled", "true", true);
     setenv("OpenPEARL_LockTracer_Path", "/Users/marcelsobottka/Downloads/temp/", true);
-    setenv("OpenPEARL_LockTracer_MaxEntries", "1", true);    
+    setenv("OpenPEARL_LockTracer_MaxEntries", "100", true);    
     cout << "LockTracingEnabled: " << getenv("OpenPEARL_LockTracer_Enabled") << endl;
     cout << "LockTracingPath: " << getenv("OpenPEARL_LockTracer_Path") << endl;
     cout << "NumberOfMaxEntries: " << getenv("OpenPEARL_LockTracer_MaxEntries") << endl << endl;

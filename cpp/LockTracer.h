@@ -19,7 +19,7 @@ namespace pearlrt {
             std::mutex flushMutex;
             
             LockTracer();
-            bool is_file_exist(const char *fileName);
+            bool directoryExists(const char *fileName);
             void setNumberOfMaxEntries();
             void flushIfNeeded();
             void flush();
@@ -30,5 +30,6 @@ namespace pearlrt {
             LockTracer(LockTracer&&) = delete;
             LockTracer& operator=(const LockTracer&) = delete;
             LockTracer& operator=(LockTracer&&) = delete;
+            ~LockTracer();
     };
 }
