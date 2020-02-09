@@ -149,5 +149,6 @@
         "iomanip": "cpp",
         "stack": "cpp",
         "thread": "cpp"
-    }
+    },
+    "python.pythonPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3"
 }
