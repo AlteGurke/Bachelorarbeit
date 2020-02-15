@@ -3,33 +3,16 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import ntpath
 
+import traceFileReader
+
 def get_Color(value):
     switcher = {
-        "l": "red",
-        "u": "green"
+        traceFileReader.LockActionType.LOCK: "red",
+        traceFileReader.LockActionType.UNLOCK: "green"
     }
     return switcher.get(value, "")
 
-def add_To_Dictionary(lineValues, action, dict):
-    values = lineValues[1][2:-1].split(',')
-    key = values[0]
-    dict.setdefault(key, []).append([ action, lineValues[0], values[1] ])
-
-def read_Trace_File(traceFilename):
-    file = open(traceFilename, 'r') 
-    lines = file.readlines() 
-
-    dict = {}
-    for line in lines: 
-        lineValues = line.strip().split(':')
-        if lineValues[1][0] == "l":
-            add_To_Dictionary(lineValues, "l", dict)
-        elif lineValues[1][0] == "u":
-            add_To_Dictionary(lineValues, "u", dict)
-    return dict
-    #print(dict)
-
-def create_Graph(dict, title):
+def create_Graph(lockActions, title):
     threads  = set([])
     times = set([])
     x = []
@@ -37,24 +20,22 @@ def create_Graph(dict, title):
     c = []
     texts = []
 
-    for key, value in dict.items():
-        threads.add(key)
-        for v in value:
-            times.add(v[1])
+    for lockAction in lockActions:
+        threads.add(lockAction.threadName)
+        times.add(lockAction.timeStamp)
 
     threads  = sorted(list(threads))
     times  = sorted(list(times))
 
-    for key, value in dict.items():
-        for v in value:
-            xValue = int(v[1]) - int(times[0])
-            offset = 0
-            if xValue in x:
-                offset = 0.1 * x.count(xValue)
-            x.append(xValue)
-            y.append(threads.index(key) + offset)
-            c.append(get_Color(v[0]))
-            texts.append(v[2])
+    for lockAction in lockActions:
+        xValue = int(lockAction.timeStamp) - int(times[0])
+        offset = 0
+        if xValue in x:
+            offset = 0.1 * x.count(xValue)
+        x.append(xValue)
+        y.append(threads.index(lockAction.threadName) + offset)
+        c.append(get_Color(lockAction.actionType))
+        texts.append(lockAction.lockObjectName)
 
     plt.figure(figsize=(20, len(threads) + 2))
     plt.title(title)
@@ -92,6 +73,6 @@ def create_Graph(dict, title):
     return plt
 
 traceFilename = sys.argv[1]
-dict = read_Trace_File(traceFilename)
-plt = create_Graph(dict, "Trace for " + ntpath.basename(traceFilename))
+lockActions = traceFileReader.read_Trace_File_Lines(traceFilename)
+plt = create_Graph(lockActions, "Trace for " + ntpath.basename(traceFilename))
 plt.show()
