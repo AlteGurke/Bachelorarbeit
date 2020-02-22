@@ -187,8 +187,26 @@ def lock_Classification(D, initClassification):
 
     return lockClassification
 
-def lock_Reduction(D):
-    pass
+def lock_Reduction(D, initClassification):
+    lockClassification = lock_Classification(D, initClassification)
+    lockClassification.print()
+    for m in lockClassification.cyclicSet[:]:
+        if initClassification.mode[m] != -1:
+            lockClassification.cyclicSet.remove(m)
+            for n in lockClassification.cyclicSet:
+                if initClassification.edgesFromTo[m][n] != 0:
+                    initClassification.indegree[n] -= initClassification.edgesFromTo[m][n]
+                    initClassification.edgesFromTo[m][n] = 0
+            for n in lockClassification.cyclicSet:
+                if initClassification.edgesFromTo[n][m] != 0:
+                    initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
+                    initClassification.edgesFromTo[n][m] = 0
+    
+    projectedD = D
+    #if projectedD != D:
+    #    return lock_Reduction(projectedD, initClassification)
+
+    return lockClassification
 
 
 traceFilename = sys.argv[1]
@@ -200,5 +218,6 @@ lockDependencyRelation.print()
 initClassification = init_Classification(lockDependencyRelation)
 initClassification.print()
 
-lockClassification = lock_Classification(lockDependencyRelation, initClassification)
+lockClassification = lock_Reduction(lockDependencyRelation, initClassification)
+print("\nLock classification Result:")
 lockClassification.print()
