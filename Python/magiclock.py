@@ -10,9 +10,9 @@ class InitClassification(object):
         self.outdegree = {}
         self.mode = {}
         self.edgesFromTo = defaultdict(lambda: defaultdict(int))
-        self.locks = set()
 
     def print(self):
+        print("\nInit Classification:")
         print("Indegrees:")
         print(self.indegree)
         print("Oudegrees:")
@@ -25,8 +25,6 @@ class InitClassification(object):
             for x in t:
                 print(x, end=",")
             print("")
-        print("Locks:")
-        print(self.locks)
 
 
 class LockClassification(object):
@@ -37,6 +35,7 @@ class LockClassification(object):
         self.cyclicSet = []
 
     def print(self):
+        print("\nLock Classification:")
         print("IndependentSet:")
         print(self.independentSet)
         print("IntermediateSet:")
@@ -68,6 +67,24 @@ class LockDependency(object):
         print("})", end="")
 
 
+class LockDependencyRelation(object):
+    def __init__(self):
+        self.locks = set()
+        self.lockDependencies = []
+
+    def add(self, lockDependency):
+        self.lockDependencies.append(lockDependency)
+        self.locks.add(lockDependency.lockObjectName)
+    
+    def print(self):
+        print("\nLockDependencyRelation:")
+        for d in self.lockDependencies:
+            d.print()
+            print(", ", end="")
+        print("\nLocks:")
+        print(self.locks)
+
+
 def get_OwnedLockObjects(threadName, ownedLockObjectsByThread):
     if threadName not in ownedLockObjectsByThread:
         ownedLockObjectsByThread[threadName] = []
@@ -80,13 +97,13 @@ def remove_From_List(x, lst):
 
 
 def create_LockDependencyRelation(lockActions):
-    lockDependencyRelation = []
+    lockDependencyRelation = LockDependencyRelation()
     ownedLockObjectsByThread = {}
     for lockAction in lockActions:
         ownedLockObjects = get_OwnedLockObjects(
             lockAction.threadName, ownedLockObjectsByThread)
         if lockAction.actionType == traceFileReader.LockActionType.LOCK:
-            lockDependencyRelation.append(LockDependency(
+            lockDependencyRelation.add(LockDependency(
                 lockAction.threadName, lockAction.lockObjectName, ownedLockObjects.copy()))
             ownedLockObjects.append(lockAction.lockObjectName)
         elif lockAction.actionType == traceFileReader.LockActionType.UNLOCK:
@@ -96,7 +113,7 @@ def create_LockDependencyRelation(lockActions):
 
 def mode(m, D):
     thread = None
-    for d in D:
+    for d in D.lockDependencies:
         if d.lockObjectName != m:
             continue
         if thread == None:
@@ -110,13 +127,11 @@ def mode(m, D):
 
 def init_Classification(D):
     initClassification = InitClassification()
-    for m in D:
-        initClassification.locks.add(m.lockObjectName)
-    for m in initClassification.locks:
+    for m in D.locks:
         initClassification.indegree[m] = 0
         initClassification.outdegree[m] = 0
         initClassification.mode[m] = 0
-    for d in D:
+    for d in D.lockDependencies:
         if mode(d.lockObjectName, D) != d.threadName:
             initClassification.mode[d.lockObjectName] = -1
         else:
@@ -128,10 +143,10 @@ def init_Classification(D):
     return initClassification
 
 
-def lock_Classification(initClassification):
+def lock_Classification(D, initClassification):
     lockClassification = LockClassification()
     s = []
-    for m in initClassification.locks:
+    for m in D.locks:
         if initClassification.indegree[m] == 0 and initClassification.outdegree[m] == 0:
             lockClassification.independentSet.append(m)
         else:
@@ -142,7 +157,7 @@ def lock_Classification(initClassification):
     while s:
         m = s.pop()
         if initClassification.indegree[m] == 0:
-            for n in initClassification.locks:
+            for n in D.locks:
                 if n == m:
                     continue
                 if initClassification.indegree[n] != 0:
@@ -153,7 +168,7 @@ def lock_Classification(initClassification):
                 initClassification.outdegree[m] -= initClassification.edgesFromTo[m][n]
                 initClassification.edgesFromTo[m][n] = 0
         if initClassification.outdegree[m] == 0:
-            for n in initClassification.locks:
+            for n in D.locks:
                 if n == m:
                     continue
                 if initClassification.outdegree[n] != 0:                        
@@ -164,7 +179,7 @@ def lock_Classification(initClassification):
                 initClassification.indegree[m] -= initClassification.edgesFromTo[n][m]
                 initClassification.edgesFromTo[n][m] = 0
 
-    for m in initClassification.locks:
+    for m in D.locks:
         if (m not in lockClassification.independentSet and
             m not in lockClassification.intermediateSet and
                 m not in lockClassification.innerSet):
@@ -172,30 +187,18 @@ def lock_Classification(initClassification):
 
     return lockClassification
 
-def print_LockDependencyRelation(lockDependencyRelation):
-    print("LockDependencyRelation:")
-    for d in lockDependencyRelation:
-        d.print()
-        print(", ", end="")
-    print("\n")
+def lock_Reduction(D):
+    pass
 
-def print_InitClassification(initClassification):
-    print("Init Classification:")
-    initClassification.print()
-    print("")
-
-def print_LockClassification(lockClassification):
-    print("Lock Classification")
-    lockClassification.print()
 
 traceFilename = sys.argv[1]
 lockActions = traceFileReader.read_Trace_File_Lines(traceFilename)
 
 lockDependencyRelation = create_LockDependencyRelation(lockActions)
-print_LockDependencyRelation(lockDependencyRelation)
+lockDependencyRelation.print()
 
 initClassification = init_Classification(lockDependencyRelation)
-print_InitClassification(initClassification)
+initClassification.print()
 
-lockClassification = lock_Classification(initClassification)
-print_LockClassification(lockClassification)
+lockClassification = lock_Classification(lockDependencyRelation, initClassification)
+lockClassification.print()
