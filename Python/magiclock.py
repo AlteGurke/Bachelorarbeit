@@ -99,7 +99,7 @@ def mode(m, D):
     for d in D:
         if d.lockObjectName != m:
             continue
-        if thread == "":
+        if thread == None:
             thread = d.threadName
         elif d.threadName == thread:
             continue
@@ -139,27 +139,30 @@ def lock_Classification(initClassification):
                 lockClassification.intermediateSet.append(m)
                 s.append(m)
 
-    while len(s) > 0:
+    while s:
         m = s.pop()
-        if initClassification.indegree(m) == 0:
+        if initClassification.indegree[m] == 0:
             for n in initClassification.locks:
                 if n == m:
                     continue
-                initClassification.indegree[n] -= initClassification.edgesFromTo[m][n]
+                if initClassification.indegree[n] != 0:
+                    initClassification.indegree[n] -= initClassification.edgesFromTo[m][n]
+                    if initClassification.indegree[n] == 0:
+                        s.append(n)
+                        lockClassification.innerSet.append(n)
+                initClassification.outdegree[m] -= initClassification.edgesFromTo[m][n]
                 initClassification.edgesFromTo[m][n] = 0
-                if initClassification.indegree(n) == 0:
-                    s.append(n)
-                    lockClassification.innerSet.append(n)
         if initClassification.outdegree[m] == 0:
             for n in initClassification.locks:
                 if n == m:
                     continue
-                initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
+                if initClassification.outdegree[n] != 0:                        
+                    initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
+                    if initClassification.outdegree[n] == 0:
+                        s.append(n)
+                        lockClassification.innerSet.append(n)
                 initClassification.indegree[m] -= initClassification.edgesFromTo[n][m]
                 initClassification.edgesFromTo[n][m] = 0
-                if initClassification.outdegree(n) == 0:
-                    s.append(n)
-                    lockClassification.innerSet.append(n)
 
     for m in initClassification.locks:
         if (m not in lockClassification.independentSet and
@@ -169,22 +172,30 @@ def lock_Classification(initClassification):
 
     return lockClassification
 
+def print_LockDependencyRelation(lockDependencyRelation):
+    print("LockDependencyRelation:")
+    for d in lockDependencyRelation:
+        d.print()
+        print(", ", end="")
+    print("\n")
+
+def print_InitClassification(initClassification):
+    print("Init Classification:")
+    initClassification.print()
+    print("")
+
+def print_LockClassification(lockClassification):
+    print("Lock Classification")
+    lockClassification.print()
 
 traceFilename = sys.argv[1]
 lockActions = traceFileReader.read_Trace_File_Lines(traceFilename)
+
 lockDependencyRelation = create_LockDependencyRelation(lockActions)
+print_LockDependencyRelation(lockDependencyRelation)
+
 initClassification = init_Classification(lockDependencyRelation)
+print_InitClassification(initClassification)
+
 lockClassification = lock_Classification(initClassification)
-
-print("LockDependencyRelation:")
-for d in lockDependencyRelation:
-    d.print()
-    print(", ", end="")
-print("\n")
-
-print("Init Classification:")
-initClassification.print()
-print("")
-
-print("Lock Classification")
-lockClassification.print()
+print_LockClassification(lockClassification)
