@@ -75,7 +75,7 @@ class LockDependencyRelation(object):
     def add(self, lockDependency):
         self.lockDependencies.append(lockDependency)
         self.locks.add(lockDependency.lockObjectName)
-    
+
     def print(self):
         print("\nLockDependencyRelation:")
         for d in self.lockDependencies:
@@ -171,7 +171,7 @@ def lock_Classification(D, initClassification):
             for n in D.locks:
                 if n == m:
                     continue
-                if initClassification.outdegree[n] != 0:                        
+                if initClassification.outdegree[n] != 0:
                     initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
                     if initClassification.outdegree[n] == 0:
                         s.append(n)
@@ -187,6 +187,7 @@ def lock_Classification(D, initClassification):
 
     return lockClassification
 
+
 def lock_Reduction(D, initClassification):
     lockClassification = lock_Classification(D, initClassification)
     lockClassification.print()
@@ -201,12 +202,14 @@ def lock_Reduction(D, initClassification):
                 if initClassification.edgesFromTo[n][m] != 0:
                     initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
                     initClassification.edgesFromTo[n][m] = 0
-    
-    projectedD = get_LockDependencyRelation_For(D, lockClassification.cyclicSet)
+
+    projectedD = get_LockDependencyRelation_For(
+        D, lockClassification.cyclicSet)
     if projectedD.lockDependencies != D.lockDependencies:
         return lock_Reduction(projectedD, initClassification)
 
     return lockClassification
+
 
 def get_LockDependencyRelation_For(D, cyclicSet):
     lockDependencyRelation = LockDependencyRelation()
@@ -216,6 +219,33 @@ def get_LockDependencyRelation_For(D, cyclicSet):
             lockDependencyRelation.add(d)
 
     return lockDependencyRelation
+
+
+def visit_Edges_From(cyclicSet, edgesFromTo, visited, m, dc):
+    if visited[m] == False:
+        if m not in dc:
+            dc.append(m)
+        visited[m] = True
+        for n in cyclicSet:
+            if edgesFromTo[m][n] != 0:
+                visit_Edges_From(cyclicSet, edgesFromTo, visited, n, dc)
+
+
+def disjoint_Components_Finder(cyclicSet, edgesFromTo):
+    dcs = set()
+    dc = []
+    visited = {}
+
+    for m in cyclicSet:
+        visited[m] = False
+
+    for m in cyclicSet:
+        if visited[m] == False:
+            visit_Edges_From(cyclicSet, edgesFromTo, visited, m, dc)
+            dcs.add(tuple(dc))
+            dc = []
+
+    return dcs
 
 
 traceFilename = sys.argv[1]
@@ -230,3 +260,8 @@ initClassification.print()
 lockClassification = lock_Reduction(lockDependencyRelation, initClassification)
 print("\nLock classification Result:")
 lockClassification.print()
+
+disjointComponents = disjoint_Components_Finder(
+    lockClassification.cyclicSet, initClassification.edgesFromTo)
+print("\nDisjoint Components:")
+print(disjointComponents)
