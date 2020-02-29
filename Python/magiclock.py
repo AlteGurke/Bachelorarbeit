@@ -70,11 +70,13 @@ class LockDependency(object):
 class LockDependencyRelation(object):
     def __init__(self):
         self.locks = set()
+        self.threads = set()
         self.lockDependencies = []
 
     def add(self, lockDependency):
         self.lockDependencies.append(lockDependency)
         self.locks.add(lockDependency.lockObjectName)
+        self.threads.add(lockDependency.threadName)
 
     def print(self):
         print("\nLockDependencyRelation:")
@@ -208,7 +210,7 @@ def lock_Reduction(D, initClassification):
     if projectedD.lockDependencies != D.lockDependencies:
         return lock_Reduction(projectedD, initClassification)
 
-    return lockClassification
+    return lockClassification, projectedD
 
 
 def get_LockDependencyRelation_For(D, cyclicSet):
@@ -248,6 +250,43 @@ def disjoint_Components_Finder(cyclicSet, edgesFromTo):
     return dcs
 
 
+def find_Equal_Dependency_Group(Group, D, d):
+    for di in D:
+        if di == d:
+            return Group[di]
+    return []
+
+
+def DFS_Traverse(t, s, d):
+    s.append(d)
+
+
+def cycle_detection(dc, D):
+    Group = {}
+    isTraversed = {}
+    Di = {}
+
+    for t in D.threads:
+        isTraversed[t] = False
+        Di[t] = []
+
+    for t in D.threads:
+        for d in D.lockDependencies:
+            if d.lockObjectName in dc and d.currentlyOwnedLockObjectNames:
+                g = find_Equal_Dependency_Group(Group, Di[t], d)
+                if g:
+                    g.add(d)
+                else:
+                    Di[t].append(d)
+                    Group[d] = []
+
+    s = []
+    for t in D.threads:
+        for d in Di[t]:
+            isTraversed[t] = True
+            DFS_Traverse(t, s, d)
+
+
 traceFilename = sys.argv[1]
 lockActions = traceFileReader.read_Trace_File_Lines(traceFilename)
 
@@ -257,11 +296,21 @@ lockDependencyRelation.print()
 initClassification = init_Classification(lockDependencyRelation)
 initClassification.print()
 
-lockClassification = lock_Reduction(lockDependencyRelation, initClassification)
-print("\nLock classification Result:")
-lockClassification.print()
+lockClassification, lockDependencyRelation = lock_Reduction(
+    lockDependencyRelation, initClassification)
+print("\nLock reduction Result:")
+print("Cyclic-set:")
+print(lockClassification.cyclicSet)
+lockDependencyRelation.print()
 
 disjointComponents = disjoint_Components_Finder(
     lockClassification.cyclicSet, initClassification.edgesFromTo)
 print("\nDisjoint Components:")
 print(disjointComponents)
+
+potentialDeadlocks = set()
+for dc in disjointComponents:
+    potentialDeadlocks.add(cycle_detection(dc, lockDependencyRelation))
+
+print("\nPotential Deadlocks:")
+print(potentialDeadlocks)
