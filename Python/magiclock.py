@@ -202,11 +202,20 @@ def lock_Reduction(D, initClassification):
                     initClassification.outdegree[n] -= initClassification.edgesFromTo[n][m]
                     initClassification.edgesFromTo[n][m] = 0
     
-    projectedD = D
-    #if projectedD != D:
-    #    return lock_Reduction(projectedD, initClassification)
+    projectedD = get_LockDependencyRelation_For(D, lockClassification.cyclicSet)
+    if projectedD.lockDependencies != D.lockDependencies:
+        return lock_Reduction(projectedD, initClassification)
 
     return lockClassification
+
+def get_LockDependencyRelation_For(D, cyclicSet):
+    lockDependencyRelation = LockDependencyRelation()
+
+    for d in D.lockDependencies:
+        if d.lockObjectName in cyclicSet:
+            lockDependencyRelation.add(d)
+
+    return lockDependencyRelation
 
 
 traceFilename = sys.argv[1]
