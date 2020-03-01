@@ -70,13 +70,14 @@ class LockDependency(object):
 class LockDependencyRelation(object):
     def __init__(self):
         self.locks = set()
-        self.threads = set()
+        self.threads = []
         self.lockDependencies = []
 
     def add(self, lockDependency):
         self.lockDependencies.append(lockDependency)
         self.locks.add(lockDependency.lockObjectName)
-        self.threads.add(lockDependency.threadName)
+        if lockDependency.threadName not in self.threads:
+            self.threads.append(lockDependency.threadName)
 
     def print(self):
         print("\nLockDependencyRelation:")
@@ -102,11 +103,9 @@ def create_LockDependencyRelation(lockActions):
     lockDependencyRelation = LockDependencyRelation()
     ownedLockObjectsByThread = {}
     for lockAction in lockActions:
-        ownedLockObjects = get_OwnedLockObjects(
-            lockAction.threadName, ownedLockObjectsByThread)
+        ownedLockObjects = get_OwnedLockObjects(lockAction.threadName, ownedLockObjectsByThread)
         if lockAction.actionType == traceFileReader.LockActionType.LOCK:
-            lockDependencyRelation.add(LockDependency(
-                lockAction.threadName, lockAction.lockObjectName, ownedLockObjects.copy()))
+            lockDependencyRelation.add(LockDependency(lockAction.threadName, lockAction.lockObjectName, ownedLockObjects.copy()))
             ownedLockObjects.append(lockAction.lockObjectName)
         elif lockAction.actionType == traceFileReader.LockActionType.UNLOCK:
             remove_From_List(lockAction.lockObjectName, ownedLockObjects)
@@ -257,8 +256,44 @@ def find_Equal_Dependency_Group(Group, D, d):
     return []
 
 
-def DFS_Traverse(t, s, d):
+def is_Lock_Dependency_Chain(d):
+    if len(d) <= 1:
+        return False
+
+    for i in range(len(d) - 1):
+        if d[i].lockObjectName not in d[i + 1].currentlyOwnedLockObjectNames:
+            return False
+        for j in range(len(d)):
+            if d[i].threadName == d[j].threadName:
+                continue
+            if list(set(d[i].currentlyOwnedLockObjectNames) & set(d[j].currentlyOwnedLockObjectNames)):
+                return False
+    
+    return True
+
+
+def lock_Dependency_Chain_Is_Cyclic_Lock_Dependency_Chain(d):
+    if d[-1].lockObjectName in d[0].currentlyOwnedLockObjectNames:
+        return True
+    return False
+
+
+def DFS_Traverse(i, s, d, k, isTraversed, Di):
     s.append(d)
+    for j in k[k.index(i) + 1:]:
+        if isTraversed[j] == True:
+            continue
+        for di in Di[j]:
+            o = s.copy()
+            o.append(di)
+            if is_Lock_Dependency_Chain(o):
+                if lock_Dependency_Chain_Is_Cyclic_Lock_Dependency_Chain(o):
+                    pass
+                    #reportCycle()
+                else:
+                    isTraversed[j] = True
+                    DFS_Traverse(i, s, di, k, isTraversed, Di)
+                    isTraversed[j] = False
 
 
 def cycle_detection(dc, D):
@@ -270,21 +305,20 @@ def cycle_detection(dc, D):
         isTraversed[t] = False
         Di[t] = []
 
-    for t in D.threads:
-        for d in D.lockDependencies:
-            if d.lockObjectName in dc and d.currentlyOwnedLockObjectNames:
-                g = find_Equal_Dependency_Group(Group, Di[t], d)
-                if g:
-                    g.add(d)
-                else:
-                    Di[t].append(d)
-                    Group[d] = []
+    for d in D.lockDependencies:
+        if d.lockObjectName in dc and d.currentlyOwnedLockObjectNames:
+            g = find_Equal_Dependency_Group(Group, Di[d.threadName], d)
+            if g:
+                g.add(d)
+            else:
+                Di[d.threadName].append(d)
+                Group[d] = []
 
     s = []
     for t in D.threads:
         for d in Di[t]:
             isTraversed[t] = True
-            DFS_Traverse(t, s, d)
+            DFS_Traverse(t, s, d, D.threads, isTraversed, Di)
 
 
 traceFilename = sys.argv[1]
