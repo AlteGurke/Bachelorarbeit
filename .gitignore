@@ -21,4 +21,5 @@ cpp/main.out
 cpp/main.out.dSYM/Contents/Info.plist
 cpp/main.out.dSYM/Contents/Resources/DWARF/main.out
 .vscode/.ropeproject/objectdb
-Python/__pycache__/traceFileReader.cpython-37.pyc
+Python/__pycache__
+Python/magiclockLib/__pycache__
