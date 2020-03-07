@@ -60,10 +60,11 @@ class LockDependency(object):
 
     def print(self):
         print("(", end="")
-        print(str(self.threadName) + "," +
-              str(self.lockObjectName) + ",{", end="")
+        print(str(self.threadName) + "," + str(self.lockObjectName) + ",{", end="")
         for x in self.currentlyOwnedLockObjectNames:
-            print(str(x) + ",", end="")
+            print(str(x), end="")
+            if x != self.currentlyOwnedLockObjectNames[-1]:
+                print(",", end="")
         print("})", end="")
 
 
@@ -83,7 +84,8 @@ class LockDependencyRelation(object):
         print("\nLockDependencyRelation:")
         for d in self.lockDependencies:
             d.print()
-            print(", ", end="")
+            if d != self.lockDependencies[-1]:
+                print(", ", end="")
         print("\nLocks:")
         print(self.locks)
 
@@ -278,7 +280,17 @@ def lock_Dependency_Chain_Is_Cyclic_Lock_Dependency_Chain(d):
     return False
 
 
-def DFS_Traverse(i, s, d, k, isTraversed, Di):
+def reportCycle(o, size, equCycle, Group):
+    if size == len(o):
+        potentialDeadlocks.append(equCycle.copy())
+    else:
+        for d in Group[o[size]]:
+            equCycle.append(d)
+            reportCycle(o, size + 1, equCycle, Group)
+            equCycle.remove(d)
+
+
+def DFS_Traverse(i, s, d, k, isTraversed, Di, Group):
     s.append(d)
     for j in k[k.index(i) + 1:]:
         if isTraversed[j] == True:
@@ -288,11 +300,11 @@ def DFS_Traverse(i, s, d, k, isTraversed, Di):
             o.append(di)
             if is_Lock_Dependency_Chain(o):
                 if lock_Dependency_Chain_Is_Cyclic_Lock_Dependency_Chain(o):
-                    pass
-                    #reportCycle()
+                    equCycle = []
+                    reportCycle(o, 0, equCycle, Group)
                 else:
                     isTraversed[j] = True
-                    DFS_Traverse(i, s, di, k, isTraversed, Di)
+                    DFS_Traverse(i, s, di, k, isTraversed, Di, Group)
                     isTraversed[j] = False
 
 
@@ -313,12 +325,13 @@ def cycle_detection(dc, D):
             else:
                 Di[d.threadName].append(d)
                 Group[d] = []
+                Group[d].append(d)
 
     s = []
     for t in D.threads:
         for d in Di[t]:
             isTraversed[t] = True
-            DFS_Traverse(t, s, d, D.threads, isTraversed, Di)
+            DFS_Traverse(t, s, d, D.threads, isTraversed, Di, Group)
 
 
 traceFilename = sys.argv[1]
@@ -342,9 +355,13 @@ disjointComponents = disjoint_Components_Finder(
 print("\nDisjoint Components:")
 print(disjointComponents)
 
-potentialDeadlocks = set()
+potentialDeadlocks = []
 for dc in disjointComponents:
-    potentialDeadlocks.add(cycle_detection(dc, lockDependencyRelation))
+    cycle_detection(dc, lockDependencyRelation)
 
 print("\nPotential Deadlocks:")
-print(potentialDeadlocks)
+for potentialDeadlock in potentialDeadlocks:
+    for d in potentialDeadlock:
+        d.print()
+        print(end=" ")
+    print()
