@@ -1,4 +1,4 @@
-from . import magiclockTypes
+import magiclockLib.magiclockTypes as magiclockTypes
 
 def mode(m, D):
     thread = None
