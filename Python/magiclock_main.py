@@ -3,38 +3,40 @@ import sys
 import magiclockLib.magiclock as magiclock
 
 
-class PotentialDeadlockNode(object):
-    def __init__(self, name):
-        self.name = name
-
-
 class PotentialDeadlockEdge(object):
-    def __init__(self, fromNode, toNode):
+    def __init__(self, fromNode, toNode, text):
         self.fromNode = fromNode
         self.toNode = toNode
+        self.text = text
+
+    def print(self):
+        print("From: " + self.fromNode)
+        print("To: " + self.toNode)
+        print("Text: " + self.text)
 
 
 class PotentialDeadlockGraph(object):
-    def __init__(self, nodes, edges):
-        self.nodes = nodes
+    def __init__(self, edges):
         self.edges = edges
 
+    def print(self):
+        print("Edges:")
+        for e in self.edges:
+            e.print()
 
-def get_potential_Deadlock_Nodes():
-    nodes = []
-    edges = set()
-    graph = PotentialDeadlockGraph(nodes, edges)
+
+def get_potential_Deadlock_Nodes(traceFilename):
+    edges = []
+    graph = PotentialDeadlockGraph(edges)
+
+    potentialDeadlocks = magiclock.find_potential_Deadlocks(traceFilename)
 
     for potentialDeadlock in potentialDeadlocks:
-        for d in potentialDeadlock:
-            node = PotentialDeadlockNode(d.threadName)
-            if node not in nodes:
-                nodes.append(PotentialDeadlockNode(d.threadName))
-
         for i in range(len(potentialDeadlock) - 1):
-            edges.add(PotentialDeadlockEdge(nodes[i], nodes[i + 1]))
-        edges.add(PotentialDeadlockEdge(nodes[-1], nodes[0]))
+            edges.append(PotentialDeadlockEdge(potentialDeadlock[i].lockObjectName, potentialDeadlock[i + 1].lockObjectName, potentialDeadlock[i + 1].threadName))
+        edges.append(PotentialDeadlockEdge(potentialDeadlock[-1].lockObjectName, potentialDeadlock[0].lockObjectName, potentialDeadlock[0].threadName))
 
     return graph
 
-potentialDeadlocks = magiclock.find_potential_Deadlocks(sys.argv[1])
+if __name__ == '__main__':
+    magiclock.find_potential_Deadlocks(sys.argv[1])
