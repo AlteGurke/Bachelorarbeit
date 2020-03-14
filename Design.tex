@@ -1,5 +1,32 @@
 \section{Erzeugung der Trace-Datei}
 \label{section:Erzeugung der Trace-Datei}
+Im ersten Schritt wird eine Trace-Datei während der Laufzeit der Anwendung
+erzeugt werden. Die Datei enthält alle benötigten Informationen, um potentielle
+Deadlocks zu erkennen:
+
+\begin{enumerate}
+  \item Der genaue Zeitpunkt des Ereignisses 
+  \item Die Art des Ereignisses (Lock, Unlock)
+  \item Die Id des ausführenden Threads
+  \item Der Name des betroffenen Lockobjekts
+\end{enumerate}
+
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth]{LockTraceEntry_Design.eps}
+  \caption{UML Klassendiagramm für die benötigten Informationen der Trace-Datei}
+  \label{fig:LockTraceEntry_Design}
+\end{figure}
+
+Diese Informationen sind in der Klasse \texttt{LockTraceEntry} in 
+\cref{fig:LockTraceEntry_Design} dargestellt. Für den Zeitunkt wird der Typ 
+\texttt{chrono::time\_point} vom Typ \texttt{chrono::high\_resolution\_clock}
+verwendet. Der Typ \texttt{chrono::high\_resolution\_clock} stellt einen
+Zeitpunkt mit der höchstmöglichen Genauigkeit der jeweiligen Implementierung dar
+{TODO: Referenz auf C++11}. Für die spätere Visualisierung ist eine hohe
+Genauigkeit notwendig, um nahezu parallel aufgetretene Lock-Ereignisse
+chronologisch getrennt visualisiert werden können.
+
+
 \begin{itemize}
     \item Definition der notwendigen Informationen der Trace-Datei
     \item Aufzeigen der Herausforderungen in Bezug auf Performance und
