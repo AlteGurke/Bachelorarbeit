@@ -1,7 +1,7 @@
 \section{Erzeugung der Trace-Datei}
 \label{section:Erzeugung der Trace-Datei}
 Im ersten Schritt wird eine Trace-Datei während der Laufzeit der Anwendung
-erzeugt werden. Die Datei enthält alle benötigten Informationen, um potentielle
+erzeugt. Die Datei enthält alle benötigten Informationen, um potentielle
 Deadlocks zu erkennen:
 
 \begin{enumerate}
@@ -12,20 +12,62 @@ Deadlocks zu erkennen:
 \end{enumerate}
 
 \begin{figure}[ht]
-  \includegraphics[width=\linewidth]{LockTraceEntry_Design.eps}
+  \includegraphics[width=\linewidth]{LockTrace_Design.eps}
   \caption{UML Klassendiagramm für die benötigten Informationen der Trace-Datei}
-  \label{fig:LockTraceEntry_Design}
+  \label{fig:LockTrace_Design}
 \end{figure}
 
-Diese Informationen sind in der Klasse \texttt{LockTraceEntry} in 
-\cref{fig:LockTraceEntry_Design} dargestellt. Für den Zeitunkt wird der Typ 
+In \cref{fig:LockTrace_Design} sind die benötigten Klassen dargestellt. Die
+notwendigen Informationen für einen Trace-Eintrag werden in der Klasse
+\texttt{LockTraceEntry} gehalten. Für den Zeitunkt wird der Typ 
 \texttt{chrono::time\_point} vom Typ \texttt{chrono::high\_resolution\_clock}
 verwendet. Der Typ \texttt{chrono::high\_resolution\_clock} stellt einen
 Zeitpunkt mit der höchstmöglichen Genauigkeit der jeweiligen Implementierung dar
 {TODO: Referenz auf C++11}. Für die spätere Visualisierung ist eine hohe
 Genauigkeit notwendig, um nahezu parallel aufgetretene Lock-Ereignisse
-chronologisch getrennt visualisiert werden können.
+chronologisch getrennt visualisieren zu können. Die Klasse
+\texttt{LockTraceEntryFormatter} erstellt mit der Methode
+\texttt{FormatLogTraceEntry} aus einem \texttt{LockTraceEntry} eine
+Zeichenkette, welche einer Zeile in der Trace-Datei entspricht. Diese Klasse
+wird als Singleton implementiert, da zur Laufzeit immer nur genau eine Instanz
+benötigt wird. Die Klasse \texttt{LockTracer} stellt die Methode \texttt{Add}
+zur Verfügung, welche von der OpenPEARL Laufzeitumgebung aufgerufen wird. Mit
+Hilfe der Methode können Lock-Ereignisse erstellt werden. Die Klasse wird
+ebenfalls als Singleton implementiert, damit nur eine Instanz zur Laufzeit
+verwendet werden kann. Das Speichern der Ereignisse in die Trace-Datei ist
+kostspielig und soll daher nicht für jeden Eintrag gemacht werden. Die Klasse
+\texttt{LockTracer} reiht dazu die einzelnen Lock-Ereignisse, welche über die
+\texttt{Add} Methode hinzugefügt werden, in eine Warteschlange ein. Sobald eine
+spezifizierte Anzahl erreicht ist, wird die Warteschlange geleert und in die
+Trace-Datei geschrieben. Die Anzahl kann über die Umgebungsvariable
+\texttt{OpenPEARL\_LockTracer\_MaxEntries} spezifiziert werden. Die
+Umgebungsvariable wird bei der Initialisierung der \texttt{LockTracer}
+Implementierung ausgelesen und in der Variable \texttt{numberOfMaxEntries}
+gespeichert. Das Hinzufügen der Ereignisse in die Warteschlange kann parallel
+erfolgen und muss daher Thread sicher implementiert werden. Eine Möglichkeit
+wäre, die einzelnen Zugriffe über einen Lock zu synchronisieren. Dies würde die
+Laufzeit der Anwendung stark negativ beeinflussen. Deswegen wird eine lock freie
+Implementierung einer Warteschlange verwendet
+\autocite{Moody_Camels_Concurrentqueue}. Die Warteschlange garantiert eine
+Thread sichere Implementierung, aber keine Sortierung innerhalb der
+Warteschlange. Es kann passieren, dass Lock-Ereignisse in einer anderen
+Reihenfolge aus der Warteschlange herausgenommen werden als sie eingefügt
+wurden. Beim Auslesen der Trace-Datei muss daher anfangs eine Sortierung der
+Einträge gemäß ihres Zeitpunkts durchgeführt werden. Der Dateipfad zur
+Speicherung der Trace-Datei wird über die Umgebungsvariable
+\texttt{OpenPEARL\_LockTracer\_Path} definiert und bei der Initialisierung der
+\texttt{LockTracer} Implementierung in der Variable \texttt{filePath}
+gespeichert. Die dritte Umgebungsvariable
+\texttt{OpenPEARL\_LockTracer\_Enabled} wird zur Aktivierung der
+Trace-Funktionalität verwendet. Wenn die Umgebungsvariable gesetzt ist und den
+Wert \texttt{true} hat, wird die Trace-Funktionalität aktiviert. Ansonsten
+werden alle Aufrufe zur \texttt{Add} Methode direkt über eine \texttt{return}
+Anweisung beendet. Dadurch wird die Laufzeit der Anwendung bei deaktivierter
+Trace-Funktionalität nicht beeinflusst.
 
+In der OpenPEARL Laufzeitumgebung werden die \textit{REQUEST} und
+\textit{RELEASE} Anweisungen in der Semaphore Implementierung unter
+runtime/common/Semaphore.cc implementiert.
 
 \begin{itemize}
     \item Definition der notwendigen Informationen der Trace-Datei
@@ -75,12 +117,6 @@ chronologisch getrennt visualisiert werden können.
     Mindestgröße für i beträgt 32 + 16 + 16 = 64 Bit. Die Warteschlange benötigt
     maximal daher 64 Bit $\cdot$ x zusätzlichen Speicher.
 \end{itemize}
-
-\begin{figure}[ht]
-  \includegraphics[width=\linewidth]{LockTrace_Design.eps}
-  \caption{UML Klassendiagramm für die Erzeugung der Trace-Datei}
-  \label{fig:LockTrace_Design}
-\end{figure}
 
 \section{Analysieren der Trace-Datei}
 \label{section:Analysieren der Trace-Datei}

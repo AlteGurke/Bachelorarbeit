@@ -1,0 +1,77 @@
+\startcontents
+\chapter{OpenPEARL}
+\thispagestyle{fancy}
+\setminted{fontsize=\small,baselinestretch=1,breaklines}
+\inputminted{cpp}{./OpenPEARL/Semaphore.cc}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Angepasste Semaphore.cc Implementierung der OpenPEARL Laufzeitumgebung} 
+\endgroup
+
+\inputminted{bash}{./OpenPEARL/Files.common}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Angepasste Files.common der OpenPEARL Laufzeitumgebung} 
+\endgroup
+
+\stopcontents
+
+\startcontents
+\chapter{Python}
+\thispagestyle{fancy}
+\setminted{fontsize=\small,baselinestretch=1}
+\inputminted{python}{./Python/traceFileReader.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{traceFileReader.py: Implementierung des Trace File Readers} 
+\endgroup
+
+\inputminted{python}{./Python/generateTimeline.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{generateTimeline.py: Skript zur chronologischen Darstellung der Lock-Ereignisse} 
+\endgroup
+
+\inputminted{python}{./Python/magiclockLib/magicLockTypes.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{magiclockLib/magicLockTypes.py: Sammlung von Klassen die von der Magiclock Implementierung verwendet werden} 
+\endgroup
+
+\inputminted{python}{./Python/magiclockLib/lockReduction.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{magiclockLib/lockReduction.py: Implementierung des Magiclock-Algorithmus zur Reduzierung von Locks} 
+\endgroup
+
+\inputminted{python}{./Python/magiclockLib/cycleDetection.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{magiclockLib/cycleDetection.py: Implementierung des Magiclock-Algorithmus zur Zyklenerkennung} 
+\endgroup
+
+\inputminted{python}{./Python/magiclockLib/magiclock.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{magiclockLib/magiclock.py: Implementierung des Magiclock-Algorithmus} 
+\endgroup
+
+\inputminted{python}{./Python/generateDeadlockGraph.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{generateDeadlockGraph.py: Skript zur Erkennung und Darstellung von potentiellen Deadlocks} 
+\endgroup
+
+\inputminted{python}{./Python/benchmark_cpu.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{benchmark\_cpu.py: Skript zur Messung der CPU-Laufzeit einer OpenPEARL Anwendung} 
+\endgroup
+
+\inputminted{python}{./Python/benchmark_memory.py}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{benchmark\_memory.py: Skript zur Messung der Speicherauslastung einer OpenPEARL Anwendung} 
+\endgroup
+
+\stopcontents

@@ -1,0 +1,122 @@
+#/*
+# [A "BSD license"]
+# Copyright (c) 2012-2017 Rainer Mueller
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation aor other materials provided with the distribution.
+# 3. The name of the author may not be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# pearl runtime system portable components
+
+# list of files which are independend of the target platform
+#
+# give the path name relative to this directory. The target specific 
+# makefile will add a prefix with the relatove path corresponding to
+# the target specific makefile
+
+CXX_COMMON = \
+	Array.cc \
+	Bolt.cc \
+	LogFile.cc\
+	Log.cc \
+	Clock.cc  \
+	Duration.cc  \
+	PutDuration.cc GetDuration.cc \
+	Signals.cc \
+	ScheduleSignalAction.cc \
+	Fixed63.cc \
+	Fixed.cc \
+	Prio.cc \
+	CharSlice.cc \
+	Character.cc RefChar.cc \
+        compare.cc \
+	Interrupt.cc \
+	Source.cc \
+	RefCharSink.cc RefCharSource.cc \
+	SystemDationNBSource.cc SystemDationNBSink.cc \
+	PutClock.cc GetClock.cc \
+	PutBitString.cc \
+	GetHelper.cc PutHelper.cc \
+	TaskWhenLinks.cc \
+	TaskCommon.cc \
+	TaskList.cc \
+	TaskMonitor.cc \
+	MutexCommon.cc CSemaCommon.cc \
+	Semaphore.cc PriorityQueue.cc \
+	Rst.cc \
+	SystemDation.cc \
+	SystemDationNB.cc \
+	DationRW.cc \
+	IOFormats.cc \
+	IOJob.cc \
+	DationPG.cc \
+	StringDationConvert.cc \
+	DationTS.cc \
+	UserDationNB.cc UserDation.cc \
+	TFUBuffer.cc \
+	DationDim.cc  DationDim1.cc \
+	DationDim2.cc DationDim3.cc \
+	FloatHelper.cc \
+	SoftInt.cc \
+	Control.cc \
+	ConsoleCommon.cc \
+	FullDuplexDationAbortNB.cc\
+	SampleBasicDation.cc \
+	lockTracer/LockTracer.cc lockTracer/LockTraceEntry.cc \
+	lockTracer/LockTraceEntryFormatter.cc
+
+#CONFIG_HAC_I2C must be set manually by the makefile of
+# the platform, which is build now
+ifeq ($(CONFIG_HAS_I2C),y)
+   HDR_COMMON += I2CProvider.h
+   CXX_COMMON += LM75.cc
+   XML_COMMON += LM75.xml
+   CXX_COMMON += ADS1015SE.cc
+   XML_COMMON += ADS1015SE.xml
+   CXX_COMMON += PCF8574Pool.cc PCF8574In.cc PCF8574Out.cc
+   XML_COMMON += PCF8574In.xml PCF8574Out.xml
+   CXX_COMMON += BME280.cc bosch/bme280.c
+   XML_COMMON += BME280.xml
+   CXX_COMMON += PCF9685.cc PCF9685Channel.cc
+   XML_COMMON += PCF9685.xml PCF9685Channel.xml
+endif
+
+XML_COMMON += Log.xml LogFile.xml SampleBasicDation.xml SoftInt.xml
+
+HDR_COMMON = $(CXX_COMMON:%.cc=%.h) \
+	BitString.h \
+	BitSlice.h \
+	GetBitString.h \
+	Sink.h RefCharSink.h \
+	PutFixed.h GetFixed.h \
+	Dation.h \
+	Device.h UserDation.h \
+	PutCharacter.h \
+	Float.h \
+	TaskTimerCommon.h \
+	Ref.h
+
+
+ifeq ($(CONFIG_CANSUPPORT),y)
+   HDR_COMMON += Can2AMessage.h
+endif
