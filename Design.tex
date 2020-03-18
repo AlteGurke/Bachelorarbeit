@@ -1,8 +1,25 @@
+\section{Übersicht}
+\label{section:Übersicht}
+Die OpenPEARL Laufzeitumgebung wird um eine Trace-Funktionalität für
+\textit{SEMA} Objekte erweitert. Dazu wird die \textit{SEMA} Implementierung in
+der OpenPEARL Laufzeitumgebung angepasst. Diese Trace-Funktionalität wird über
+eine Umgebungsvariable gesteuert. Das Schreiben auf die Festplatte ist sehr
+zeitintensiv, deswegen werden Logeinträge zwischengespeichert und erst bei der
+Erreichung eines definierten Werts in die Trace-Datei geschrieben. Dieser Wert
+kann ebenfalls über eine Umgebungsvariable definiert werden. 
+
+Die erzeugte Trace-Datei dient als Eingabe für die Anwendung zur Generierung und
+Darstellung der chronologischen Verwendung der \textit{SEMA} Objekte.
+
+Zusätzlich wird die Trace-Datei mit Hilfe des MagicLock\footnote{Siehe
+\cref{section:MagicLock}} Algorithmus nach potentiellen Deadlocks durchsucht.
+Potentielle Deadlocks werden anschließend als gerichteter Graph dargestellt.
+
+
 \section{Erzeugung der Trace-Datei}
 \label{section:Erzeugung der Trace-Datei}
-Im ersten Schritt wird eine Trace-Datei während der Laufzeit der Anwendung
-erzeugt. Die Datei enthält alle benötigten Informationen, um potentielle
-Deadlocks zu erkennen:
+Die Trace-Datei enthält alle benötigten Informationen, um potentielle Deadlocks
+zu erkennen:
 
 \begin{enumerate}
   \item Der genaue Zeitpunkt des Ereignisses 
@@ -13,7 +30,7 @@ Deadlocks zu erkennen:
 
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{LockTrace_Design.eps}
-  \caption{UML Klassendiagramm für die benötigten Informationen der Trace-Datei}
+  \caption{UML Klassendiagramm für Trace-Funktionalität}
   \label{fig:LockTrace_Design}
 \end{figure}
 
@@ -67,67 +84,35 @@ Trace-Funktionalität nicht beeinflusst.
 
 In der OpenPEARL Laufzeitumgebung werden die \textit{REQUEST} und
 \textit{RELEASE} Anweisungen in der Semaphore Implementierung unter
-runtime/common/Semaphore.cc implementiert.
+runtime/common/Semaphore.cc implementiert. Bei einer Erhöhung oder einer
+Verringerung eines Semaphors muss ein Logeintrag erzeugt werden. Bei einer
+Erhöhung muss der \texttt{LockTraceEntryType} \texttt{Unlock} bei einer
+Verringerung der \texttt{LockTraceEntryType} \texttt{Lock} verwendet werden. Die
+Klassen für die Implementierung des LockTracers müssen bei der Kompilierung der
+OpenPEARL Laufzeitumgebung mit einbezogen werden. In der Datei
+runtime/common/Files.common sind alle Dateien aufgeführt, welche bei der
+Kompilierung einbezogen werden. Dort müssen die Dateien, die aus
+\cref{fig:LockTrace_Design} entstehen eingetragen werden.
 
-\begin{itemize}
-    \item Definition der notwendigen Informationen der Trace-Datei
-    \item Aufzeigen der Herausforderungen in Bezug auf Performance und
-    Speicherauslastung
-  \item Anforderungen definieren:
-  \begin{itemize}
-    \item Laufzeit des Programms soll sich um maximal x\% erhöhen
-    \item Speicherauslastung des Programms soll sich um maximal y\% erhöhen
-  \end{itemize}
-    \item Aktuelle Idee: Das Erstellen der Trace-Datei wird in der
-    Laufzeitumgebung umgesetzt. Die Implementierung erfolgt in einer eigenen
-    Klasse und kann aktiviert oder deaktiviert sein. Die Klasse wird von der
-    Semaphore Implementierung der Laufzeitumgebung verwendet werden. Beim Aufruf
-    von Request oder Release wird geprüft, ob die Informationen geloggt werden
-    sollen. Falls das Logging aktiviert ist, werden die Informationen in eine
-    Warteschlange eingereiht. Die Warteschlange wird eine Datenstruktur
-    verwendet, welche das Hinzufügen, Entfernen und das Abfragen der aktuellen
-    Größe mit der Komplexität O(1) implementiert. Bei jeder x-ten Aktivierung,
-    wobei x die maximale Größe der Warteschlange ist, werden alle vorhanden
-    Einträge aus der Warteschlange entfernt und in die Trace-Datei geschrieben.
-    Die Liste wird für jeden Eintrag einmal durchlaufen. Die Laufzeit beträgt
-    daher O(x). Das Öffnen und Schließen der Trace-Datei hat die Laufzeit y. Das
-    Schreiben eines Logeintrags, also eine Zeile in die Trace-Datei, hat die
-    Laufzeit z. Damit hat jeder x-te Request/Release Aufruf die Laufzeit O(y + x
-    $\cdot$ z). Somit hat jeder Request/Release Aufruf die Laufzeit O($\frac{y +
-    x \cdot z}{x}$).
-
-    Zusätzlich zu jedem x-ten Request/Release Aufruf das Schreiben in die
-    Trace-Datei auch zeitich angestoßen werden. Zum Beispiel sollte alle 60
-    Sekunden oder nach x Aufrufen die Warteschlange geleert und in die
-    Trace-Datei geschrieben werden. Bei jedem x-ten Request/Release Aufruf muss
-    der Timer der Warteschlange wieder zurückgesetzt werden. Bedeutet wenn nach
-    50 Sekunden der x-te Aufruf kommt, muss der Timer wieder von vorne beginnen,
-    damit die Trace-Datei nicht nach 10 Sekunden erneut beschrieben wird.
-
-    Der zusätzliche Speicherbedarf beträgt $x \cdot i$, wobei i die Größe der
-    Information eines Logeintrags entspricht. Ein Logeintrag benötigt die
-    Informationen:
-    \begin{enumerate}
-      \item Aktion (Thread Start, Request, Release) => 32 Bit (enum)
-      \item ID des Threads => 16-Bit Ganzzahl (maximale Thread Id für Linux
-      beträgt 32768) theoretisch über 15 Bit abbildbar, da immer positiv
-      \item Name des Lockobjekts => 16-Bit Ganzzahl (theoretisch über 11 Bit
-      Ganzzahl abbildbar) (maximal Variablennamenlänge für C++ beträgt 2048)
-    \end{enumerate}
-    Mindestgröße für i beträgt 32 + 16 + 16 = 64 Bit. Die Warteschlange benötigt
-    maximal daher 64 Bit $\cdot$ x zusätzlichen Speicher.
-\end{itemize}
 
 \section{Analysieren der Trace-Datei}
 \label{section:Analysieren der Trace-Datei}
-\begin{itemize}
-  \item Externes Programm geschrieben in Java
-  \item Anforderungen definieren:
-  \begin{itemize}
-    \item Darstellung der Trace-Datei (welcher Thread hat welches
-    Synchronisationsmittel wann genommen und wieder freigegeben) 
-  \end{itemize}
-\end{itemize}
+Als Eingabe dient die in \cref{section:Erzeugung der Trace-Datei} erzeugte
+Trace-Datei. Die chronologische Darstellung wird, wie in
+\cref{fig:Timeline_Example} skizziert, über einen zwei dimensionalen Graphen
+realisiert. Die Ordinate bildet die Zeit ab, wobei nur das Delta in
+Mikrosekunden zwischen den einzelnen Ereignissen dargestellt wird. Für jeden
+Thread wird ein Eintrag auf der Abszisse gemacht. Es wird zwischen zwei
+Ereignissen unterschieden. Wird ein \texttt{SEMA} Objekt in Besitz genommen,
+wird ein roter, für das Freigeben eines \texttt{SEMA} Objekts ein grüner, Kreis
+gezeichnet. Die Beschriftung eines Kreises enthält den Namen des \texttt{SEMA}
+Objekts.
+
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth]{Timeline_Example.eps}
+  \caption{Visualisierung der chronologischen Verwendung von \textit{SEMA} Objekten}
+  \label{fig:Timeline_Example}
+\end{figure}
 
 \section{Erweiterung: Potenzielle Deadlocks}
 \label{section:Erweiterung: Potenzielle Deadlocks}
@@ -136,4 +121,54 @@ runtime/common/Semaphore.cc implementiert.
   \item Es sollen potenzielle Deadlocks mit Hilfe des aus \cref{section:MagicLock}
  beschriebenen Verfahrens bestimmt werden
   \item Potenzielle Deadlocks sollen als gerichtete Graphen visualisiert werden
+\end{itemize}
+
+
+\begin{itemize}
+  \item Definition der notwendigen Informationen der Trace-Datei
+  \item Aufzeigen der Herausforderungen in Bezug auf Performance und
+  Speicherauslastung
+\item Anforderungen definieren:
+\begin{itemize}
+  \item Laufzeit des Programms soll sich um maximal x\% erhöhen
+  \item Speicherauslastung des Programms soll sich um maximal y\% erhöhen
+\end{itemize}
+  \item Aktuelle Idee: Das Erstellen der Trace-Datei wird in der
+  Laufzeitumgebung umgesetzt. Die Implementierung erfolgt in einer eigenen
+  Klasse und kann aktiviert oder deaktiviert sein. Die Klasse wird von der
+  Semaphore Implementierung der Laufzeitumgebung verwendet werden. Beim Aufruf
+  von Request oder Release wird geprüft, ob die Informationen geloggt werden
+  sollen. Falls das Logging aktiviert ist, werden die Informationen in eine
+  Warteschlange eingereiht. Die Warteschlange wird eine Datenstruktur
+  verwendet, welche das Hinzufügen, Entfernen und das Abfragen der aktuellen
+  Größe mit der Komplexität O(1) implementiert. Bei jeder x-ten Aktivierung,
+  wobei x die maximale Größe der Warteschlange ist, werden alle vorhanden
+  Einträge aus der Warteschlange entfernt und in die Trace-Datei geschrieben.
+  Die Liste wird für jeden Eintrag einmal durchlaufen. Die Laufzeit beträgt
+  daher O(x). Das Öffnen und Schließen der Trace-Datei hat die Laufzeit y. Das
+  Schreiben eines Logeintrags, also eine Zeile in die Trace-Datei, hat die
+  Laufzeit z. Damit hat jeder x-te Request/Release Aufruf die Laufzeit O(y + x
+  $\cdot$ z). Somit hat jeder Request/Release Aufruf die Laufzeit O($\frac{y +
+  x \cdot z}{x}$).
+
+  Zusätzlich zu jedem x-ten Request/Release Aufruf das Schreiben in die
+  Trace-Datei auch zeitich angestoßen werden. Zum Beispiel sollte alle 60
+  Sekunden oder nach x Aufrufen die Warteschlange geleert und in die
+  Trace-Datei geschrieben werden. Bei jedem x-ten Request/Release Aufruf muss
+  der Timer der Warteschlange wieder zurückgesetzt werden. Bedeutet wenn nach
+  50 Sekunden der x-te Aufruf kommt, muss der Timer wieder von vorne beginnen,
+  damit die Trace-Datei nicht nach 10 Sekunden erneut beschrieben wird.
+
+  Der zusätzliche Speicherbedarf beträgt $x \cdot i$, wobei i die Größe der
+  Information eines Logeintrags entspricht. Ein Logeintrag benötigt die
+  Informationen:
+  \begin{enumerate}
+    \item Aktion (Thread Start, Request, Release) => 32 Bit (enum)
+    \item ID des Threads => 16-Bit Ganzzahl (maximale Thread Id für Linux
+    beträgt 32768) theoretisch über 15 Bit abbildbar, da immer positiv
+    \item Name des Lockobjekts => 16-Bit Ganzzahl (theoretisch über 11 Bit
+    Ganzzahl abbildbar) (maximal Variablennamenlänge für C++ beträgt 2048)
+  \end{enumerate}
+  Mindestgröße für i beträgt 32 + 16 + 16 = 64 Bit. Die Warteschlange benötigt
+  maximal daher 64 Bit $\cdot$ x zusätzlichen Speicher.
 \end{itemize}
