@@ -13,9 +13,6 @@ namespace pearlrt {
         std::string prefix = "";
         switch (logTraceEntry.get_EntryType())
         {
-            case LockTraceEntryType::ThreadStart:
-                prefix = "s";
-                break;
             case LockTraceEntryType::Lock:
                 prefix = "l";
                 break;

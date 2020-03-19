@@ -1,7 +1,8 @@
 \startcontents
 \chapter{OpenPEARL}
 \thispagestyle{fancy}
-\setminted{fontsize=\small,baselinestretch=1,breaklines}
+\setminted{fontsize=\small,baselinestretch=1,breaklines,breakanywhere}
+
 \inputminted{cpp}{./OpenPEARL/Semaphore.cc}
 \begingroup
     \captionsetup{type=listing}
@@ -17,9 +18,59 @@
 \stopcontents
 
 \startcontents
+\chapter{C++}
+\thispagestyle{fancy}
+\setminted{fontsize=\small,baselinestretch=1,breaklines,breakanywhere}
+
+\inputminted{cpp}{./cpp/LockTraceEntry.h}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Header-Datei der Repräsentation eines Logeintrags} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTraceEntry.cc}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Implementierung der Repräsentation eines Logeintrags} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTraceEntryFormatter.h}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Header-Datei des Formatieres für Logeinträge} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTraceEntryFormatter.cc}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Implementierung des Formatieres für Logeinträge} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTraceEntryType.h}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Header-Datei der Enumeration für den Typ eines Logeintrags} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTracer.h}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Header-Datei des Log-Tracers} 
+\endgroup
+
+\inputminted{cpp}{./cpp/LockTracer.cc}
+\begingroup
+    \captionsetup{type=listing}
+    \captionof{listing}{Implementierung des Log-Tracers} 
+\endgroup
+
+\stopcontents
+
+\startcontents
 \chapter{Python}
 \thispagestyle{fancy}
-\setminted{fontsize=\small,baselinestretch=1}
+\setminted{fontsize=\small,baselinestretch=1,breaklines,breakanywhere}
+
 \inputminted{python}{./Python/traceFileReader.py}
 \begingroup
     \captionsetup{type=listing}

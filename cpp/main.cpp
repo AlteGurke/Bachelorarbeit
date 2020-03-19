@@ -17,14 +17,7 @@ int main()
 
     pearlrt::LockTracer& logger = pearlrt::LockTracer::GetInstance();
 
-    pearlrt::LockTraceEntry entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "1");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "2");
-    logger.Add(entry);
-    entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::ThreadStart, "0", "3");
-    logger.Add(entry);
-
-    entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "l1");
+    pearlrt::LockTraceEntry entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "l1");
     logger.Add(entry);
     entry = pearlrt::LockTraceEntry(std::chrono::high_resolution_clock::now(), pearlrt::LockTraceEntryType::Lock, "1", "l2");
     logger.Add(entry);
