@@ -116,59 +116,25 @@ Objekts.
 
 \section{Erweiterung: Potenzielle Deadlocks}
 \label{section:Erweiterung: Potenzielle Deadlocks}
-\begin{itemize}
-  \item Programm aus \cref{section:Analysieren der Trace-Datei} wird erweitert
-  \item Es sollen potenzielle Deadlocks mit Hilfe des aus \cref{section:MagicLock}
- beschriebenen Verfahrens bestimmt werden
-  \item Potenzielle Deadlocks sollen als gerichtete Graphen visualisiert werden
-\end{itemize}
+Der in \cref{section:MagicLock} beschrieben Algorithmus wird dazu verwendet, um
+potentielle Deadlocks in der aus \cref{section:Erzeugung der Trace-Datei}
+erstellten Trace-Datei zu finden. 
 
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth/2]{Magiclock_Example.eps}
+  \caption{Beispielhafte Visualisierung eines potentiellen Deadlocks}
+  \label{fig:Magiclock_Example}
+\end{figure}
 
-\begin{itemize}
-  \item Definition der notwendigen Informationen der Trace-Datei
-  \item Aufzeigen der Herausforderungen in Bezug auf Performance und
-  Speicherauslastung
-\item Anforderungen definieren:
-\begin{itemize}
-  \item Laufzeit des Programms soll sich um maximal x\% erhöhen
-  \item Speicherauslastung des Programms soll sich um maximal y\% erhöhen
-\end{itemize}
-  \item Aktuelle Idee: Das Erstellen der Trace-Datei wird in der
-  Laufzeitumgebung umgesetzt. Die Implementierung erfolgt in einer eigenen
-  Klasse und kann aktiviert oder deaktiviert sein. Die Klasse wird von der
-  Semaphore Implementierung der Laufzeitumgebung verwendet werden. Beim Aufruf
-  von Request oder Release wird geprüft, ob die Informationen geloggt werden
-  sollen. Falls das Logging aktiviert ist, werden die Informationen in eine
-  Warteschlange eingereiht. Die Warteschlange wird eine Datenstruktur
-  verwendet, welche das Hinzufügen, Entfernen und das Abfragen der aktuellen
-  Größe mit der Komplexität O(1) implementiert. Bei jeder x-ten Aktivierung,
-  wobei x die maximale Größe der Warteschlange ist, werden alle vorhanden
-  Einträge aus der Warteschlange entfernt und in die Trace-Datei geschrieben.
-  Die Liste wird für jeden Eintrag einmal durchlaufen. Die Laufzeit beträgt
-  daher O(x). Das Öffnen und Schließen der Trace-Datei hat die Laufzeit y. Das
-  Schreiben eines Logeintrags, also eine Zeile in die Trace-Datei, hat die
-  Laufzeit z. Damit hat jeder x-te Request/Release Aufruf die Laufzeit O(y + x
-  $\cdot$ z). Somit hat jeder Request/Release Aufruf die Laufzeit O($\frac{y +
-  x \cdot z}{x}$).
-
-  Zusätzlich zu jedem x-ten Request/Release Aufruf das Schreiben in die
-  Trace-Datei auch zeitich angestoßen werden. Zum Beispiel sollte alle 60
-  Sekunden oder nach x Aufrufen die Warteschlange geleert und in die
-  Trace-Datei geschrieben werden. Bei jedem x-ten Request/Release Aufruf muss
-  der Timer der Warteschlange wieder zurückgesetzt werden. Bedeutet wenn nach
-  50 Sekunden der x-te Aufruf kommt, muss der Timer wieder von vorne beginnen,
-  damit die Trace-Datei nicht nach 10 Sekunden erneut beschrieben wird.
-
-  Der zusätzliche Speicherbedarf beträgt $x \cdot i$, wobei i die Größe der
-  Information eines Logeintrags entspricht. Ein Logeintrag benötigt die
-  Informationen:
-  \begin{enumerate}
-    \item Aktion (Thread Start, Request, Release) => 32 Bit (enum)
-    \item ID des Threads => 16-Bit Ganzzahl (maximale Thread Id für Linux
-    beträgt 32768) theoretisch über 15 Bit abbildbar, da immer positiv
-    \item Name des Lockobjekts => 16-Bit Ganzzahl (theoretisch über 11 Bit
-    Ganzzahl abbildbar) (maximal Variablennamenlänge für C++ beträgt 2048)
-  \end{enumerate}
-  Mindestgröße für i beträgt 32 + 16 + 16 = 64 Bit. Die Warteschlange benötigt
-  maximal daher 64 Bit $\cdot$ x zusätzlichen Speicher.
-\end{itemize}
+Potentielle Deadlocks werden wie in \cref{fig:Magiclock_Example} skizziert als
+gerichteter Graph dargestellt. Knoten repräsentieren Lockobjekte, Kanten
+repräsentieren die Inbesitznahme eines Lockobjekts und die Beschriftung an einer
+Kante bezeichnet den ausführenden Thread. In dem skizzierten Beispiel ist ein
+potentieller Deadlock zwischen den Threads \textit{T1} und \textit{T2}
+dargestellt. Der Thread \textit{T1} nimmt das Lockobjekt \textit{L2} in Besitz
+während dieser bereits \textit{L1} besitzt. Dies ist zu erkennen an der Kante
+vom Knoten \textit{L1} zum Knoten \textit{L2} mit der Bezeichnung \textit{T1}.
+Der Thread \textit{T2} nimmt in dem Beispiel das Lockobjekt \textit{L1} in
+Besitz während dieser bereits \textit{L2} besitzt. Dies kann zu einem Deadlock
+führen, wenn \textit{T1} das Lockobjekt \textit{L1} und \textit{T2} das
+Lockobjekt \textit{L2} gleichzeitig besitzen.
