@@ -1,11 +1,49 @@
 \section{Trace Funktion}
 \label{section:Implementierung:Trace Funktion}
 Aus dem in \cref{fig:LockTrace_Design} vorgestellten UML-Diagramm werden drei
-Klassen in C++ implementiert. \texttt{LockTraceEntryType} wird als \texttt{enum}
-implementiert, die Klasse \texttt{LockTraceEntry} als einfache Datenklasse mit
-Get-Methoden für jedes Attribut und die Klasse \texttt{LogTraceEntryFormatter}
-als Singleton.
+Klassen und eine Enumeration in C++ implementiert.
+\texttt{Lock\-Trace\-Entry\-Type} wird als \texttt{enum} mit den Werten
+\texttt{Lock} und \texttt{Unlock} implementiert. Die Klasse
+\texttt{LockTraceEntry} wird als einfache Datenklasse mit Get-Methoden für jedes
+Attribut implementiert. Die beiden Klassen \texttt{Log\-Trace\-Entry\-Formatter}
+und \texttt{LogTracer} werden als Singleton implementiert. Die Implementierung
+für die Berechnung des genauen Zeitpunkts ist in
+\cref{lst:LockTraceEntryFormatter_FormatLogTraceEntry} dargestellt.
 
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=31,lastline=33]{cpp}{./cpp/LockTraceEntryFormatter.cc}
+  \caption{Auszug aus LockTraceEntryFormatter.cc: Berechnung des Zeitpunkts}
+  \label{lst:LockTraceEntryFormatter_FormatLogTraceEntry}   
+\end{listing}
+
+Der \texttt{chrono::time\_point} wird in Mikrosekunden seit dem 01.01.1970
+umgerechnet. Mikrosekunden wurden als Genauigkeit gewählt, weil Millisekunden
+nicht hochauflösend genug sind, um die chronologische Verwendung von
+Lockobjekten darzustellen. Eine höhere Auflösung als Mikrosekunden würde die
+Darstellung hingegen zu unübersichtlich machen.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=11,lastline=54]{cpp}{./cpp/LockTracer.cc}
+  \caption{LockTracer.cc: Auszug aus der Implementierung des LockTracers}
+  \label{lst:LockTracer}
+\end{listing}
+
+In \cref{lst:LockTracer} ist ein Auszug aus der Implementierung der Klasse
+\texttt{LockTracer} dargestellt. Die \texttt{GetInstance()} Methode stellt
+sicher, dass nur eine Instanz der Klasse zur Laufzeit existiert TODO: Referenz
+C++11. Im Konstruktor wird einmalig geprüft, ob die notwendigen
+Umgebungsvariablen existieren und korrekte Werte aufweisen. Wenn alle Variablen
+vorhanden und die Variable \texttt{Name\-Of\-Environment\-Variable\-Enabled} den
+Wert \texttt{true} hat, wird die Trace-Funktionalität aktiviert. In der Methode
+\texttt{Add(Lock\-Trace\-Entry\& entry)} wird zuerst geprüft, ob die
+Trace-Funktionalität aktiviert ist. Ist dies nicht der Fall wird die Methode
+sofort beendet, dadurch wird die Laufzeit der OpenPEARL Anwendung bei
+deaktivierter Trace-Funktionalität nicht negativ beeinflusst\footnote{Der
+einmalige Aufruf des Konstruktors, sowie der Aufruf der Add Methode
+und das Prüfen eines booleschen Wertes werden hier ignoriert.}. Es wird
+sichergestellt, dass beim Beenden der Anwendung alle noch vorhanden Logeinträge
+in die Trace-Datei geschrieben werden. Dies erfolgt über den Destruktor der
+Klasse in Zeile 48.
 
 \section{Analyse Programm}
 \label{section:Implementierung:Analyse Programm}
@@ -18,13 +56,20 @@ als Singleton.
 \label{section:Implementierung:Visualisierung von potenziellen Deadlocks}
 \begin{itemize}
   \item Vorstellung der Implementierung des Algorithmus zur Erkennung von
-  potenziellen Deadlocks
-  MagicLock klassifiziert dazu jedes Lock-Objekt in eine der folgenden Mengen:
+  potenziellen Deadlocks MagicLock klassifiziert dazu jedes Lock-Objekt in eine
+  der folgenden Mengen:
   \begin{enumerate}
-    \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land outdegree(m) = 0\}$
-    \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0 \lor outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) = 0)\}$
-    \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D, \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup \text{Inner-set})\}$
-    \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
+    \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0
+    \land outdegree(m) = 0\}$
+    \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0
+    \lor outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) =
+    0)\}$
+    \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D,
+    \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor
+    (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup
+    \text{Inner-set})\}$
+    \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin
+    \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
   \end{enumerate}
   \item Grafiken/Screenshots mit Analyse Beispielen
 \end{itemize}

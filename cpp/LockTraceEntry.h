@@ -19,5 +19,9 @@ namespace pearlrt {
             std::string get_ObjectName();
             LockTraceEntry();
             LockTraceEntry(std::chrono::time_point<std::chrono::high_resolution_clock> dt, LockTraceEntryType et, std::string tn, std::string on);
+            LockTraceEntry(const LockTraceEntry&) = delete;
+            LockTraceEntry(LockTraceEntry&&) = delete;
+            LockTraceEntry& operator=(const LockTraceEntry&) = delete;
+            LockTraceEntry& operator=(LockTraceEntry&&) = delete;
     };
 }

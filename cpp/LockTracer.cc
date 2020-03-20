@@ -30,6 +30,29 @@ namespace pearlrt {
         }
     }
 
+    LockTracer& LockTracer::GetInstance()
+    {
+        static LockTracer instance;
+        return instance;
+    }
+
+    void LockTracer::Add(LockTraceEntry& entry) {
+        if(isEnabled == false) {
+            return;
+        }     
+
+        queue.enqueue(entry);
+        LockTracer::flushIfNeeded();
+    }
+
+    LockTracer::~LockTracer() {
+        if(isEnabled == false) {
+            return;
+        }
+        
+        LockTracer::flush();
+    }
+
     bool LockTracer::directoryExists(const char *fileName)
     {
         std::ifstream infile(fileName);
@@ -77,24 +100,5 @@ namespace pearlrt {
         catch(const std::exception& e)
         {
         }
-    }
-
-    LockTracer& LockTracer::GetInstance()
-    {
-        static LockTracer instance;
-        return instance;
-    }
-
-    void LockTracer::Add(LockTraceEntry& entry) {
-        if(isEnabled == false) {
-            return;
-        }        
-
-        queue.enqueue(entry);
-        LockTracer::flushIfNeeded();
-    }
-
-    LockTracer::~LockTracer() {
-        LockTracer::flush();
     }
 }
