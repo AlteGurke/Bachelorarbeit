@@ -39,18 +39,59 @@ Wert \texttt{true} hat, wird die Trace-Funktionalität aktiviert. In der Methode
 Trace-Funktionalität aktiviert ist. Ist dies nicht der Fall wird die Methode
 sofort beendet, dadurch wird die Laufzeit der OpenPEARL Anwendung bei
 deaktivierter Trace-Funktionalität nicht negativ beeinflusst\footnote{Der
-einmalige Aufruf des Konstruktors, sowie der Aufruf der Add Methode
-und das Prüfen eines booleschen Wertes werden hier ignoriert.}. Es wird
-sichergestellt, dass beim Beenden der Anwendung alle noch vorhanden Logeinträge
-in die Trace-Datei geschrieben werden. Dies erfolgt über den Destruktor der
-Klasse in Zeile 48.
+einmalige Aufruf des Konstruktors, sowie der Aufruf der Add Methode und das
+Prüfen eines booleschen Wertes werden hier ignoriert.}. Es wird sichergestellt,
+dass beim Beenden der Anwendung alle noch vorhanden Logeinträge in die
+Trace-Datei geschrieben werden. Dies erfolgt über den Destruktor der Klasse in
+Zeile 48.
 
 \section{Analyse Programm}
 \label{section:Implementierung:Analyse Programm}
-\begin{itemize}
-  \item Vorstellung der Implementierung des Analyse Programms in Java
-  \item Grafiken/Screenshots mit Analyse Beispielen
-\end{itemize}
+Die Implementierung für die Analyse und die chronologische Darstellung der
+Verwendung von \textit{SEMA} Objekten wird in Python\footnote{Python Version
+3.7.3.} durchgeführt. Im ersten Schritt wird die Trace-Datei aus
+\cref{section:Erzeugung der Trace-Datei} ausgelesen. Die einzelnen Logeinträge
+werden von der Klasse
+\texttt{Lock\-Action} repräsentiert, welche in \cref{lst:TraceFileReader}
+dargestellt ist.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=1,lastline=10]{python}{./Python/traceFileReader.py}
+  \caption{traceFileReader.py: Auszug aus der Implementierung des Trace-Datei Parsers}
+  \label{lst:TraceFileReader}
+\end{listing}
+
+Anschließend wird aus den ausgelesenen Logeinträgen ein Graph erstellt. Dazu
+wird die Python-Bibliothek Matplotlib\footnote{Matplotlib Version 3.1.3.}
+verwendet. In \cref{lst:GenerateTimeline_CreateGraphValues} ist die Erzeugung
+des Graphen dargestellt.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=16,lastline=38]{python}{./Python/generateTimeline.py}
+  \caption{generateTimeline.py: Auszug aus der Bestimmung der einzelnen Werte für den Graphen}
+  \label{lst:GenerateTimeline_CreateGraphValues}
+\end{listing}
+
+In den Zeilen 23 bis 25 werden die Threads und Zeitstempel in Hashsets
+gespeichert und anschließend in den Zeilen 27 und 28 sortiert. In den Zeilen 30
+bis 38 werden die Werte für die einzelnen Logeinträge bestimmt. Um die Threads
+auf der Ordinate abzubilden, wird in Zeile 36 der Index des jeweiligen Threads
+im sortierten Hashset verwendet. Dadurch entspricht jeder ganzzahlige Wert auf
+der Ordinate einem Thread. Falls es mehrere Einträge für eine Thread mit dem
+gleichen Zeitstempel gibt, wird in den Zeilen 33 und 34 ein Offset berechnet und
+in der Zeile 36 hinzugefügt, um eine Überlappung zu verhindern. Für den Wert auf
+der Abszisse wird das Delta der Zeitstempel zwischen dem jeweiligen Logeintrag
+und dem niedrigsten Zeitstempel in der Zeile 31 berechnet. In Zeile 37 wird die
+Farbe des Logeintrags und in Zeile 38 die Beschriftung festgelegt. Aus den
+einzelnen Werten wird in \cref{lst:GenerateTimeline_PlotGraph} der Graph mit
+Matplotlib erstellt und kann dann mit dem Befehl \texttt{plt.show()} dargestellt
+werden.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=42,lastline=44]{python}{./Python/generateTimeline.py}
+  \caption{generateTimeline.py: Auszug aus der Erzeugung des Graphen}
+  \label{lst:GenerateTimeline_PlotGraph}
+\end{listing}
 
 \section{Visualisierung von potenziellen Deadlocks}
 \label{section:Implementierung:Visualisierung von potenziellen Deadlocks}
