@@ -15,12 +15,10 @@ Zusätzlich wird die Trace-Datei mit Hilfe des MagicLock\footnote{Siehe
 \cref{section:MagicLock}} Algorithmus nach potentiellen Deadlocks durchsucht.
 Potentielle Deadlocks werden anschließend als gerichteter Graph dargestellt.
 
-
 \section{Erzeugung der Trace-Datei}
 \label{section:Erzeugung der Trace-Datei}
 Die Trace-Datei enthält alle benötigten Informationen, um potentielle Deadlocks
 zu erkennen:
-
 \begin{enumerate}
   \item Der genaue Zeitpunkt des Ereignisses 
   \item Die Art des Ereignisses (Lock, Unlock)
@@ -93,7 +91,6 @@ OpenPEARL Laufzeitumgebung mit einbezogen werden. In der Datei
 runtime/common/Files.common sind alle Dateien aufgeführt, welche bei der
 Kompilierung einbezogen werden. Dort müssen die Dateien, die aus
 \cref{fig:LockTrace_Design} entstehen eingetragen werden.
-
 
 \section{Analysieren der Trace-Datei}
 \label{section:Analysieren der Trace-Datei}

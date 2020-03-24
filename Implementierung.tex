@@ -95,22 +95,121 @@ werden.
 
 \section{Visualisierung von potenziellen Deadlocks}
 \label{section:Implementierung:Visualisierung von potenziellen Deadlocks}
-\begin{itemize}
-  \item Vorstellung der Implementierung des Algorithmus zur Erkennung von
-  potenziellen Deadlocks MagicLock klassifiziert dazu jedes Lock-Objekt in eine
-  der folgenden Mengen:
-  \begin{enumerate}
-    \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0
-    \land outdegree(m) = 0\}$
-    \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0
-    \lor outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) =
-    0)\}$
-    \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D,
-    \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor
-    (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup
-    \text{Inner-set})\}$
-    \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin
-    \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
-  \end{enumerate}
-  \item Grafiken/Screenshots mit Analyse Beispielen
-\end{itemize}
+Im ersten Schritt wird der MagicLock-Algorithmus in Python\footnote{Python
+Version 3.7.3.} implementiert. Das Auslesen der Trace-Datei wurde bereits in
+\cref{section:Implementierung:Analyse Programm} durchgeführt und wird hier
+wiederverwendet. Nach dem Auslesen werden die Logeinträge in eine \textit{Lock
+Dependency Relation} überführt. Die Klassen sind in
+\cref{lst:MagiclockTypes_LockDependency} und
+\cref{lst:MagiclockTypes_LockDependencyRelation} dargestellt.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=45,lastline=49]{python}{./Python/magiclockLib/magiclockTypes.py}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textit{Lock Dependency} aus Magiclock[3]\autocite{MagicLock}}
+  \label{lst:MagiclockTypes_LockDependency}
+\end{listing}
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=67,lastline=77]{python}{./Python/magiclockLib/magiclockTypes.py}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textit{Lock Dependency Relation} aus Magiclock[3]\autocite{MagicLock}}
+  \label{lst:MagiclockTypes_LockDependencyRelation}
+\end{listing}
+
+Eine \texttt{LockDependencyRelation} enthält ein Hashset mit allen Lockobjekten,
+eine Liste aller Threads und eine Liste der einzelnen \texttt{LockDependency}
+Objekten. Für die Threads wurde eine Liste gewählt, damit die Ergebnisse
+deterministisch ausfallen. Die Liste der Threads wird später in einer Schleife
+durchlaufen. Dies führt bei einem Hashset zu nicht deterministischen Ergebnisse,
+da die Sortierung zufällig ist.
+
+Im zweiten Schritt wird die \texttt{LockDependencyRelation} reduziert. Dazu
+werden die einzelnen Lockobjekte klassifiziert indem diese einer der folgenden
+Mengen zugewiesen werden\autocite[4]{MagicLock}.
+
+\begin{enumerate}
+  \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land
+  outdegree(m) = 0\}$
+  \item \textbf{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0 \lor
+  outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) = 0)\}$
+  \item \textbf{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D,
+  \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor
+  (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup
+  \text{Inner-set})\}$
+  \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin
+  \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
+\end{enumerate}
+
+Dazu werden die Algorithmen \textit{LockReduction(D)},
+\textit{InitClassification(D)} und \textit{LockClassification(D)}
+implementiert\footnote{Entspricht den Algorithmen 1, 2 und 3 aus
+MagicLock\autocite[5]{MagicLock}}. Als erstes wird in
+\cref{lst:LockReduction_InitClassification} mit \textit{InitClassification(D)}
+eine Datenstruktur initialisiert.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=17,lastline=32]{python}{./Python/magiclockLib/lockReduction.py}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{InitClassification(D)} Algorithmus aus Magiclock[5]\autocite{MagicLock}}
+  \label{lst:LockReduction_InitClassification}
+\end{listing}
+
+Für jede \texttt{LockDependency} werden die eingehenden und ausgehenden Kanten
+und der Mode bestimmt. Der Mode ist entweder der Name des Threads, welcher als
+einziger Thread in der \texttt{LockDependencyRelation} Zugriffe auf das
+Lockobjekt ausführt, oder -1. Die erstellte Datenstruktur ist in
+\cref{lst:MagiclockTypes_InitClassification} dargestellt.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=3,lastline=8]{python}{./Python/magiclockLib/magiclockTypes.py}
+  \caption{magiclockLib/magiclockTypes.py: Datenstruktur der \texttt{init\_Classification(D)} Methode}
+  \label{lst:MagiclockTypes_InitClassification}
+\end{listing}
+
+Die Klassifizierung der Lockobjekte erfolgt in
+\cref{lst:LockReduction_LockClassification}.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=35,lastline=77]{python}{./Python/magiclockLib/lockReduction.py}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{LockClassification(D)} Algorithmus aus Magiclock[5]\autocite{MagicLock}}
+  \label{lst:LockReduction_LockClassification}
+\end{listing}
+
+Alle Lockobjekte ohne eingehende und ausgehende Kanten werden in den Zeilen 39
+und 40 in das \textbf{Independent-set} eingefügt. Diese Lockobjekte können
+ignoriert werden, da ein potenzieller Deadlock mindestens eine ausgehende und
+eine eingehende Kante besitzen muss. Lockobjekte ohne eingehende oder ohne
+ausgehende Kanten werden in den Zeilen 42 bis 44 in das
+\textbf{Intermediate-set} eingefügt. Zusätzlich werden diese auf den Stack
+\texttt{s} gelegt. In den Zeilen 46 bis 69 wird die Klassifizierung für das
+\textbf{Inner-set} durchgeführt. Das oberste Lockobjekt \texttt{m} vom Stack \texttt{s}
+wird entfernt und überprüft. Dies wird wiederholt bis der Stack keine
+Lockobjekte mehr enthält. Wenn das Lockobjekt \texttt{m} keine eingehenden
+Kanten besitzt, werden alle anderen Lockobjekte mit eingehenden Kanten in den
+Zeilen 49 bis 58 durchlaufen. Die eingehenden Kanten des Lockobjekts \texttt{n}
+können dann um die Anzahl der Kanten von dem Lockobjekt \texttt{m} zu \texttt{n}
+reduziert werden. Wenn das Lockobjekt \texttt{n} anschließend selbst keine
+eingehenden Kanten mehr besitzt, wird es auf den Stack \texttt{s} gelegt und in
+das \textbf{Intermediate-set} eingefügt. Anschließend werden in den Zeilen 57
+und 58 die Kanten von dem Lockobjekt \texttt{m} zu \texttt{n} und alle
+ausgehenden Kanten von \texttt{m} auf 0 gesetzt. Das Gleiche wird für
+Lockobjekte ohne ausgehende Kanten in den Zeilen 59 bis 69 gemacht. Zuletzt
+werden in den Zeilen 71 bis 75 alle Lockobjekte, welche in keiner der Mengen
+vorhanden sind, in das \textbf{Cyclic-set} eingefügt.
+
+Der Algorithmus zur Reduzierung der \texttt{LockDependencyRelation} ist in
+\cref{lst:LockReduction_LockReduction} dargestellt.
+
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=90]{python}{./Python/magiclockLib/lockReduction.py}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{LockReduction(D)} Algorithmus aus Magiclock[5]\autocite{MagicLock}}
+  \label{lst:LockReduction_LockReduction}
+\end{listing}
+
+Als erstes wird die Klassifizierung der Lockobjekte durchgeführt. Anschließend
+wird in den Zeilen 93 bis 103 das \textbf{Cyclic-set} durchlaufen und alle
+Lockobjekte mit einem Mode ungleich -1 aus diesem entfernt. Diese Lockobjekte
+können nicht Teil eines potenziellen Deadlocks sein, da sie nur von einem
+einzigen Thread verwendet werden. In der Zeile 105 wird eine neue
+\texttt{LockDependencyRelation} erzeugt, welche nur Lockobjekte aus dem
+\textbf{Cyclic-set} enthält. Wenn sich diese Relation nicht von der
+ursprünglichen unterscheidet ist die Lock Reduzierung abgeschlossen. Ansonsten
+wird in Zeile 107 die Lock Reduzierung rekursiv mit der eben erzeugten
+\texttt{LockDependencyRelation} erneut aufgerufen.
