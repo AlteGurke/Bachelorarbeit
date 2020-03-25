@@ -303,6 +303,11 @@ die gilt:
   wenn $m_1 \in L_2 \dots m_{k-1} \in L_k, t_i \neq t_j$ und $L_i \cap L_j =
   \emptyset$ für $1 \leq i, j \leq k (i \neq j)$
 \end{quote}
+Eine Zyklische-Lock-Dependency-Chain ist eine Lock-Dependency-Chain für die
+zusätzlich gilt:
+\begin{quote}
+  $m_k \in L_1$
+\end{quote}
 Zum Beispiel ist die Lock-Dependency Sequenz \textit{$d = (t_1, l_2, \{l_1\}),
-(t_2, l_1, \{l_2\})$} eine Lock-Dependency-Chain. Jede Lock-Dependency-Chain
-repräsentiert einen potenziellen Deadlock.
+(t_2, l_1, \{l_2\})$} eine Zyklische-Lock-Dependency-Chain. Jede
+Zyklische-Lock-Dependency-Chain repräsentiert einen potenziellen Deadlock.

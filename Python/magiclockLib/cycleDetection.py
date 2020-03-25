@@ -25,13 +25,6 @@ def disjoint_Components_Finder(cyclicSet, edgesFromTo):
     return dcs
 
 
-def find_Equal_Dependency_Group(Group, D, d):
-    for di in D:
-        if di == d:
-            return Group[di]
-    return []
-
-
 def is_Lock_Dependency_Chain(d):
     if len(d) <= 1:
         return False
@@ -82,6 +75,13 @@ def DFS_Traverse(potentialDeadlocks, i, s, d, k, isTraversed, Di, Group):
                     isTraversed[j] = False
 
 
+def find_Equal_Dependency_Group(Group, D, d):
+    for di in D:
+        if di == d:
+            return Group[di]
+    return []
+
+    
 def cycle_detection(potentialDeadlocks, dc, D):
     Group = {}
     isTraversed = {}
