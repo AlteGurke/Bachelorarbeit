@@ -4,9 +4,11 @@
   \item Anforderungen validieren:
   \begin{itemize}
     \item Laufzeiten der einzelnen Programme mit und ohne Trace Funktionalität
-    bestimmen und vergleichen, mit Python Programm \cref{lst:Python_Benchmark_CPU}
+    bestimmen und vergleichen, mit Python Programm
+    \cref{lst:Python_Benchmark_CPU}
     \item Speicherauslastung der einzelnen Programme mit und ohne Trace
-    Funktionalität bestimmen und vergleichen, mit Python Programm \cref{lst:Python_Benchmark_Memory}
+    Funktionalität bestimmen und vergleichen, mit Python Programm
+    \cref{lst:Python_Benchmark_Memory}
   \end{itemize}
 \end{itemize}
 
@@ -23,10 +25,40 @@
 \end{listing} 
 
 \section{Analyse Programm}
-\begin{itemize}
-  \item Die aus \cref{Validierung:Trace Funktion} erstellten Trace-Dateien mit
-  dem erstellten Analyse Programm auswerten
-\end{itemize}
+\label{section:ValidierungAnalyseProgramm}
+Für die chronologische Darstellung der Lockobjekte wird die Trace-Datei aus
+\cref{lst:ExampleTraceFile} mit drei Threads, neun Lockobjekten und einem
+potenziellen Deadlock verwendet.
+\begin{listing}[ht]
+  \begin{minipage}[ht]{\linewidth}
+    \begin{multicols}{3}
+      \inputminted[linenos]{vim}{./Examples/ExampleTraceFile.log}
+    \end{multicols}
+    \caption{Beispielhafte Trace-Datei mit einem potenziellen Deadlock}
+    \label{lst:ExampleTraceFile}
+  \end{minipage}
+\end{listing}
+In dem Beispiel gibt es zusätzlich zwei Einträge mit dem gleichen Zeitstempel in
+den Zeilen 3 und 4 sowie in den Zeilen 13 und 14. Die Ausgabe der Anwendung aus
+\cref{section:Implementierung:Analyse Programm} ist in
+\cref{fig:LockTraceVisualization} dargestellt.
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth]{ExampleTraceFile.eps}
+  \caption{Ausgabe der Analyse-Anwendung}
+  \label{fig:LockTraceVisualization}
+\end{figure}
+Die überlappenden Logeinträge können auseinander gezogen werden in dem in den
+Graphen hineingezoomt wird. Wird zum Beispiel auf die ersten 70 Mikrosekunden
+vergrößert, werden die Logeinträge auseinander gezogen siehe
+\cref{fig:LockTraceVisualizationZoomed}.
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth]{ExampleTraceFileZoomed.eps}
+  \caption{Vergrößerte Darstellung von \cref{fig:LockTraceVisualization}}
+  \label{fig:LockTraceVisualizationZoomed}
+\end{figure}
+Die beiden Logeinträge mit den gleichen Zeitstempel sind bei 7 Mikrosekunden
+korrekt vertikal versetzt dargestellt.
+
 
 \section{Visualisierung von potenziellen Deadlocks}
 \begin{itemize}
