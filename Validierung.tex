@@ -27,12 +27,11 @@
 \section{Analyse Programm}
 \label{section:ValidierungAnalyseProgramm}
 Für die chronologische Darstellung der Lockobjekte wird die Trace-Datei aus
-\cref{lst:ExampleTraceFile} mit drei Threads, neun Lockobjekten und einem
-potenziellen Deadlock verwendet.
+\cref{lst:ExampleTraceFile} mit drei Threads und neun Lockobjekten.
 \begin{listing}[ht]
   \begin{minipage}[ht]{\linewidth}
     \begin{multicols}{3}
-      \inputminted[linenos]{vim}{./Examples/ExampleTraceFile.log}
+      \inputminted[linenos]{text}{./Examples/ExampleTraceFile.log}
     \end{multicols}
     \caption{Beispielhafte Trace-Datei mit einem potenziellen Deadlock}
     \label{lst:ExampleTraceFile}
@@ -61,8 +60,28 @@ korrekt vertikal versetzt dargestellt.
 
 
 \section{Visualisierung von potenziellen Deadlocks}
-\begin{itemize}
-  \item Die aus \cref{Validierung:Trace Funktion} erstellten Trace-Dateien
-  auswerten und die potenziellen Deadlocks visuell als gerichtete Graphen
-  aufzeigen
-\end{itemize}
+\label{section:DeadlockVisualization}
+Für die Visualisierung von potenziellen Deadlocks wird wieder die Trace-Datei
+aus \cref{lst:ExampleTraceFile} verwendet. In dem Beispiel gibt es genau einen
+potenziellen Deadlock zwischen den Threads \textit{1} und \textit{2}. In den
+Zeilen 1 und 2 nimmt der Thread \textit{1} die Lockobjekten \textit{l1} und
+\textit{l2} nacheinander in Besitz. In den Zeilen 5 und 6 nimmt der Thread
+\textit{2} die Lockobjekte \textit{l2} und \textit{l1} nacheinander in Besitz.
+Der potenzielle Deadlock entsteht, da der Thread \textit{1} zuerst das
+Lockobjekt \textit{l1} in Besitz nehmen kann und bevor dieser das Lockobjekt
+\textit{l2} in Besitz nehmen kann, kann der Thread \textit{2} das Lockobjekt
+\textit{l2} bereits in seinen Besitz genommen haben. Dadurch blockieren sich
+beide Threads gegenseitig und ein Deadlock entsteht. Die Ausgabe der Anwendung
+zur Erkennung und Visualisierung von potenziellen Deadlocks ist in
+\cref{fig:DeadlockVisualization} dargestellt.
+\begin{figure}[ht]
+  \includegraphics[width=\linewidth]{ExamplePotentialDeadlocks.eps}
+  \caption{Ergebnis der Erkennung von potenziellen Deadlocks aus \cref{lst:ExampleTraceFile}}
+  \label{fig:DeadlockVisualization}
+\end{figure}
+Die Beschriftung der Kanten erfolgt immer zum Ende der Kante hin, zum Beispiel
+gehört die Beschriftung \textit{1} zu der Kante von \textit{l1} zu \textit{l2}.
+Zusätzlich zur grafischen Darstellung werden die Ergebnisse als
+Zyklische-Lock-Dependency-Chain auf der Konsole ausgegeben. Für die verwendete
+Trace-Datei wird "(1,l2,{l1}) (2,l1,{l2})" als potenzieller Deadlock auf der
+Konsole ausgegeben.
