@@ -1,28 +1,51 @@
 \section{Trace Funktion}\label{Validierung:Trace Funktion}
+\label{section:ValidierungTraceFunktion}
+Um die Trace Funktionalität in OpenPEARL zu prüfen werden die Umgebungsvariablen
+werden wie folgt gesetzt:
 \begin{itemize}
-  \item Beispielprogramme in PEARL definieren
-  \item Anforderungen validieren:
-  \begin{itemize}
-    \item Laufzeiten der einzelnen Programme mit und ohne Trace Funktionalität
-    bestimmen und vergleichen, mit Python Programm
-    \cref{lst:Python_Benchmark_CPU}
-    \item Speicherauslastung der einzelnen Programme mit und ohne Trace
-    Funktionalität bestimmen und vergleichen, mit Python Programm
-    \cref{lst:Python_Benchmark_Memory}
-  \end{itemize}
+  \item \textbf{OpenPEARL\-\_LockTracer\-\_Enabled} = false
+  \item \textbf{OpenPEARL\-\_LockTracer\-\_Path} = /tmp/LockTracer/
+  \item \textbf{OpenPEARL\-\_LockTracer\-\_MaxEntries} = 1
 \end{itemize}
+Zum Testen wird die OpenPEARL Anwendung aus \cref{lst:OpenPEARLTraceTest}
+verwendet. 
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos]{vim}{./OpenPEARL/TraceTest.prl}
+  \caption{OpenPEARL Anwendung zum Testen der Trace Funktionalität}
+  \label{lst:OpenPEARLTraceTest}   
+\end{listing}
+Es wird ein Thread \texttt{T1} erzeugt, welcher die \textit{SEMA} Variable
+\texttt{test\_sema} insgesamt zehn Mal freigibt und in Besitz nimmt. Wird die
+Anwendung ausgeführt wird keine Trace-Datei angelegt. Wird die Umgebungsvariable
+\textbf{OpenPEARL\-\_LockTracer\-\_Enabled} auf \texttt{true} gesetzt, wird die
+Trace-Datei aus \cref{lst:OpenPEARLTraceResult} erzeugt.
+\begin{listing}[ht]
+  \begin{minipage}[ht]{\linewidth}
+    \begin{multicols}{2}
+      \inputminted[linenos]{text}{./OpenPEARL/TraceTestResult.log}
+    \end{multicols}
+    \caption{Trace-Datei die bei aktivierter Trace Funktionalität aus \cref{lst:OpenPEARLTraceTest} erzeugt wird}
+  \label{lst:OpenPEARLTraceResult}   
+  \end{minipage}
+\end{listing}
 
+Die Tests zur Messung der Laufzeit und der Speicherauslastung werden in einer
+virtuellen Debian 9 Linux Maschine mit 4 CPU Kernen und 2GB Arbeitsspeicher
+durchgeführt. Das Host System läuft mit dem Betriebssystem macOS 10.15.4 und
+verfügt über einen Intel Core i7 mit 3,1 GHz, 16GB Arbeitsspeicher und einer
+512GB PCIe SSD. Zur Messung der Laufzeit wird das Pythonskipt aus
+\cref{lst:Python_Benchmark_CPU} und zur Messung der Speicherauslastung das
+Pythonskipt aus \cref{lst:Python_Benchmark_Memory} verwendet.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos]{python}{./Python/benchmark_cpu.py}
   \caption{Pythonskipt zur Messung der Laufzeit}
   \label{lst:Python_Benchmark_CPU}   
 \end{listing} 
-
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos]{python}{./Python/benchmark_memory.py}
   \caption{Pythonskipt zur Messung der Speicherauslastung}
   \label{lst:Python_Benchmark_Memory}   
-\end{listing} 
+\end{listing}
 
 \section{Analyse Programm}
 \label{section:ValidierungAnalyseProgramm}
@@ -57,7 +80,6 @@ vergrößert, werden die Logeinträge auseinander gezogen siehe
 \end{figure}
 Die beiden Logeinträge mit den gleichen Zeitstempel sind bei 7 Mikrosekunden
 korrekt vertikal versetzt dargestellt.
-
 
 \section{Visualisierung von potenziellen Deadlocks}
 \label{section:DeadlockVisualization}

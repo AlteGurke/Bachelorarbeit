@@ -91,12 +91,12 @@ namespace pearlrt {
    }
 
    void TraceLock(char* tName, const char* semaName) {
-      LockTraceEntry entry = LockTraceEntry(std::chrono::system_clock::now(), LockTraceEntryType::Lock, tName, semaName);
+      LockTraceEntry entry = LockTraceEntry(std::chrono::high_resolution_clock::now(), LockTraceEntryType::Lock, tName, semaName);
       LockTracer::GetInstance().Add(entry);
    }
 
    void TraceUnlock(char* tName, const char* semaName) {
-      LockTraceEntry entry = LockTraceEntry(std::chrono::system_clock::now(), LockTraceEntryType::Unlock, tName, semaName);
+      LockTraceEntry entry = LockTraceEntry(std::chrono::high_resolution_clock::now(), LockTraceEntryType::Unlock, tName, semaName);
       LockTracer::GetInstance().Add(entry);
    }
 

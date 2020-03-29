@@ -55,12 +55,14 @@ CXX_COMMON = \
 	RefCharSink.cc RefCharSource.cc \
 	SystemDationNBSource.cc SystemDationNBSink.cc \
 	PutClock.cc GetClock.cc \
+	GetBitString.cc \
 	PutBitString.cc \
 	GetHelper.cc PutHelper.cc \
 	TaskWhenLinks.cc \
 	TaskCommon.cc \
 	TaskList.cc \
 	TaskMonitor.cc \
+	TaskTimerCommon.cc \
 	MutexCommon.cc CSemaCommon.cc \
 	Semaphore.cc PriorityQueue.cc \
 	Rst.cc \
@@ -97,8 +99,8 @@ ifeq ($(CONFIG_HAS_I2C),y)
    XML_COMMON += PCF8574In.xml PCF8574Out.xml
    CXX_COMMON += BME280.cc bosch/bme280.c
    XML_COMMON += BME280.xml
-   CXX_COMMON += PCF9685.cc PCF9685Channel.cc
-   XML_COMMON += PCF9685.xml PCF9685Channel.xml
+   CXX_COMMON += PCA9685.cc PCA9685Channel.cc
+   XML_COMMON += PCA9685.xml PCA9685Channel.xml
 endif
 
 XML_COMMON += Log.xml LogFile.xml SampleBasicDation.xml SoftInt.xml
@@ -113,8 +115,7 @@ HDR_COMMON = $(CXX_COMMON:%.cc=%.h) \
 	Device.h UserDation.h \
 	PutCharacter.h \
 	Float.h \
-	TaskTimerCommon.h \
-	Ref.h
+	Ref.h 
 
 
 ifeq ($(CONFIG_CANSUPPORT),y)
