@@ -39,7 +39,24 @@ einmalige Aufruf des Konstruktors, sowie der Aufruf der Add Methode und das
 Prüfen eines booleschen Wertes werden hier ignoriert.}. Es wird sichergestellt,
 dass beim Beenden der Anwendung alle noch vorhanden Logeinträge in die
 Trace-Datei geschrieben werden. Dies erfolgt über den Destruktor der Klasse in
-Zeile 48.
+Zeile 48. Die Integration in die OpenPEARL Laufzeitumgebung erfolgt durch das
+Hinzufügen der benötigten Dateien in die \textit{Files.common} Datei. Dazu wird
+die Zeile 86 um \cref{lst:OpenPEARLFilesCommon} erweitert.
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=86,lastline=88]{bash}{./OpenPEARL/Files.common}
+  \caption{Files.common: Auszug aus der Auflistung der zu kompilierenden Dateien}
+  \label{lst:OpenPEARLFilesCommon}
+\end{listing}
+Im letzten Schritt wird die \textit{Semaphore.cc} Implementierung angepasst. Für
+jede Erhöhung eines Semaphore-Objekts wird die Methode \texttt{TraceLock}, für
+jede Verringerung die Methode \texttt{TraceUnlock} aus
+\cref{lst:OpenPEARLSemaphore} aufgerufen.
+\begin{listing}[ht]
+  \inputminted[frame=lines,linenos,firstline=93,lastline=111]{cpp}{./OpenPEARL/Semaphore.cc}
+  \caption{Semaphore.cc: Auszug aus der Semaphore Implementierung in der OpenPEARL Laufzeitumgebung}
+  \label{lst:OpenPEARLSemaphore}
+\end{listing}
+
 \section{Analyse Programm}
 \label{section:Implementierung:Analyse Programm}
 Die Implementierung für die Analyse und die chronologische Darstellung der

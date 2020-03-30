@@ -26,6 +26,7 @@ namespace pearlrt {
         public:
             static LockTracer& GetInstance();
             void Add(LockTraceEntry& entry);
+            bool IsEnabled();
             LockTracer(const LockTracer&) = delete;
             LockTracer(LockTracer&&) = delete;
             LockTracer& operator=(const LockTracer&) = delete;

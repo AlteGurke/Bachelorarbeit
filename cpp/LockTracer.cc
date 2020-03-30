@@ -45,6 +45,10 @@ namespace pearlrt {
         LockTracer::flushIfNeeded();
     }
 
+    bool LockTracer::IsEnabled() {
+        return isEnabled;
+    }
+
     LockTracer::~LockTracer() {
         if(isEnabled == false) {
             return;

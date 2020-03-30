@@ -91,13 +91,23 @@ namespace pearlrt {
    }
 
    void TraceLock(char* tName, const char* semaName) {
+      LockTracer& lockTracer = LockTracer::GetInstance();
+      if(lockTracer.IsEnabled() == false) {
+         return;
+      }
+
       LockTraceEntry entry = LockTraceEntry(std::chrono::high_resolution_clock::now(), LockTraceEntryType::Lock, tName, semaName);
-      LockTracer::GetInstance().Add(entry);
+      lockTracer.Add(entry);
    }
 
    void TraceUnlock(char* tName, const char* semaName) {
+      LockTracer& lockTracer = LockTracer::GetInstance();
+      if(lockTracer.IsEnabled() == false) {
+         return;
+      }
+
       LockTraceEntry entry = LockTraceEntry(std::chrono::high_resolution_clock::now(), LockTraceEntryType::Unlock, tName, semaName);
-      LockTracer::GetInstance().Add(entry);
+      lockTracer.Add(entry);
    }
 
    void Semaphore::request(TaskCommon* me,

@@ -47,14 +47,19 @@ Zeichenkette, welche einer Zeile in der Trace-Datei entspricht. Diese Klasse
 wird als Singleton implementiert, da zur Laufzeit immer nur genau eine Instanz
 benötigt wird. Die Klasse \texttt{LockTracer} stellt die Methode \texttt{Add}
 zur Verfügung, welche von der OpenPEARL Laufzeitumgebung aufgerufen wird. Mit
-Hilfe der Methode können Lock-Ereignisse erstellt werden. Die Klasse wird
-ebenfalls als Singleton implementiert, damit nur eine Instanz zur Laufzeit
-verwendet werden kann. Das Speichern der Ereignisse in die Trace-Datei ist
-kostspielig und soll daher nicht für jeden Eintrag gemacht werden. Die Klasse
-\texttt{LockTracer} reiht dazu die einzelnen Lock-Ereignisse, welche über die
-\texttt{Add} Methode hinzugefügt werden, in eine Warteschlange ein. Sobald eine
-spezifizierte Anzahl erreicht ist, wird die Warteschlange geleert und in die
-Trace-Datei geschrieben. Die Anzahl kann über die Umgebungsvariable
+Hilfe der Methode können Lock-Ereignisse erstellt werden. Die Methode
+\texttt{IsEnabled} gibt den aktuellen Zustand der \texttt{LockTracer} Instanz
+zurück. Mithilfe dieser Methode kann ein Aufrufer prüfen, ob die
+Trace-Funktionalität aktiviert ist. Ist dies nicht der Fall, muss die
+\texttt{Add} Methode nicht aufgerufen und somit auch kein
+\texttt{LockTraceEntry} Objekt erzeugt werden. Die Klasse wird ebenfalls als
+Singleton implementiert, damit nur eine Instanz zur Laufzeit verwendet werden
+kann. Das Speichern der Ereignisse in die Trace-Datei ist kostspielig und soll
+daher nicht für jeden Eintrag gemacht werden. Die Klasse \texttt{LockTracer}
+reiht dazu die einzelnen Lock-Ereignisse, welche über die \texttt{Add} Methode
+hinzugefügt werden, in eine Warteschlange ein. Sobald eine spezifizierte Anzahl
+erreicht ist, wird die Warteschlange geleert und in die Trace-Datei geschrieben.
+Die Anzahl kann über die Umgebungsvariable
 \texttt{OpenPEARL\_LockTracer\_MaxEntries} spezifiziert werden. Die
 Umgebungsvariable wird bei der Initialisierung der \texttt{LockTracer}
 Implementierung ausgelesen und in der Variable \texttt{numberOfMaxEntries}
