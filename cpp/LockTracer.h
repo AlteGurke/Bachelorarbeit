@@ -13,7 +13,7 @@ namespace pearlrt {
             const char* NameOfEnvironmentVariableNumberOfMaxEntries = "OpenPEARL_LockTracer_MaxEntries";  
             const unsigned short DefaultNumberOfMaxEntries = 20; 
             bool isEnabled;
-            unsigned short numberOfMaxEntries = 20;
+            unsigned int numberOfMaxEntries = 20;
             std::string filePath;
             moodycamel::ConcurrentQueue<LockTraceEntry> queue;
             std::mutex flushMutex;
