@@ -46,27 +46,36 @@ Pythonskipt aus \cref{lst:Python_Benchmark_Memory} verwendet.
   \caption{Pythonskipt zur Messung der Speicherauslastung}
   \label{lst:Python_Benchmark_Memory}   
 \end{listing}
-Für die Tests wird eine OpenPEARL Anwendung verwendet, welche 15 Threads
+Für die Tests wird eine OpenPEARL Anwendung verwendet, welche 10 Threads
 erzeugt, welche jeweils nacheinander zwei \textit{SEMA} Objekte in Besitz nehmen
 und wieder freigeben. Dabei verwendet der Thread \textit{T1} die Objekte
 \textit{L01} und \textit{L02}, der Thread \textit{T2} die Objekte \textit{L02}
-und \textit{L03}, bis zum letzten Thread \textit{T15}, welcher die Objekte
-\textit{L15} und \textit{L01} verwendet. Jeder Test wird dreimal durchgeführt.
-Das Ergebnis ist der Durchschnitt der drei Durchläufe. Das Ergebnis der Tests
-bezüglich der Laufzeit ist in \cref{fig:BenchmarkCpuResults}, das Ergebnis
-bezüglich der Speicherauslastung in \cref{fig:BenchmarkMemoryResults}
-dargestellt.
+und \textit{L03}, bis zum letzten Thread \textit{T10}, welcher die Objekte
+\textit{L10} und \textit{L01} verwendet. Ingesamt werden 400.000 Einträge
+erzeugt. Das Ergebnis der Tests bezüglich der Laufzeit ist in
+\cref{fig:BenchmarkCpuResults} dargestellt. 
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{Benchmark_CPU_Results.eps}
   \caption{Ergebnisse der Laufzeitmessung der Trace-Funktionalität in OpenPEARL}
   \label{fig:BenchmarkCpuResults}
 \end{figure}
-
+Zu erkennen ist, dass eine höhere Anzahl an gepufferten Objekten bis zu einem
+bestimmten Punkt zu einer besseren Laufzeit führt. Bei einer Puffergröße von
+100.000 gibt es nur noch einen sehr geringen Unterschied zwischen aktivierter
+und deaktivierter Trace-Funktionalität. Wird der Puffer weiter erhöht auf
+500.000, verschlechtert sich die Laufzeit wieder. Das Ergebnis bezüglich der
+Speicherauslastung in \cref{fig:BenchmarkMemoryResults} dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{Benchmark_Memory_Results.eps}
   \caption{Ergebnisse der Speicherauslastung der Trace-Funktionalität in OpenPEARL}
   \label{fig:BenchmarkMemoryResults}
 \end{figure}
+Je größer der verwendete Puffer ist, desto höher ist auch die
+Speicherauslastung. Die Puffergröße hängt somit vom Einsatzzweck ab und muss auf
+das Endsystem abgestimmt werden. Die Größe des Arbeitsspeichers, die
+Geschwindigkeit der CPU und die Geschwindigkeit des Speichers auf dem die
+Trace-Datei geschrieben wird, sind Variablen die die optimale Puffergröße
+bestimmen.
 
 \section{Analyse Programm}
 \label{section:ValidierungAnalyseProgramm}
