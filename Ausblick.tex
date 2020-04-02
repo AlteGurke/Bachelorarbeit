@@ -1,12 +1,22 @@
 \section{Offene Punkte}
-\begin{itemize}
-  \item Aufzeigen was nicht gemacht wurde und warum (eventuell welche
-  Synchronisationsmittel nicht erkannt werden (nur Sema keine Bolt Variablen))
-\end{itemize}
+\label{section:OffenePunkte}
+In OpenPEARL gibt es neben den \textit{SEMA} Variablen noch \textit{BOLT}
+Variablen, welche von der aktuellen Implementierung nicht beachtet werden. Um
+alle Synchronisierungsprobleme in OpenPEARL Anwendungen aufzeigen zu können,
+muss die Unterstützung für \textit{BOLT} Variablen hinzugefügt werden.
+
+Die derzeitige Integration in die OpenPEARL Laufzeitumgebung erfüllt noch nicht
+alle Kriterien in Bezug auf Robustheit und Codestyle. Aus diesem Grund ist die
+Integration noch kein Bestandteil des offiziellen OpenPEARL Repository.
 
 \section{Weiterentwicklung}
-\begin{itemize}
-  \item Alle möglichen Synchronisationsmittel erkennen
-  \item Trace Funktionalität in den OpenPEARL Compiler integrieren, so dass es
-  mittels compiler flag an und ausgeschaltet werden kann
-\end{itemize}
+\label{section:Weiterentwicklung}
+Der nächste Entwicklungsschritt ist die Erkennung von potenziellen Deadlocks in
+Echtzeit während der Ausführung einer OpenPEARL Anwendung. Dazu muss die
+\texttt{LockTracer}-Implementierung aus \cref{lst:LockTracer} erweitert werden.
+Anstatt die Ereignisse in eine Trace-Datei zu schreiben, müssen diese direkt
+über Interprozesskommunikation von der OpenPEARL Laufzeitumgebung an einen
+zweiten Prozess übertragen werden. Dieser kann dann die Python-Implementierungen
+aus \cref{section:Implementierung:Analyse Programm} und
+\cref{section:Implementierung:Visualisierung von potenziellen Deadlocks}
+aufrufen und die Analysen durchführen.
