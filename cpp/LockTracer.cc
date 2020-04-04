@@ -96,7 +96,7 @@ namespace pearlrt {
             {
                 LockTraceEntry entry;
                 if(queue.try_dequeue(entry)) {
-                    fileStream << LockTraceEntryFormatter::GetInstance().FormatLogTraceEntry(entry);
+                    fileStream << LockTraceEntryFormatter::GetInstance().FormatLockTraceEntry(entry);
                 }
             }
             fileStream.close();

@@ -12,7 +12,7 @@ namespace pearlrt {
             LockTraceEntryFormatter();
         public:
             static LockTraceEntryFormatter& GetInstance();
-            std::string FormatLogTraceEntry(LockTraceEntry& logTraceEntry);
+            std::string FormatLockTraceEntry(LockTraceEntry& logTraceEntry);
             LockTraceEntryFormatter(const LockTraceEntryFormatter&) = delete;
             LockTraceEntryFormatter(LockTraceEntryFormatter&&) = delete;
             LockTraceEntryFormatter& operator=(const LockTraceEntryFormatter&) = delete;

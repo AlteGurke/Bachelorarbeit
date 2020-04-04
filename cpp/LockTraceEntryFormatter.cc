@@ -8,7 +8,7 @@ namespace pearlrt {
     LockTraceEntryFormatter::LockTraceEntryFormatter() {
     }
 
-    std::string LockTraceEntryFormatter::FormatLogTraceEntry(LockTraceEntry& logTraceEntry) {
+    std::string LockTraceEntryFormatter::FormatLockTraceEntry(LockTraceEntry& logTraceEntry) {
         
         std::string prefix = "";
         switch (logTraceEntry.get_EntryType())
