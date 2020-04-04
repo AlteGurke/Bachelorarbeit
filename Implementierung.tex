@@ -21,14 +21,14 @@ Lockobjekten darzustellen. Eine höhere Auflösung als Mikrosekunden würde die
 Darstellung hingegen zu unübersichtlich machen. In \cref{lst:LockTracer} ist ein
 Auszug aus der Implementierung der Klasse \texttt{LockTracer} dargestellt.
 \begin{listing}[ht]
-  \inputminted[frame=lines,linenos,firstline=11,lastline=54]{cpp}{./cpp/LockTracer.cc}
+  \inputminted[frame=lines,linenos,firstline=11,lastline=58]{cpp}{./cpp/LockTracer.cc}
   \caption{LockTracer.cc: Auszug aus der Implementierung des LockTracers}
   \label{lst:LockTracer}
 \end{listing}
 Die \texttt{GetInstance()} Methode stellt sicher, dass nur eine Instanz der
-Klasse zur Laufzeit existiert\footnote{TODO: Referenz C++11}. Im Konstruktor
-wird einmalig geprüft, ob die notwendigen Umgebungsvariablen existieren und
-korrekte Werte aufweisen. Wenn alle Variablen vorhanden und die Variable
+Klasse zur Laufzeit existiert\footnote{Ab C++ Version 11}. Im Konstruktor wird
+einmalig geprüft, ob die notwendigen Umgebungsvariablen existieren und korrekte
+Werte aufweisen. Wenn alle Variablen vorhanden und die Variable
 \texttt{Name\-Of\-Environment\-Variable\-Enabled} den Wert \texttt{true} hat,
 wird die Trace-Funktionalität aktiviert. In der Methode
 \texttt{Add(Lock\-Trace\-Entry\& entry)} wird zuerst geprüft, ob die
@@ -37,20 +37,20 @@ sofort beendet, dadurch wird die Laufzeit der OpenPEARL Anwendung bei
 deaktivierter Trace-Funktionalität nicht negativ beeinflusst\footnote{Der
 einmalige Aufruf des Konstruktors, sowie der Aufruf der Add Methode und das
 Prüfen eines booleschen Wertes werden hier ignoriert.}. Es wird sichergestellt,
-dass beim Beenden der Anwendung alle noch vorhanden Logeinträge in die
+dass beim Beenden der Anwendung alle noch vorhanden Lockereignisse in die
 Trace-Datei geschrieben werden. Dies erfolgt über den Destruktor der Klasse in
-Zeile 48. Die Integration in die OpenPEARL Laufzeitumgebung erfolgt durch das
-Hinzufügen der benötigten Dateien in die \textit{Files.common} Datei. Dazu wird
+Zeile 52. Die Integration in die OpenPEARL Laufzeitumgebung erfolgt durch das
+Hinzufügen der benötigten Dateien in die \emph{Files.common} Datei. Dazu wird
 die Zeile 86 um \cref{lst:OpenPEARLFilesCommon} erweitert.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=86,lastline=88]{bash}{./OpenPEARL/Files.common}
   \caption{Files.common: Auszug aus der Auflistung der zu kompilierenden Dateien}
   \label{lst:OpenPEARLFilesCommon}
 \end{listing}
-Im letzten Schritt wird die \textit{Semaphore.cc} Implementierung angepasst. Für
-jede Erhöhung eines Semaphore-Objekts wird die Methode \texttt{TraceLock}, für
-jede Verringerung die Methode \texttt{TraceUnlock} aus
-\cref{lst:OpenPEARLSemaphore} aufgerufen.
+Im letzten Schritt wird die \emph{Semaphore.cc} Implementierung angepasst. Für
+jede Erhöhung auf eins eines Semaphore-Objekts wird die Methode
+\texttt{TraceUnlock}, für jede Verringerung auf null die Methode
+\texttt{TraceLock} aus \cref{lst:OpenPEARLSemaphore} aufgerufen.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=93,lastline=111]{cpp}{./OpenPEARL/Semaphore.cc}
   \caption{Semaphore.cc: Auszug aus der Semaphore Implementierung in der OpenPEARL Laufzeitumgebung}
@@ -60,10 +60,10 @@ jede Verringerung die Methode \texttt{TraceUnlock} aus
 \section{Analyse Programm}
 \label{section:Implementierung:Analyse Programm}
 Die Implementierung für die Analyse und die chronologische Darstellung der
-Verwendung von \textit{SEMA} Objekten wird in Python\footnote{Python Version
+Verwendung von \emph{SEMA} Objekten wird in Python\footnote{Python Version
 3.7.3.} durchgeführt. Im ersten Schritt wird die Trace-Datei aus
-\cref{section:Erzeugung der Trace-Datei} ausgelesen. Die einzelnen Logeinträge
-werden von der Klasse
+\cref{section:Erzeugung der Trace-Datei} ausgelesen. Die einzelnen
+Lockereignisse werden von der Klasse
 \texttt{Lock\-Action} repräsentiert, welche in \cref{lst:TraceFileReader}
 dargestellt ist.
 \begin{listing}[ht]
@@ -71,7 +71,7 @@ dargestellt ist.
   \caption{traceFileReader.py: Auszug aus der Implementierung des Trace-Datei Parsers}
   \label{lst:TraceFileReader}
 \end{listing}
-Anschließend wird aus den ausgelesenen Logeinträgen ein Graph erstellt. Dazu
+Anschließend wird aus den ausgelesenen Lockereignissen ein Graph erstellt. Dazu
 wird die Python-Bibliothek Matplotlib\footnote{Matplotlib Version 3.1.3.}
 verwendet. In \cref{lst:GenerateTimeline_CreateGraphValues} ist die Erzeugung
 des Graphen dargestellt.
@@ -82,18 +82,18 @@ des Graphen dargestellt.
 \end{listing}
 In den Zeilen 23 bis 25 werden die Threads und Zeitstempel in Hashsets
 gespeichert und anschließend in den Zeilen 27 und 28 sortiert. In den Zeilen 30
-bis 38 werden die Werte für die einzelnen Logeinträge bestimmt. Um die Threads
-auf der Ordinate abzubilden, wird in Zeile 36 der Index des jeweiligen Threads
-im sortierten Hashset verwendet. Dadurch entspricht jeder ganzzahlige Wert auf
-der Ordinate einem Thread. Falls es mehrere Einträge für eine Thread mit dem
-gleichen Zeitstempel gibt, wird in den Zeilen 33 und 34 ein Offset berechnet und
-in der Zeile 36 hinzugefügt, um eine Überlappung zu verhindern. Für den Wert auf
-der Abszisse wird das Delta der Zeitstempel zwischen dem jeweiligen Logeintrag
-und dem niedrigsten Zeitstempel in der Zeile 31 berechnet. In Zeile 37 wird die
-Farbe des Logeintrags und in Zeile 38 die Beschriftung festgelegt. Aus den
-einzelnen Werten wird in \cref{lst:GenerateTimeline_PlotGraph} der Graph mit
-Matplotlib erstellt und kann dann mit dem Befehl \texttt{plt.show()} dargestellt
-werden.
+bis 38 werden die Werte für die einzelnen Lockereignisse bestimmt. Um die
+Threads auf der Ordinate abzubilden, wird in Zeile 36 der Index des jeweiligen
+Threads im sortierten Hashset verwendet. Dadurch entspricht jeder ganzzahlige
+Wert auf der Ordinate einem Thread. Falls es mehrere Einträge für eine Thread
+mit dem gleichen Zeitstempel gibt, wird in den Zeilen 33 und 34 ein Offset
+berechnet und in der Zeile 36 hinzugefügt, um eine Überlappung zu verhindern.
+Für den Wert auf der Abszisse wird das Delta der Zeitstempel zwischen dem
+jeweiligen Lockereignis und dem niedrigsten Zeitstempel in der Zeile 31
+berechnet. In Zeile 37 wird die Farbe des Lockereignisses und in Zeile 38 die
+Beschriftung festgelegt. Aus den einzelnen Werten wird in
+\cref{lst:GenerateTimeline_PlotGraph} der Graph mit Matplotlib erstellt und kann
+dann mit dem Befehl \texttt{plt.show()} dargestellt werden.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=42,lastline=44]{python}{./Python/generateTimeline.py}
   \caption{generateTimeline.py: Auszug aus der Erzeugung des Graphen}
@@ -105,18 +105,18 @@ werden.
 Im ersten Schritt wird der MagicLock-Algorithmus in Python\footnote{Python
 Version 3.7.3.} implementiert. Das Auslesen der Trace-Datei wurde bereits in
 \cref{section:Implementierung:Analyse Programm} durchgeführt und wird hier
-wiederverwendet. Nach dem Auslesen werden die Logeinträge in eine \textit{Lock
+wiederverwendet. Nach dem Auslesen werden die Lockereignisse in eine \emph{Lock
 Dependency Relation} überführt. Die Klassen sind in
 \cref{lst:MagiclockTypes_LockDependency} und
 \cref{lst:MagiclockTypes_LockDependencyRelation} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=45,lastline=49]{python}{./Python/magiclockLib/magiclockTypes.py}
-  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textit{Lock Dependency} aus Magiclock\autocite[3]{MagicLock}}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \emph{Lock Dependency} aus Magiclock\autocite[3]{MagicLock}}
   \label{lst:MagiclockTypes_LockDependency}
 \end{listing}
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=67,lastline=77]{python}{./Python/magiclockLib/magiclockTypes.py}
-  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textit{Lock Dependency Relation} aus Magiclock\autocite[3]{MagicLock}}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \emph{Lock Dependency Relation} aus Magiclock\autocite[3]{MagicLock}}
   \label{lst:MagiclockTypes_LockDependencyRelation}
 \end{listing}
 Eine \texttt{LockDependencyRelation} enthält ein Hashset mit allen Lockobjekten,
@@ -141,15 +141,15 @@ Mengen zugewiesen werden\autocite[4]{MagicLock}.
   \item \textbf{Cyclic-set} = $\{m \mid m \in Locks, m \notin
   \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
 \end{enumerate}
-Dazu werden die Algorithmen \textit{LockReduction(D)},
-\textit{InitClassification(D)} und \textit{LockClassification(D)}
+Dazu werden die Algorithmen \emph{LockReduction(D)},
+\emph{InitClassification(D)} und \emph{LockClassification(D)}
 implementiert\footnote{Entspricht den Algorithmen 1, 2 und 3 aus
 MagicLock\autocite[5]{MagicLock}}. Als erstes wird in
-\cref{lst:LockReduction_InitClassification} mit \textit{InitClassification(D)}
+\cref{lst:LockReduction_InitClassification} mit \emph{InitClassification(D)}
 eine Datenstruktur initialisiert.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=17,lastline=32]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{InitClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{InitClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
   \label{lst:LockReduction_InitClassification}
 \end{listing}
 Für jede \texttt{LockDependency} werden die eingehenden und ausgehenden Kanten
@@ -166,7 +166,7 @@ Die Klassifizierung der Lockobjekte erfolgt in
 \cref{lst:LockReduction_LockClassification}.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=35,lastline=77]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{LockClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
   \label{lst:LockReduction_LockClassification}
 \end{listing}
 Alle Lockobjekte ohne eingehende und ausgehende Kanten werden in den Zeilen 39
@@ -195,7 +195,7 @@ Der Algorithmus zur Reduzierung der \texttt{LockDependencyRelation} ist in
 \cref{lst:LockReduction_LockReduction} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=90]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \textit{LockReduction(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockReduction(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
   \label{lst:LockReduction_LockReduction}
 \end{listing}
 Als erstes wird die Klassifizierung der Lockobjekte in Zeile 91 durchgeführt.
@@ -217,7 +217,7 @@ nach Zyklen erfolgt anschließen für jeden dieser Teilgraphen. In
 Mengen durchgeführt. 
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=1,lastline=25]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \textit{DisjointComponentsFinder(Cyclic-set)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{DisjointComponentsFinder(Cyclic-set)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
   \label{lst:CycleDetection_DisjoinComponents}
 \end{listing}
 In den Zeilen 19 bis 23 werden die einzelnen Lockobjekte aus dem
@@ -233,12 +233,12 @@ in \cref{lst:CycleDetection_CycleDetection} in den Zeilen 94 bis 102 Partitionen
 erstellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=78,lastline=108]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \textit{CycleDetection(dc, D)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{CycleDetection(dc, D)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
   \label{lst:CycleDetection_CycleDetection}
 \end{listing}
-Es wird für jeden Thread \textit{t} eine Partition erstellt, welche die
+Es wird für jeden Thread \emph{t} eine Partition erstellt, welche die
 \texttt{LockDependency} Objekte enthält, bei denen der ausführende Thread gleich
-\textit{t} ist. Zusätzlich werden identische \texttt{LockDependency} Objekt
+\emph{t} ist. Zusätzlich werden identische \texttt{LockDependency} Objekt
 gruppiert. Ein \texttt{LockDependency} Objekt ist identisch mit einem anderen
 \texttt{LockDependency} Objekt, wenn der ausführende Thread, das betroffene
 Lockobjekt und die Menge der aktuell in Besitz befindlichen Lockobjekte
@@ -248,16 +248,16 @@ wird mit der Methode \texttt{DFS\_Traverse} in
 \cref{lst:CycleDetection_DFSTraverse} nach Zyklen durchsucht.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=50,lastline=75]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \textit{DFS\_Traverse(i, S, $\tau$)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{DFS\_Traverse(i, S, $\tau$)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
   \label{lst:CycleDetection_DFSTraverse}
 \end{listing}
-Zuerst wird in Zeile 61 eine Menge \textit{s} erzeugt, die anfangs nur die
+Zuerst wird in Zeile 61 eine Menge \emph{s} erzeugt, die anfangs nur die
 aktuelle \texttt{LockDependencyRelation} enthält. In Zeile 62 werden alle höher
 sortierten Threads durchlaufen, wobei bereits betrachtete Threads in den Zeilen
 63 und 64 ignoriert werden. Anschließend werden in den Zeilen 65 bis 75 die
 \texttt{LockDependency} Objekte in der Partition des höheren Threads
 durchlaufen. Für jedes dieser Objekte wird in den Zeilen 68 und 69 geprüft, ob
-die aktuelle Menge \textit{s} zusammen mit dieser \texttt{LockDependency} eine
+die aktuelle Menge \emph{s} zusammen mit dieser \texttt{LockDependency} eine
 Zyklische-Lock-Dependency-Chain\footnote{Siehe \cref{section:MagicLock}} bildet.
 Ist dies nicht der Fall, wird die Methode \texttt{DFS\_Traverse} rekursiv für
 die aktuell in der Iteration befindliche \texttt{LockDependency} aufgerufen.

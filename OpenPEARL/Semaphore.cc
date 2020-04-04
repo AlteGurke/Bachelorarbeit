@@ -161,7 +161,9 @@ namespace pearlrt {
       try {
          for (i = 0; i < nbrOfSemas; i++) {
             semas[i]->increment();
-            TraceUnlock(me->getName(), semas[i]->getName());
+            if (semas[i]->getValue() == 1) {
+               TraceUnlock(me->getName(), semas[i]->getName());
+            }
             Log::debug("   sema: %s is now %u",
                        semas[i]->getName(), (int)semas[i]->getValue());
          }

@@ -86,15 +86,15 @@ Trace-Funktionalität nicht beeinflusst.
 
 In der OpenPEARL Laufzeitumgebung werden die \emph{REQUEST} und \emph{RELEASE}
 Anweisungen in der Semaphor Implementierung unter runtime/common/Semaphore.cc
-implementiert. Bei einer Erhöhung oder einer Verringerung auf null eines
-Semaphors muss ein Lockereignis erzeugt werden. Bei einer Erhöhung muss der
-\texttt{LockTraceEntryType} \texttt{Unlock} bei einer Verringerung auf null der
-\texttt{LockTraceEntryType} \texttt{Lock} verwendet werden. Die Klassen für die
-Implementierung des LockTracers müssen bei der Kompilierung der OpenPEARL
-Laufzeitumgebung mit einbezogen werden. In der Datei runtime/common/Files.common
-sind alle Dateien aufgeführt, welche bei der Kompilierung einbezogen werden.
-Dort müssen die Dateien, die aus \cref{fig:LockTrace_Design} entstehen
-eingetragen werden.
+implementiert. Bei einer Erhöhung auf eins oder einer Verringerung auf null
+eines Semaphors muss ein Lockereignis erzeugt werden. Bei einer Erhöhung auf
+eins muss der \texttt{LockTraceEntryType} \texttt{Unlock} bei einer Verringerung
+auf null der \texttt{LockTraceEntryType} \texttt{Lock} verwendet werden. Die
+Klassen für die Implementierung des LockTracers müssen bei der Kompilierung der
+OpenPEARL Laufzeitumgebung mit einbezogen werden. In der Datei
+runtime/common/Files.common sind alle Dateien aufgeführt, welche bei der
+Kompilierung einbezogen werden. Dort müssen die Dateien, die aus
+\cref{fig:LockTrace_Design} entstehen eingetragen werden.
 
 \section{Analysieren der Trace-Datei}
 \label{section:Analysieren der Trace-Datei}
