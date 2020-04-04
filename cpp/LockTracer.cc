@@ -92,7 +92,7 @@ namespace pearlrt {
         {
             std::ofstream fileStream;
             fileStream.open(filePath, std::ios_base::out | std::ios_base::app);
-            for (int i = 0; i < numberOfMaxEntries; i++)
+            for (uint i = 0; i < numberOfMaxEntries; i++)
             {
                 LockTraceEntry entry;
                 if(queue.try_dequeue(entry)) {

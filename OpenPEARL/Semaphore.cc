@@ -130,7 +130,9 @@ namespace pearlrt {
       if (! wouldBlock) {
          for (i = 0; i < nbrOfSemas; i++) {
             semas[i]->decrement();
-            TraceLock(me->getName(), semas[i]->getName());
+            if (semas[i]->getValue() == 0) {
+               TraceLock(me->getName(), semas[i]->getName());
+            }
          }
 
          // critival region end
@@ -179,7 +181,9 @@ namespace pearlrt {
          if (!wouldBlock)  {
             for (i = 0; i < bd.u.sema.nsemas; i++) {
                bd.u.sema.semas[i]->decrement();
-               TraceLock(me->getName(), bd.u.sema.semas[i]->getName());
+               if (bd.u.sema.semas[i]->getValue() == 0) {
+                  TraceLock(me->getName(), bd.u.sema.semas[i]->getName());
+               }
             }
 
             waiters.remove(t);
@@ -214,7 +218,9 @@ namespace pearlrt {
       if (! wouldBlock) {
          for (i = 0; i < nbrOfSemas; i++) {
             semas[i]->decrement();
-            TraceLock(me->getName(), semas[i]->getName());
+            if (semas[i]->getValue() == 0) {
+               TraceLock(me->getName(), semas[i]->getName());
+            }
          }
       }
 
@@ -242,7 +248,10 @@ namespace pearlrt {
       if (!wouldBlock)  {
          for (int i = 0; i < bd.u.sema.nsemas; i++) {
             bd.u.sema.semas[i]->decrement();
-            TraceLock(t->getName(), bd.u.sema.semas[i]->getName());
+            if (bd.u.sema.semas[i]->getValue() == 0) {
+               TraceLock(t->getName(), bd.u.sema.semas[i]->getName());
+            }
+            
          }
 
          waiters.remove(t);
