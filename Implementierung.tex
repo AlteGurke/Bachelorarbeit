@@ -105,9 +105,9 @@ dann mit dem Befehl \texttt{plt.show()} dargestellt werden.
 Im ersten Schritt wird der MagicLock-Algorithmus in Python\footnote{Python
 Version 3.7.3.} implementiert. Das Auslesen der Trace-Datei wurde bereits in
 \cref{section:Implementierung:Analyse Programm} durchgeführt und wird hier
-wiederverwendet. Nach dem Auslesen werden die Lockereignisse in eine \emph{Lock
-Dependency Relation} überführt. Die Klassen sind in
-\cref{lst:MagiclockTypes_LockDependency} und
+wiederverwendet. Nach dem Auslesen werden die Lockereignisse in eine
+Lock-Dependency-Relation\footnote{Siehe \cref{section:MagicLock}} überführt. Die
+Klassen sind in \cref{lst:MagiclockTypes_LockDependency} und
 \cref{lst:MagiclockTypes_LockDependencyRelation} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=45,lastline=49]{python}{./Python/magiclockLib/magiclockTypes.py}
@@ -123,12 +123,12 @@ Eine \texttt{LockDependencyRelation} enthält ein Hashset mit allen Lockobjekten
 eine Liste aller Threads und eine Liste der einzelnen \texttt{LockDependency}
 Objekten. Für die Threads wurde eine Liste gewählt, damit die Ergebnisse
 deterministisch ausfallen. Die Liste der Threads wird später in einer Schleife
-durchlaufen. Dies führt bei einem Hashset zu nicht deterministischen Ergebnisse,
-da die Sortierung zufällig ist.
+durchlaufen. Dies führt bei einem Hashset, auf Grund der zufälligen Sortierung,
+zu nicht deterministischen Ergebnissen.
 
 Im zweiten Schritt wird die \texttt{LockDependencyRelation} reduziert. Dazu
-werden die einzelnen Lockobjekte klassifiziert indem diese einer der folgenden
-Mengen zugewiesen werden\autocite[4]{MagicLock}.
+werden die einzelnen Lockobjekte klassifiziert durch die Zuweisung in eine der
+folgenden Mengen\autocite[4]{MagicLock}.
 \begin{enumerate}
   \item \textbf{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land
   outdegree(m) = 0\}$
@@ -153,7 +153,7 @@ eine Datenstruktur initialisiert.
   \label{lst:LockReduction_InitClassification}
 \end{listing}
 Für jede \texttt{LockDependency} werden die eingehenden und ausgehenden Kanten
-und der Mode bestimmt. Der Mode ist entweder der Name des Threads, welcher als
+sowie der Mode bestimmt. Der Mode ist entweder der Name des Threads, welcher als
 einziger Thread in der \texttt{LockDependencyRelation} Zugriffe auf das
 Lockobjekt ausführt, oder -1. Die erstellte Datenstruktur ist in
 \cref{lst:MagiclockTypes_InitClassification} dargestellt.
@@ -172,8 +172,8 @@ Die Klassifizierung der Lockobjekte erfolgt in
 Alle Lockobjekte ohne eingehende und ausgehende Kanten werden in den Zeilen 39
 und 40 in das \textbf{Independent-set} eingefügt. Diese Lockobjekte können
 ignoriert werden, da ein potenzieller Deadlock mindestens eine ausgehende und
-eine eingehende Kante besitzen muss. Lockobjekte ohne eingehende oder ohne
-ausgehende Kanten werden in den Zeilen 42 bis 44 in das
+mindestens eine eingehende Kante besitzen muss. Lockobjekte ohne eingehende oder
+ohne ausgehende Kanten werden in den Zeilen 42 bis 44 in das
 \textbf{Intermediate-set} eingefügt. Zusätzlich werden diese auf den Stack
 \texttt{s} gelegt. In den Zeilen 46 bis 69 wird die Klassifizierung für das
 \textbf{Inner-set} durchgeführt. Das oberste Lockobjekt \texttt{m} vom Stack \texttt{s}
@@ -188,8 +188,8 @@ das \textbf{Intermediate-set} eingefügt. Anschließend werden in den Zeilen 57
 und 58 die Kanten von dem Lockobjekt \texttt{m} zu \texttt{n} und alle
 ausgehenden Kanten von \texttt{m} auf 0 gesetzt. Das Gleiche wird für
 Lockobjekte ohne ausgehende Kanten in den Zeilen 59 bis 69 gemacht. Zuletzt
-werden in den Zeilen 71 bis 75 alle Lockobjekte, welche in keiner der Mengen
-vorhanden sind, in das \textbf{Cyclic-set} eingefügt.
+werden in den Zeilen 71 bis 75 alle Lockobjekte, welche in keiner der bisherigen
+Mengen vorhanden sind, in das \textbf{Cyclic-set} eingefügt.
 
 Der Algorithmus zur Reduzierung der \texttt{LockDependencyRelation} ist in
 \cref{lst:LockReduction_LockReduction} dargestellt.
@@ -212,7 +212,7 @@ wird in Zeile 107 die Lock Reduzierung rekursiv mit der eben erzeugten
 Nach der Reduzierung der Lockobjekte werden die vorhandenen Lockobjekte aus dem
 \textbf{Cyclic-set} in disjunkte Mengen aufgeteilt. Die disjunkten Mengen haben
 untereinander keine Kanten und sind daher unabhängige Teilgraphen. Die Suche
-nach Zyklen erfolgt anschließen für jeden dieser Teilgraphen. In
+nach Zyklen erfolgt anschließend für jeden dieser Teilgraphen. In
 \cref{lst:CycleDetection_DisjoinComponents} wird die Aufteilung in disjunkte
 Mengen durchgeführt. 
 \begin{listing}[ht]
@@ -238,7 +238,7 @@ erstellt.
 \end{listing}
 Es wird für jeden Thread \emph{t} eine Partition erstellt, welche die
 \texttt{LockDependency} Objekte enthält, bei denen der ausführende Thread gleich
-\emph{t} ist. Zusätzlich werden identische \texttt{LockDependency} Objekt
+\emph{t} ist. Zusätzlich werden identische \texttt{LockDependency} Objekte
 gruppiert. Ein \texttt{LockDependency} Objekt ist identisch mit einem anderen
 \texttt{LockDependency} Objekt, wenn der ausführende Thread, das betroffene
 Lockobjekt und die Menge der aktuell in Besitz befindlichen Lockobjekte
