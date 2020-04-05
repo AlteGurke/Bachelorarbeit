@@ -1,0 +1,19 @@
+MODULE(test);
+
+SYSTEM;
+   stdout: StdOut;
+
+PROBLEM;
+    SPC stdout DATION OUT SYSTEM ALPHIC GLOBAL;
+    DCL termout DATION OUT ALPHIC DIM(*,80) FORWARD STREAM CREATED(stdout);
+    DCL test_sema SEMA;
+
+T1: TASK PRIORITY 1 MAIN;
+  FOR i TO 9
+  REPEAT
+    RELEASE test_sema;
+    REQUEST test_sema;
+  END;
+END;
+
+MODEND;

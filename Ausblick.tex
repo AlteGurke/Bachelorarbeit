@@ -1,12 +1,35 @@
 \section{Offene Punkte}
-\begin{itemize}
-  \item Aufzeigen was nicht gemacht wurde und warum (eventuell welche
-  Synchronisationsmittel nicht erkannt werden (nur Sema keine Bolt Variablen))
-\end{itemize}
+\label{section:OffenePunkte}
+In OpenPEARL gibt es neben den \emph{SEMA} Variablen noch \emph{BOLT} Variablen,
+welche von der aktuellen Implementierung nicht beachtet werden. Um alle
+Synchronisierungsprobleme in OpenPEARL Anwendungen aufzeigen zu können, muss die
+Unterstützung für \emph{BOLT} Variablen hinzugefügt werden.
+
+Die derzeitige Integration in die OpenPEARL Laufzeitumgebung erfüllt noch nicht
+alle Kriterien in Bezug auf Softwarequalität, gerade im Bereich Robustheit. Aus
+diesem Grund ist die Integration noch kein Bestandteil des offiziellen OpenPEARL
+Repository.
+
+Zusätzlich ist durch die Verwendung der lock freien Warteschlange keine
+Reihenfolge garantiert. Die verwendeten Zeitstempel sind abhängig von der
+jeweiligen Implementierung und können von der Genauigkeit her stark variieren.
+Dadurch kann es passieren, dass mehrere Lockereignisse mit gleichen Zeitstempel
+erzeugt werden. Wenn bei diesen Ereignissen die Reihenfolge nicht garantiert
+ist, dann kann dies die gesamte Analyse verfälschen. Eine mögliche Lösung ist
+es, den Lockereignissen zusätzlich zum Zeitstempel eine Sequenznummer
+mitzugeben. Dadurch wird die Speicherauslastung zwar leicht erhöht, die
+Reihenfolge kann beim Auslesen aber sichergestellt werden.
 
 \section{Weiterentwicklung}
-\begin{itemize}
-  \item Alle möglichen Synchronisationsmittel erkennen
-  \item Trace Funktionalität in den OpenPEARL Compiler integrieren, so dass es
-  mittels compiler flag an und ausgeschaltet werden kann
-\end{itemize}
+\label{section:Weiterentwicklung}
+Der nächste Entwicklungsschritt ist die Erkennung von potenziellen Deadlocks in
+Echtzeit während der Ausführung einer OpenPEARL Anwendung. Dazu muss die
+\texttt{LockTracer}-Implementierung aus \cref{lst:LockTracer} erweitert werden.
+Anstatt die Ereignisse in eine Trace-Datei zu schreiben, müssen diese direkt
+über Interprozesskommunikation von der OpenPEARL Laufzeitumgebung an einen
+zweiten Prozess übertragen werden. Dieser kann dann die Python-Implementierungen
+aus \cref{section:Implementierung:Analyse Programm} und
+\cref{section:Implementierung:Visualisierung von potenziellen Deadlocks}
+aufrufen und die Analysen direkt durchführen. Die Visualisierung muss dann in
+regelmäßigen Intervallen aktualisiert werden, um dem Benutzer die Änderungen
+anzuzeigen.

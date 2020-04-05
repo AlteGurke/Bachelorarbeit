@@ -51,6 +51,7 @@
 %custom packages not from template
 \usepackage{scrhack}
 \usepackage[newfloat]{minted}
+\setminted{fontsize=\scriptsize,baselinestretch=1,breaklines,breakanywhere}
 \addto\captionsngerman{%
   \renewcommand{\listlistingname}{Quellcodeverzeichnis}%
   \renewcommand{\listingname}{Quellcode}%
@@ -65,6 +66,9 @@
 
 \usepackage{csquotes}
 \MakeOuterQuote{"}
+
+\usepackage[section]{placeins}
+\usepackage{multicol}
 
 \usepackage[onehalfspacing]{setspace} 
 %end of custom packages not from template

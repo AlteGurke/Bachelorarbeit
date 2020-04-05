@@ -1,8 +1,12 @@
-import sys, time, subprocess
+import sys
+import time
+import subprocess
 
-timeStarted = time.time() 
-process = subprocess.check_call(['prl','-r', sys.argv[1]])
-timeEnded = time.time() 
+times = 0
+for x in range(1, 4):
+    timeStarted = time.time()
+    process = subprocess.check_call(['prl', '-r', sys.argv[1]])
+    timeEnd = time.time()
 
-timeDelta = time.time() - timeStarted 
-print("Finished process in "+str(timeDelta)+" seconds.")
+    times += timeEnd - timeStarted
+print("Finished process in " + str(times / 3) + " seconds.")
