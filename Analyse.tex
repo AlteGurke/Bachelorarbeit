@@ -110,41 +110,43 @@ synonym verwendet.
 
 In PEARL bezeichnet ein \emph{TASK} eine Aufgabe und wird entweder direkt beim
 Start des Programms oder durch Signale von anderen Aufgaben gestartet.
-\emph{TASKs} werden parallel und gemäß ihrer Priorität ausgeführt. Um mehrere
-\emph{TASKs} zu synchronisieren gibt es zwei Möglichkeiten: \emph{SEMA} und
-\emph{BOLT} Variablen. 
+\emph{TASKs} werden parallel und gemäß ihrer Priorität ausgeführt.\footnote{Vgl.
+\autocite[104]{PEARL}} Um mehrere \emph{TASKs} zu synchronisieren gibt es zwei
+Möglichkeiten: \emph{SEMA} und \emph{BOLT} Variablen.\footnote{Vgl.
+\autocite[120]{PEARL}}
 
 Eine \emph{SEMA} Variable ist ein Semaphor und dient als Synchronisationsmittel.
 Sie kann als Wert nicht negative ganze Zahlen besitzen, wobei null den Zustand
-"gesperrt" und positive Zahlen den Zustand "frei" bedeuten
-\autocite[9--17]{PEARL}. Eine \emph{SEMA} Variable hat zu Beginn den Wert null
-und den Zustand "gesperrt". Mit dem Befehl \emph{RELEASE} wird eine \emph{SEMA}
+"gesperrt" und positive Zahlen den Zustand "frei" bedeuten.\footnote{Vgl.
+\autocite[120]{PEARL}} Eine \emph{SEMA} Variable hat zu Beginn den Wert null und
+den Zustand "gesperrt". Mit dem Befehl \emph{RELEASE} wird eine \emph{SEMA}
 Variable um den Wert eins erhöht und erhält den Zustand "frei". Mit dem
 \emph{REQUEST} Befehl wird der Wert einer \emph{SEMA} Variablen um eins
 verringert. Ist der Wert einer \emph{SEMA} Variablen null wird der ausführende
 \emph{TASK} angehalten und in eine Warteschlange eingereiht. Sobald die Variable
 über den Befehl \emph{RELEASE} wieder freigeben wird, wird der nächste
-\emph{TASK} in der Warteschlange gemäß seiner Priorität fortgeführt. Das
-Zustandsdiagramm zur \emph{SEMA} Variable ist in \cref{fig:SEMA_StateDiagram}
-dargestellt.
+\emph{TASK} in der Warteschlange gemäß seiner Priorität
+fortgeführt.\footnote{Vgl. \autocite[120-121]{PEARL}} Das Zustandsdiagramm zur
+\emph{SEMA} Variable ist in \cref{fig:SEMA_StateDiagram} dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{SEMA_State_Diagram.eps}
+  \footnotesize\sffamily\textbf{Quelle:} Eigene Darstellung
   \caption{Zustandsdiagramm einer SEMA Variablen}
   \label{fig:SEMA_StateDiagram}
 \end{figure}
 
 \emph{BOLT} Variablen haben im Gegensatz zu \emph{SEMA} Variablen drei Zustände:
-"gesperrt", "Sperre möglich" und "Sperre nicht möglich" \autocite[9--17]{PEARL}.
-Sie bieten die Möglichkeit exklusive und nicht exklusive Sperren zu ermöglichen.
-Zum Beispiel können so simultane Lesezugriffe und exklusive Schreibzugriffe
-realisiert werden. Zu Beginn hat eine \emph{BOLT} Variable den Zustand "Sperre
-möglich". Mit dem Befehl \emph{RESERVE} wird ein exklusiver Zugriff auf eine
-\emph{BOLT} Variable angefordert. Wenn die Variable im Zustand "Sperre möglich"
-ist, erhält diese den Zustand "gesperrt". Ansonsten wird ähnlich zu der
-\emph{REQUEST} Anweisung für \emph{SEMA} Variablen der ausführende \emph{TASK}
-angehalten und in eine Warteschlange eingereiht. Mit dem Befehl \emph{FREE}
-erhält eine \emph{BOLT} Variable den Zustand "Sperre möglich" und alle
-\emph{TASKs} in der Warteschlange, welche aufgrund einer \emph{RESERVE}
+"gesperrt", "Sperre möglich" und "Sperre nicht möglich".\footnote{Vgl.
+\autocite[125]{PEARL}} Sie bieten die Möglichkeit exklusive und nicht exklusive
+Sperren zu ermöglichen. Zum Beispiel können so simultane Lesezugriffe und
+exklusive Schreibzugriffe realisiert werden. Zu Beginn hat eine \emph{BOLT}
+Variable den Zustand "Sperre möglich". Mit dem Befehl \emph{RESERVE} wird ein
+exklusiver Zugriff auf eine \emph{BOLT} Variable angefordert. Wenn die Variable
+im Zustand "Sperre möglich" ist, erhält diese den Zustand "gesperrt". Ansonsten
+wird ähnlich zu der \emph{REQUEST} Anweisung für \emph{SEMA} Variablen der
+ausführende \emph{TASK} angehalten und in eine Warteschlange eingereiht. Mit dem
+Befehl \emph{FREE} erhält eine \emph{BOLT} Variable den Zustand "Sperre möglich"
+und alle\emph{TASKs} in der Warteschlange, welche aufgrund einer \emph{RESERVE}
 Anweisung warten, werden gemäß ihrer Priorität fortgeführt. Wenn keine
 \emph{TASKs} in der Warteschlange vorhanden sind, welche auf eine \emph{RESERVE}
 Anweisung warten, werden die \emph{TASKs} in der Warteschlange gemäß ihrer
@@ -158,10 +160,12 @@ den Zustand "Sperre nicht möglich", um den exklusiven Zugriff zu verbieten.
 Zusätzlich wird die Anzahl der benutzenden \emph{TASKs} um eins erhöht. Die
 \emph{LEAVE} Anweisung verringert die Anzahl der benutzenden \emph{TASKs} um
 eins, wenn die Anzahl eins entspricht, funktioniert die \emph{LEAVE} Anweisung
-wie die \emph{FREE} Anweisung. Das Zustandsdiagramm zur \emph{BOLT} Variable ist
-in \cref{fig:BOLT_StateDiagram} dargestellt.
+wie die \emph{FREE} Anweisung.\footnote{Vgl. \autocite[125-127]{PEARL}} Das
+Zustandsdiagramm zur \emph{BOLT} Variable ist in \cref{fig:BOLT_StateDiagram}
+dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{BOLT_State_Diagram.eps}
+  \footnotesize\sffamily\textbf{Quelle:} Eigene Darstellung
   \caption{Zustandsdiagramm einer BOLT Variablen}
   \label{fig:BOLT_StateDiagram}
 \end{figure}
@@ -170,11 +174,12 @@ in \cref{fig:BOLT_StateDiagram} dargestellt.
 \label{section:OpenPEARL}
 Um PEARL Programme auf einem System auszuführen wird ein Compiler benötigt. Das
 OpenSource Projekt OpenPEARL besteht aus einem Compiler und einer
-Laufzeitumgebung für PEARL \autocite{OpenPEARL}. Unterstützt wird der PEARL90
-Standard bis auf einige wenige Unterschiede
-\autocite{OpenPEARL_Differences_To_PEARL90}.
+Laufzeitumgebung für PEARL.\footnote{Vgl. \autocite{OpenPEARL_Structure}}
+Unterstützt wird der PEARL90 Standard bis auf einige wenige
+Unterschiede.\footnote{Vgl. \autocite{OpenPEARL_Differences_To_PEARL90}}
 
-OpenPEARL besteht aus drei wesentlichen Komponenten:
+OpenPEARL besteht aus drei wesentlichen
+Komponenten\autocite{OpenPEARL_Structure}:
 \begin{enumerate}
   \item Compiler
   \item Laufzeitumgebung
@@ -188,7 +193,8 @@ für zum Beispiel die Implementierung für das Scheduling der Tasks. PEARL
 Anwendungen können aus mehreren Modulen bestehen, welche unabhängig voneinander
 kompiliert werden. Um Inkonsistenzen bei der Erstellung der Anwendung zu
 verhindern, prüft der Inter Module Checker die Export- und Importschnittstellen
-aller Module und prüft deren Kompatibilität.
+aller Module und prüft deren Kompatibilität.\footnote{Vgl.
+\autocite{OpenPEARL_Structure}}
 
 In \cref{lst:ExampleDeadlock} ist ein Beispielprogramm in der Programmiersprache
 PEARL dargestellt. Das Programm startet zwei parallele Aufgaben welche beide
@@ -199,25 +205,27 @@ Standardausgabe muss dabei synchronisiert erfolgen.
   \caption{Beispiel einer OpenPEARL Anwendung mit einem potenziellen Deadlock}
   \label{lst:ExampleDeadlock}   
 \end{listing} 
-In den Zeilen 7 bis 10 werden Variablen definiert, wie zum Beispiel die Ausgabe
+In den Zeilen~7 bis 10 werden Variablen definiert, wie zum Beispiel die Ausgabe
 über die Standardausgabe und die zwei \emph{SEMA} Variablen \emph{L1} und
-\emph{L2} in den Zeilen 9 und 10. In den Zeilen 12 bis 17 ist ein \emph{TASK}
-definiert. Durch die Kennzeichnung \emph{MAIN} wird der \emph{TASK} direkt beim
-Start des Programms ausgeführt. Die Befehle \emph{RELEASE} in den Zeilen 13 und
-14 erhöhen den Wert der jeweiligen \emph{SEMA} Variable um eins, wodurch der
-Zustand von "gesperrt" auf "frei" gesetzt wird. Anschließend werden in den
-Zeilen 15 und 16 die \emph{TASKS} \emph{T2} und \emph{T3} gestartet.
+\emph{L2} in den Zeilen~9 und 10. In den Zeilen~12 bis 17 ist ein \emph{TASK}
+definiert.
 
-Die \emph{TASKS} \emph{T2} und \emph{T3} geben in den Zeilen 22 bis 24 und in
-den Zeilen 32 bis 34 die Zeichenfolge "Hello World T2" bzw. "Hello World T3" auf
+Durch die Kennzeichnung \emph{MAIN} wird der \emph{TASK} direkt beim Start des
+Programms ausgeführt. Die Befehle \emph{RELEASE} in den Zeilen~13 und 14 erhöhen
+den Wert der jeweiligen \emph{SEMA} Variable um eins, wodurch der Zustand von
+"gesperrt" auf "frei" gesetzt wird. Anschließend werden in den Zeilen~15 und 16
+die \emph{TASKS} \emph{T2} und \emph{T3} gestartet.
+
+Die \emph{TASKS} \emph{T2} und \emph{T3} geben in den Zeilen~22 bis 24 und in
+den Zeilen~32 bis 34 die Zeichenfolge "Hello World T2" bzw. "Hello World T3" auf
 der Standardausgabe aus. Die Synchronisierung des Zugriffs auf die
 Standardausgabe erfolgt mittels den \emph{SEMA} Variablen \emph{L1} und
 \emph{L2}. Beide \emph{TASKS} versuchen beide \emph{SEMA} Variablen in Besitz zu
-nehmen. \emph{T2} versucht in den Zeilen 20 und 21 zuerst \emph{L1} und dann
-\emph{L2} in Besitz zu nehmen. \emph{T3} versucht in den Zeilen 30 und 31 zuerst
+nehmen. \emph{T2} versucht in den Zeilen~20 und 21 zuerst \emph{L1} und dann
+\emph{L2} in Besitz zu nehmen. \emph{T3} versucht in den Zeilen~30 und 31 zuerst
 \emph{L2} und dann \emph{L1} in Besitz zu nehmen. Da beide \emph{TASKS} parallel
-laufen, kann es passieren, dass \emph{T2} \emph{L1} in Zeile 20 in Besitz nimmt
-und gleichzeitig \emph{T3} in Zeile 30 \emph{L2} in Besitz nimmt. Beide
+laufen, kann es passieren, dass \emph{T2} \emph{L1} in Zeile~20 in Besitz nimmt
+und gleichzeitig \emph{T3} in Zeile~30 \emph{L2} in Besitz nimmt. Beide
 \emph{SEMA} Variablen haben jetzt den Wert null und den Zustand "gesperrt". Der
 \emph{TASK} \emph{T2} wartet jetzt darauf, dass \emph{L2} freigegeben wird und
 \emph{T3} wartet darauf, dass \emph{L1} freigegeben wird. Beide \emph{TASKS}
@@ -283,7 +291,7 @@ immer nur ein Element aus der Gruppe geprüft werden. Wenn ein Zyklus gefunden
 wurde, wurde gleichzeitig ein Zyklus für alle Lock-Dependencies in der Gruppe
 gefunden. Wenn kein Zyklus gefunden wurde, wird dies gleichzeitig für alle
 anderen Elemente in der Gruppe angenommen. Zwei Lock-Dependencies sind gleich
-wenn gilt:
+wenn folgendes gilt:
 \begin{quote}
   Gegeben sind zwei Lock-Dependencies \emph{$r_1 = (t_1, m_1, L_1)$} und
   \emph{$r_2 = (t_2, m_2, L_2)$}: $r_1 = r_2 \Leftrightarrow t_1 = t_2 \land m_1
