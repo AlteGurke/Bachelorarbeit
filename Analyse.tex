@@ -3,12 +3,13 @@
 Im Gegensatz zu Single-Threaded-Anwendungen sind Multi-Threaded-Anwendungen
 nicht deterministisch. Dies kann zu \emph{race conditions} führen. Eine
 \emph{race condition} tritt zum Beispiel dann auf, wenn zwei Threads einen
-Zähler jeweils um eins erhöhen wollen. Angenommen der Zähler hat zu Beginn den
-Wert drei. Beide Threads wollen jetzt nahezu gleichzeitig den Zähler um eins
-erhöhen. Dazu lesen beide Threads den aktuellen Wert des Zählers, in diesem Fall
-drei, aus. Anschließend addieren beide eins hinzu und schreiben den neuen Wert,
-in diesem Fall vier, in den Zähler. Erwartet wurde jedoch der Wert fünf, da
-beide Threads den Zähler um jeweils eins erhöhen sollten. Um solche \emph{race
+Zähler jeweils um eins erhöhen wollen.\footnote{Vgl. "Data races" in
+\autocite[70]{netzer1992race}} Angenommen der Zähler hat zu Beginn den Wert
+drei. Beide Threads wollen jetzt nahezu gleichzeitig den Zähler um eins erhöhen.
+Dazu lesen beide Threads den aktuellen Wert des Zählers, in diesem Fall drei,
+aus. Anschließend addieren beide eins hinzu und schreiben den neuen Wert, in
+diesem Fall vier, in den Zähler. Erwartet wurde jedoch der Wert fünf, da beide
+Threads den Zähler um jeweils eins erhöhen sollten. Um solche \emph{race
 conditions} zu verhindert werden Synchronisationsmechanismen benötigt.
 
 Eine Möglichkeit um den Zugriff auf eine gemeinsame Ressource zu synchronisieren
@@ -39,45 +40,55 @@ existieren zwei Threads \emph{T1} und \emph{T2} und zwei Lockobjekte \emph{L1}
 und \emph{L2}. Angenommen \emph{T1} besitzt \emph{L1} und zu gleichen Zeit
 erlangt \emph{T2} das Lockobjekt \emph{L2}. Wenn jetzt der Thread \emph{T1} das
 Lockobjekt \emph{L2} anfordert und der Thread \emph{T2} das Lockobjekt
-\emph{L1}, kommt es zu einem Deadlock. Die Ausführung des Programms terminiert
-nicht, da beide Threads auf den jeweils anderen Thread warten und sich
-gegenseitig blockieren.
+\emph{L1}, kommt es zu einem Deadlock.\footnote{Vgl.
+\autocite[70]{coffman1971system}} Die Ausführung des Programms terminiert nicht,
+da beide Threads auf den jeweils anderen Thread warten und sich gegenseitig
+blockieren.
 
 Solche potenziellen Deadlocks zu erkennen ist die Aufgabe von statischen und
 dynamischen Methoden zur Deadlockerkennung. Bei der statischen Deadlockerkennung
 wird der Quellcode direkt analysiert. Dieses Verfahren wird hier nicht näher
 betrachtet. Bei der dynamischen Deadlockerkennung wird die Anwendung zur
-Laufzeit analysiert und läuft in folgenden drei Schritten ab:
+Laufzeit analysiert und läuft in folgenden drei Schritten ab.\footnote{Vgl.
+\autocite[212-213]{bensalem2005dynamic}}
 \begin{enumerate}
-  \item Erstellung einer Trace-Datei
-  \item Erstellung eines Graphen basierend auf den Informationen aus der
-  Trace-Datei
+  \item Erstellung eines \emph{execution traces}
+  \item Erstellung eines Graphen basierend auf den Informationen aus dem \emph{execution trace}
   \item Suche nach potenziellen Deadlocks durch die Identifizierung von Zyklen
   innerhalb des Graphen
 \end{enumerate}
-Eine Trace-Datei enthält einen \emph{execution trace}\label{text:ExecutionTrace}
-des ausführenden Programms. Ein \emph{execution trace} ist eine Abfolge von
-Events. Ein Event \emph{e\textsubscript{i}} wird durch eine der folgenden
-Methoden definiert: starten eines Threads, Inbesitznahme eines Lockobjekts und
-Freigabe eines Lockobjekts. Das Starten eines neues Threads ist definiert durch
-ein Thread-Start-Event:
+Ein \emph{execution trace} ist eine Abfolge von Events. Ein Event
+\emph{e\textsubscript{i}} wird durch eine der folgenden Methoden definiert:
+starten eines Threads, betreten eines Threads, Inbesitznahme eines Lockobjekts
+und Freigabe eines Lockobjekts.\footnote{Vgl.
+\autocite[212]{bensalem2005dynamic}} Die Positionsangabe der Events durch
+Zeilennummer wird hier ignoriert, da sie nicht benötigt wird.\footnote{Vgl.
+"line number lno" in \autocite[212]{bensalem2005dynamic}} Das Starten eines
+neues Threads ist definiert durch ein Thread-Start-Event:
 \begin{quote}
 \texttt{s(ausführender Thread, Name des neuen Threads)}
 \end{quote}
 Zum Beispiel bedeutet \texttt{s(main,T1)}, dass der Thread \emph{main} den
-Thread \emph{T1} gestartet hat. Die Inbesitznahme eines Lockobjekts ist
-definiert durch ein Lock-Event:
+Thread \emph{T1} gestartet hat. Das Betreten eines Threads ist definiert durch
+ein Thread-Join-Event:
+\begin{quote}
+\texttt{j(ausführender Thread, Name des zu betretenden Threads)}
+\end{quote}
+Zum Beispiel bedeutet \texttt{j(T1,T2)}, dass der Thread \emph{T1} den Thread
+\emph{T2} betreten hat. Die Inbesitznahme eines Lockobjekts kann definiert
+werden durch ein Lock-Event:
 \begin{quote}
 \texttt{l(ausführender Thread, Name des Lockobjekts)}
 \end{quote}
 Zum Beispiel bedeutet \texttt{l(T1,L3)}, dass der Thread \emph{T1} das
-Lockobjekt \emph{L3} in Besitz genommen hat. Die Freigabe eines Lockobjekts ist
-definiert durch ein Unlock-Event:
+Lockobjekt \emph{L3} in Besitz genommen hat. Die Freigabe eines Lockobjekts kann
+definiert werden durch ein Unlock-Event:
 \begin{quote}
 \texttt{u(ausführender Thread, Name des Lockobjekts)}
 \end{quote}
 Zum Beispiel bedeutet \texttt{u(T1,L3)}, dass der Thread \emph{T1} das
-Lockobjekt \emph{L3} freigegeben hat.
+Lockobjekt \emph{L3} freigegeben hat.\footnote{Vgl.
+\autocite[212]{bensalem2005dynamic}}
 
 Die Abfolge aller während der Laufzeit des Programms aufgetretenen Events
 definieren einen möglichen \emph{execution trace} des Programms. Programme
@@ -93,7 +104,8 @@ Lockgraph erstellt. Ein Lockgraph ist definiert durch:
 \emph{L} ist die Menge aller Lockobjekte im \emph{execution trace} und \emph{R}
 die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel \emph{(L1,
 L2)} für das gilt: Es existiert ein Thread, welcher das Lockobjekt \emph{L1}
-besitzt, während er einen Lock auf \emph{L2} anfordert.
+besitzt, während er einen Lock auf \emph{L2} anfordert.\footnote{Vgl.
+\autocite[72]{coffman1971system} und \autocite[213]{bensalem2005dynamic}}
 
 \section{PEARL}
 \label{section:PEARL}
@@ -240,9 +252,8 @@ Entwicklung wurde der Fokus auf die Skalierung und Effizienz des Algorithmus
 gesetzt. Ziel war es mit großen Multithreaded Anwendungen skalieren und diese
 effizient analysieren zu können.
 
-MagicLock analysiert einen \emph{execution trace}\footnote{siehe
-\cref{text:ExecutionTrace}} einer Programmausführung ohne Deadlocks. Ein
-möglicher \emph{execution trace} von dem Beispielprogramm aus
+MagicLock analysiert einen \emph{execution trace} einer Programmausführung ohne
+Deadlocks. Ein möglicher \emph{execution trace} von dem Beispielprogramm aus
 \cref{lst:ExampleDeadlock} ist:
 \begin{quote}
   \textbf{$\sigma$} = s(main,T1), u(T1,L1), u(T1,L2), s(T1,T2), s(T1,T3),
