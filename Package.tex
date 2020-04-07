@@ -15,7 +15,7 @@
 \usepackage{changepage}
 \usepackage{graphicx}
 \usepackage{blindtext}
-\usepackage[bottom]{footmisc}
+\usepackage[bottom,hang]{footmisc}
 \usepackage[ngerman]{babel}
 \usepackage{wrapfig}
 \usepackage{float}
@@ -30,8 +30,6 @@
 \WarningFilter{scrbook}{Usage of package `fancyhdr'}
 %end of custom packages not from template
 
-\usepackage[bookmarks,hypertexnames=false,debug,hidelinks]{hyperref}
-\usepackage{bookmark}
 \usepackage{nameref} 
 \usepackage[listformat=empty]{caption}
 \captionsetup{justification=raggedright,singlelinecheck=false}
@@ -51,18 +49,12 @@
 %custom packages not from template
 \usepackage{scrhack}
 \usepackage[newfloat]{minted}
-\setminted{fontsize=\scriptsize,baselinestretch=1,breaklines,breakanywhere}
+\setminted{fontsize=\scriptsize,baselinestretch=1,breaklines,breakanywhere,xleftmargin=25pt}
 \addto\captionsngerman{%
   \renewcommand{\listlistingname}{Quellcodeverzeichnis}%
   \renewcommand{\listingname}{Quellcode}%
 }
 \usepackage{microtype}
-\usepackage[capitalise,ngerman]{cleveref}
-\addto\captionsngerman{
-    % Second argument is singular, third is plural
-    \crefname{listing}{Quellcode}{Quellcodes}
-    \Crefname{listing}{Quellcode}{Quellcodes}
-}
 
 \usepackage{csquotes}
 \MakeOuterQuote{"}
@@ -71,4 +63,13 @@
 \usepackage{multicol}
 
 \usepackage[onehalfspacing]{setspace} 
+
+\usepackage[bookmarks,hypertexnames=false,debug,hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage[capitalise,ngerman]{cleveref}
+\addto\captionsngerman{
+    % Second argument is singular, third is plural
+    \crefname{listing}{Quellcode}{Quellcodes}
+    \Crefname{listing}{Quellcode}{Quellcodes}
+}
 %end of custom packages not from template

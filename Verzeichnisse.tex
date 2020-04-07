@@ -1,5 +1,5 @@
 \cleardoubleoddpage
-\addtocontents{toc}{~\hfill\textbf{Seite}\endgraf}
+% \addtocontents{toc}{~\hfill\textbf{Seite}\endgraf}
 \pagenumbering{Roman}
 \setcounter{page}{3}
 \tableofcontents
@@ -35,13 +35,14 @@
 % \addcontentsline{toc}{chapter}{Formelverzeichnis} \newpage
 
 \newpage \phantomsection \listoflistings
+\addcontentsline{toc}{chapter}{Quellcodeverzeichnis}
+\addtocontents{lol}{\protect\thispagestyle{fancy}}
 \thispagestyle{fancy}
 % clear all header fields
 \fancyhead{} 
 %\fancyhead[RO,LE]{\thepage}
 \fancyhead[R]{\thepage}
 \fancyfoot{}
-\addcontentsline{toc}{chapter}{Quellcodeverzeichnis}
 
 \clearpage
 \pagenumbering{arabic}  
