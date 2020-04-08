@@ -1,4 +1,4 @@
-\documentclass[oneside,bibliography=totoc,openany]{scrbook}
+\documentclass[oneside,bibliography=totoc,openany,numbers=noenddot]{scrbook}
 \include{Package}
 \usepackage[style=numeric,citestyle=numeric,backref=true,urldate=long,backend=biber]{biblatex}
 \input{Marginalie}
@@ -63,7 +63,7 @@
 \stopcontents
 
 
-\printbibliography
+\printbibliography{\protect\thispagestyle{fancy}}
 
 \appendix
 \input{Anhang.tex}

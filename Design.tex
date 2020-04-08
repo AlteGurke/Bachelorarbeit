@@ -29,7 +29,7 @@ potentielle Deadlocks zu erkennen:
 In \cref{fig:LockTrace_Design} sind die benötigten Klassen dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{LockTrace_Design.eps}
-  \footnotesize\sffamily\textbf{Quelle:} Eigene Darstellung
+  \footnotesize\sffamily Quelle: Eigene Darstellung
   \caption{UML Klassendiagramm für Trace-Funktionalität}
   \label{fig:LockTrace_Design}
 \end{figure}
@@ -70,11 +70,12 @@ Laufzeit der Anwendung stark negativ beeinflussen. Deswegen wird die lock freie
 Implementierung einer Warteschlange aus \autocite{Moody_Camels_Concurrentqueue}
 verwendet. Die Warteschlange garantiert eine Thread sichere Implementierung,
 aber keine Sortierung innerhalb der Warteschlange für mehrere
-Produzenten.\footnote{Vgl. \autocite{Moody_Camels_Concurrentqueue}} Da es zur
-Laufzeit nur eine einzige Instanz der \texttt{Lock\-Tracer} Klasse gibt, ist die
-Reihenfolge innerhalb der Warteschlange dennoch garantiert. Der Dateipfad zur
-Speicherung der Trace-Datei wird über die Umgebungsvariable
-\texttt{OpenPEARL\_LockTracer\_Path} definiert und bei der Initialisierung der
+Produzenten.\footnote{Vgl. "Reasons not to use" in
+\autocite{Moody_Camels_Concurrentqueue}} Da es zur Laufzeit nur eine einzige
+Instanz der \texttt{Lock\-Tracer} Klasse gibt, ist die Reihenfolge innerhalb der
+Warteschlange dennoch garantiert. Der Dateipfad zur Speicherung der Trace-Datei
+wird über die Umgebungsvariable \texttt{OpenPEARL\_LockTracer\_Path} definiert
+und bei der Initialisierung der
 \texttt{LockTracer} Implementierung in der Variable \texttt{filePath}
 gespeichert. Die dritte Umgebungsvariable
 \texttt{OpenPEARL\_LockTracer\_Enabled} wird zur Aktivierung der
@@ -110,7 +111,7 @@ gezeichnet. Die Beschriftung eines Kreises enthält den Namen des \emph{SEMA}
 Objekts.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{Timeline_Example.eps}
-  \footnotesize\sffamily\textbf{Quelle:} Eigene Darstellung
+  \footnotesize\sffamily Quelle: Eigene Darstellung
   \caption{Visualisierung der chronologischen Verwendung von \emph{SEMA} Objekten}
   \label{fig:Timeline_Example}
 \end{figure}
@@ -121,8 +122,9 @@ Der in \cref{section:MagicLock} beschrieben Algorithmus wird dazu verwendet, um
 potentielle Deadlocks in der aus \cref{section:Erzeugung der Trace-Datei}
 erstellten Trace-Datei zu finden. 
 \begin{figure}[ht]
-  \includegraphics[width=\linewidth/2]{Magiclock_Example.eps}
-  \footnotesize\sffamily\textbf{Quelle:} Eigene Darstellung
+  \includegraphics[width=\linewidth/2]{Magiclock_Example.eps} 
+  \\
+  \footnotesize\sffamily Quelle: Eigene Darstellung
   \caption{Visualisierung eines potentiellen Deadlocks}
   \label{fig:Magiclock_Example}
 \end{figure}
