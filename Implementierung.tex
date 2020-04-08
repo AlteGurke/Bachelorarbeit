@@ -131,7 +131,7 @@ zufälligen Sortierung, zu nicht deterministischen Ergebnissen.
 
 Im zweiten Schritt wird die \texttt{Lock\-Dependency\-Relation} reduziert. Dazu
 werden die einzelnen Lockobjekte klassifiziert durch die Zuweisung in eine der
-folgenden Mengen.\autocite[4]{MagicLock}
+folgenden Mengen.\autocite[vgl.][4]{MagicLock}
 \begin{enumerate}
   \item \emph{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land
   outdegree(m) = 0\}$
@@ -158,7 +158,7 @@ eine Datenstruktur initialisiert.
 Für jede \texttt{Lock\-Dependency} werden die eingehenden und ausgehenden Kanten
 sowie der Mode bestimmt. Der Mode ist entweder der Name des Threads, der als
 einziger Thread in der \texttt{Lock\-Dependency\-Relation} Zugriffe auf das
-Lockobjekt ausführt, oder -1. Die erstellte Datenstruktur ist in
+Lockobjekt ausführt oder -1. Die erstellte Datenstruktur ist in
 \cref{lst:MagiclockTypes_InitClassification} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=3,lastline=8]{python}{./Python/magiclockLib/magiclockTypes.py}
