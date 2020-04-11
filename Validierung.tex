@@ -1,4 +1,4 @@
-\section{Trace Funktion}\label{Validierung:Trace Funktion}
+\section{Trace-Funktion}\label{Validierung:Trace-Funktion}
 \label{section:ValidierungTraceFunktion}
 Um die Trace-Funktionalität in OpenPEARL zu prüfen werden folgende
 Umgebungsvariablen verwendet:
@@ -7,18 +7,18 @@ Umgebungsvariablen verwendet:
   \item \emph{OpenPEARL\-\_LockTracer\-\_Path} = /tmp/LockTracer/
   \item \emph{OpenPEARL\-\_LockTracer\-\_MaxEntries} = 1
 \end{itemize}
-Zum Testen wird die OpenPEARL Anwendung aus \cref{lst:OpenPEARLTraceTest}
+Zum Testen wird die OpenPEARL-Anwendung aus \cref{lst:OpenPEARLTraceTest}
 verwendet. 
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos]{vim}{./OpenPEARL/TraceTest.prl}
-  \caption{OpenPEARL Anwendung zum Testen der Trace-Funktionalität}
+  \caption{OpenPEARL-Anwendung zum Testen der Trace-Funktionalität}
   \label{lst:OpenPEARLTraceTest}
 \end{listing}
-Es wird ein Thread \texttt{T1} erzeugt, welcher die \emph{SEMA} Variable
+Es wird ein Thread \texttt{T1} erzeugt, welcher die \textrm{SEMA}-Variable
 \texttt{test\_sema} insgesamt neun Mal freigibt und in Besitz nimmt. Wird die
-Anwendung ausgeführt wird keine Trace-Datei angelegt. Wird die Umgebungsvariable
-\emph{OpenPEARL\-\_LockTracer\-\_Enabled} auf \texttt{true} gesetzt, wird die
-Trace-Datei aus \cref{lst:OpenPEARLTraceResult} erzeugt.
+Anwendung ausgeführt, wird keine Trace-Datei angelegt. Wird die
+Umgebungsvariable \emph{OpenPEARL\-\_LockTracer\-\_Enabled} auf \texttt{true}
+gesetzt, wird die Trace-Datei aus \cref{lst:OpenPEARLTraceResult} erzeugt.
 \begin{listing}[ht]
   \begin{minipage}[ht]{\linewidth}
     \begin{multicols}{2}
@@ -30,10 +30,10 @@ Trace-Datei aus \cref{lst:OpenPEARLTraceResult} erzeugt.
 \end{listing}
 
 Die Tests zur Messung der Laufzeit und der Speicherauslastung werden in einer
-virtuellen Maschine mit Debian 9 Betriebssystem, 4 CPU Kernen und 2~GB
-Arbeitsspeicher durchgeführt. Das Host System läuft mit dem Betriebssystem macOS
-10.15.4 und verfügt über einen Intel Core i7 mit 3,1 GHz, 16~GB Arbeitsspeicher
-und einer 512~GB PCIe SSD. Zur Messung der Laufzeit wird das Pythonskipt aus
+virtuellen Maschine mit Debian 9 Betriebssystem, 4 CPU Kernen und 2\,GB
+Arbeitsspeicher durchgeführt. Das Hostsystem läuft mit dem Betriebssystem macOS
+10.15.4 und verfügt über einen Intel Core i7 mit 3,1 GHz, 16\,GB Arbeitsspeicher
+und einer 512\,GB PCIe SSD. Zur Messung der Laufzeit wird das Pythonskipt aus
 \cref{lst:Python_Benchmark_CPU} und zur Messung der Speicherauslastung das
 Pythonskipt aus \cref{lst:Python_Benchmark_Memory} verwendet.
 \begin{listing}[ht]
@@ -46,13 +46,13 @@ Pythonskipt aus \cref{lst:Python_Benchmark_Memory} verwendet.
   \caption{Pythonskipt zur Messung der Speicherauslastung}
   \label{lst:Python_Benchmark_Memory}
 \end{listing}
-Für die Tests wird eine OpenPEARL Anwendung verwendet, welche zehn Threads
-erzeugt, die jeweils nacheinander zwei \emph{SEMA} Objekte in Besitz nehmen und
-wieder freigeben. Dabei verwendet der Thread \emph{T1} die Objekte
-\emph{L01} und \emph{L02}, der Thread \emph{T2} die Objekte \emph{L02}
-und \emph{L03}, bis zum letzten Thread \emph{T10}, welcher die Objekte
-\emph{L10} und \emph{L01} verwendet. Ingesamt werden 400.000 Einträge erzeugt.
-Das Ergebnis der Laufzeitmessung ist in \cref{fig:BenchmarkCpuResults}
+Für die Tests wird eine OpenPEARL-Anwendung verwendet, welche zehn Threads
+erzeugt, die jeweils nacheinander zwei \textrm{SEMA}-Objekte in Besitz nehmen
+und wieder freigeben. Dabei verwendet der Thread \textrm{T1} die Objekte
+\textrm{L01} und \textrm{L02}, der Thread \textrm{T2} die Objekte \textrm{L02}
+und \textrm{L03}, bis zum letzten Thread \textrm{T10}, welcher die Objekte
+\textrm{L10} und \textrm{L01} verwendet. Ingesamt werden 400.000 Einträge
+erzeugt. Das Ergebnis der Laufzeitmessung ist in \cref{fig:BenchmarkCpuResults}
 dargestellt. 
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{Benchmark_CPU_Results.eps}
@@ -83,7 +83,7 @@ ein guter Kompromiss zwischen Laufzeit und Speicherauslastung. Ist die Laufzeit
 wichtiger und die Speicherauslastung kein Problem, sollte eine Puffergröße von
 100.000 gewählt werden.
 
-\section{Analyse Programm}
+\section{Analyse-Programm}
 \label{section:ValidierungAnalyseProgramm}
 Für die chronologische Darstellung der Lockobjekte wird die Trace-Datei aus
 \cref{lst:ExampleTraceFile} mit drei Threads und neun Lockobjekten verwendet.
@@ -98,7 +98,7 @@ Für die chronologische Darstellung der Lockobjekte wird die Trace-Datei aus
 \end{listing}
 In dem Beispiel gibt es zusätzlich zwei Einträge mit dem gleichen Zeitstempel in
 den Zeilen 3 und 4 sowie in den Zeilen 13 und 14. Die Ausgabe der Anwendung aus
-\cref{section:Implementierung:Analyse Programm} ist in
+\cref{section:Implementierung:Analyse-Programm} ist in
 \cref{fig:LockTraceVisualization} dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{ExampleTraceFile.eps}
@@ -107,8 +107,8 @@ den Zeilen 3 und 4 sowie in den Zeilen 13 und 14. Die Ausgabe der Anwendung aus
   \label{fig:LockTraceVisualization}
 \end{figure}
 
-Die überlappenden Logeinträge können auseinander gezogen werden in dem in den
-Graphen hineingezoomt wird. Die Vergrößerung auf 70 Mikrosekunden ist in
+Die überlappenden Logeinträge können auseinander gezogen werden, in dem in den
+Graphen hineingezoomt wird. Die Vergrößerung auf $70\,\textrm{µs}$ ist in
 \cref{fig:LockTraceVisualizationZoomed} dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{ExampleTraceFileZoomed.eps}
@@ -126,16 +126,17 @@ dargestellt werden.
 \label{section:DeadlockVisualization}
 Für die Visualisierung von potenziellen Deadlocks wird erneut die Trace-Datei
 aus \cref{lst:ExampleTraceFile} verwendet. In dem Beispiel gibt es genau einen
-potenziellen Deadlock zwischen den Threads \emph{1} und \emph{2}. In den Zeilen
-1 und 2 nimmt der Thread \emph{1} die Lockobjekten \emph{l1} und \emph{l2}
-nacheinander in Besitz. In den Zeilen 5 und 6 nimmt der Thread \emph{2} die
-Lockobjekte \emph{l2} und \emph{l1} nacheinander in Besitz. Der potenzielle
-Deadlock entsteht, da der Thread \emph{1} zuerst das Lockobjekt \emph{l1} in
-Besitz nehmen kann und bevor dieser das Lockobjekt \emph{l2} in Besitz nehmen
-kann, kann der Thread \emph{2} das Lockobjekt \emph{l2} bereits in seinen Besitz
-genommen haben. Dadurch blockieren sich beide Threads gegenseitig und ein
-Deadlock entsteht. Die Ausgabe der Anwendung zur Erkennung und Visualisierung
-von potenziellen Deadlocks ist in \cref{fig:DeadlockVisualization} dargestellt.
+potenziellen Deadlock zwischen den Threads \textrm{1} und \textrm{2}. In den
+Zeilen 1 und 2 nimmt der Thread \textrm{1} die Lockobjekten \textrm{l1} und
+\textrm{l2} nacheinander in Besitz. In den Zeilen 5 und 6 nimmt der Thread
+\textrm{2} die Lockobjekte \textrm{l2} und \textrm{l1} nacheinander in Besitz.
+Der potenzielle Deadlock entsteht, da der Thread \textrm{1} zuerst das
+Lockobjekt \textrm{l1} in Besitz nehmen kann und bevor dieser das Lockobjekt
+\textrm{l2} in Besitz nehmen kann, kann der Thread \textrm{2} das Lockobjekt
+\textrm{l2} bereits in seinen Besitz genommen haben. Dadurch blockieren sich
+beide Threads gegenseitig und ein Deadlock entsteht. Die Ausgabe der Anwendung
+zur Erkennung und Visualisierung von potenziellen Deadlocks ist in
+\cref{fig:DeadlockVisualization} dargestellt.
 \begin{figure}[ht]
   \includegraphics[width=\linewidth]{ExamplePotentialDeadlocks.eps}
   \footnotesize\sffamily Quelle: Eigene Darstellung
@@ -143,7 +144,7 @@ von potenziellen Deadlocks ist in \cref{fig:DeadlockVisualization} dargestellt.
   \label{fig:DeadlockVisualization}
 \end{figure}
 Die Beschriftung der Kanten erfolgt immer zum Ende der Kante hin, zum Beispiel
-gehört die Beschriftung \emph{1} zu der Kante von \emph{l1} zu \emph{l2}.
+gehört die Beschriftung \textrm{1} zu der Kante von \textrm{l1} zu \textrm{l2}.
 Zusätzlich zur grafischen Darstellung werden die Ergebnisse als
 Zyklische-Lock-Dependency-Chain auf der Konsole ausgegeben. Für die verwendete
 Trace-Datei wird "(1,l2,{l1}) (2,l1,{l2})" als potenzieller Deadlock auf der

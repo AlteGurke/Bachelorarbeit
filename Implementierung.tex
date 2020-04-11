@@ -1,5 +1,5 @@
-\section{Trace Funktion}
-\label{section:Implementierung:Trace Funktion}
+\section{Trace-Funktion}
+\label{section:Implementierung:Trace-Funktion}
 Aus dem in \cref{fig:LockTrace_Design} vorgestellten UML-Diagramm werden drei
 Klassen und eine Enumeration in C++ implementiert.
 \texttt{Lock\-Trace\-Entry\-Type} wird als \texttt{enum} mit den Werten
@@ -27,42 +27,42 @@ Auszug aus der Implementierung der Klasse \texttt{Lock\-Tracer} dargestellt.
   \caption{LockTracer.cc: Auszug aus der Implementierung des LockTracers}
   \label{lst:LockTracer}
 \end{listing}
-Die \texttt{Get\-Instance()} Methode stellt sicher, dass nur eine Instanz der
+Die \texttt{Get\-Instance()}-Methode stellt sicher, dass nur eine Instanz der
 Klasse zur Laufzeit existiert\footnote{Ab C++ Version 11}. Im Konstruktor wird
 einmalig geprüft, ob die notwendigen Umgebungsvariablen existieren und korrekte
 Werte aufweisen. Wenn alle Variablen vorhanden sind und die Variable
 \texttt{Name\-Of\-Environment\-Variable\-Enabled} den Wert \texttt{true} hat,
 wird die Trace-Funktionalität aktiviert. In der Methode
 \texttt{Add(Lock\-Trace\-Entry\& entry)} wird zuerst geprüft, ob die
-Trace-Funktionalität aktiviert ist. Ist dies nicht der Fall wird die Methode
-sofort beendet, dadurch wird die Laufzeit der OpenPEARL Anwendung bei
+Trace-Funktionalität aktiviert ist. Ist dies nicht der Fall, wird die Methode
+sofort beendet, dadurch wird die Laufzeit der OpenPEARL-Anwendung bei
 deaktivierter Trace-Funktionalität nicht negativ beeinflusst\footnote{Der
 einmalige Aufruf des Konstruktors, der Aufruf der Add Methode und das Prüfen
 eines booleschen Wertes werden hier ignoriert.}. Es wird sichergestellt, dass
 beim Beenden der Anwendung alle noch vorhanden Lockereignisse in die Trace-Datei
 geschrieben werden. Dies erfolgt über den Destruktor der Klasse in Zeile~52. Die
-Integration in die OpenPEARL Laufzeitumgebung erfolgt durch das Hinzufügen der
-benötigten Dateien in die \emph{Files.common} Datei. Dazu wird die Zeile~86 um
+Integration in die OpenPEARL-Laufzeitumgebung erfolgt durch das Hinzufügen der
+benötigten Dateien in die \emph{Files.common}-Datei. Dazu wird die Zeile~86 um
 \cref{lst:OpenPEARLFilesCommon} erweitert.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=86,lastline=88]{bash}{./OpenPEARL/Files.common}
   \caption{Files.common: Auszug aus der Auflistung der zu kompilierenden Dateien}
   \label{lst:OpenPEARLFilesCommon}
 \end{listing}
-Im letzten Schritt wird die \emph{Semaphore.cc} Implementierung angepasst. Für
+Im letzten Schritt wird die \emph{Semaphore.cc}-Implementierung angepasst. Für
 jede Erhöhung auf eins eines Semaphore-Objekts wird die Methode
 \texttt{Trace\-Unlock}, für jede Verringerung auf null die Methode
 \texttt{Trace\-Lock} aus \cref{lst:OpenPEARLSemaphore} aufgerufen.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=93,lastline=111]{cpp}{./OpenPEARL/Semaphore.cc}
-  \caption{Semaphore.cc: Auszug aus der Semaphore Implementierung in der OpenPEARL Laufzeitumgebung}
+  \caption{Semaphore.cc: Auszug aus der Semaphore-Implementierung in der OpenPEARL-Laufzeitumgebung}
   \label{lst:OpenPEARLSemaphore}
 \end{listing}
 
-\section{Analyse Programm}
-\label{section:Implementierung:Analyse Programm}
+\section{Analyse-Programm}
+\label{section:Implementierung:Analyse-Programm}
 Die Implementierung für die Analyse und die chronologische Darstellung der
-Verwendung von \emph{SEMA} Objekten wird in Python\footnote{Python Version
+Verwendung von \textrm{SEMA}-Objekten wird in Python\footnote{Python Version
 3.7.3.} durchgeführt. Im ersten Schritt wird die Trace-Datei aus
 \cref{section:Erzeugung der Trace-Datei} ausgelesen. Die einzelnen
 Lockereignisse werden von der Klasse
@@ -70,7 +70,7 @@ Lockereignisse werden von der Klasse
 dargestellt ist.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=1,lastline=10]{python}{./Python/traceFileReader.py}
-  \caption{traceFileReader.py: Auszug aus der Implementierung des Trace-Datei Parsers}
+  \caption{traceFileReader.py: Auszug aus der Implementierung des Trace-Datei-Parsers}
   \label{lst:TraceFileReader}
 \end{listing}
 
@@ -107,24 +107,24 @@ dann mit dem Befehl \texttt{plt.show()} dargestellt werden.
 \label{section:Implementierung:Visualisierung von potenziellen Deadlocks}
 Im ersten Schritt wird der MagicLock-Algorithmus in Python\footnote{Python
 Version 3.7.3.} implementiert. Das Auslesen der Trace-Datei wurde bereits in
-\cref{section:Implementierung:Analyse Programm} durchgeführt und wird hier
+\cref{section:Implementierung:Analyse-Programm} durchgeführt und wird hier
 wiederverwendet. Nach dem Auslesen werden die Lockereignisse in eine
 Lock-Dependency-Relation\footnote{Siehe \cref{section:MagicLock}} überführt. Die
 Klassen sind in \cref{lst:MagiclockTypes_LockDependency} und
 \cref{lst:MagiclockTypes_LockDependencyRelation} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=45,lastline=49]{python}{./Python/magiclockLib/magiclockTypes.py}
-  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \emph{Lock Dependency} aus Magiclock\autocite[3]{MagicLock}}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textrm{Lock Dependency} aus Magiclock \autocite[3]{MagicLock}}
   \label{lst:MagiclockTypes_LockDependency}
 \end{listing}
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=67,lastline=77]{python}{./Python/magiclockLib/magiclockTypes.py}
-  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \emph{Lock Dependency Relation} aus Magiclock\autocite[3]{MagicLock}}
+  \caption{magiclockLib/magiclockTypes.py: Repräsentation einer \textrm{Lock Dependency Relation} aus Magiclock \autocite[3]{MagicLock}}
   \label{lst:MagiclockTypes_LockDependencyRelation}
 \end{listing}
 Eine \texttt{Lock\-Dependency\-Relation} enthält ein Hashset mit allen
 Lockobjekten, eine Liste aller Threads und eine Liste der einzelnen
-\texttt{Lock\-Dependency} Objekten. Für die Threads wurde eine Liste gewählt,
+\texttt{Lock\-Dependency}-Objekten. Für die Threads wurde eine Liste gewählt,
 damit die Ergebnisse deterministisch ausfallen. Die Liste der Threads wird
 später in einer Schleife durchlaufen. Dies führt bei einem Hashset, aufgrund der
 zufälligen Sortierung, zu nicht deterministischen Ergebnissen.
@@ -133,26 +133,26 @@ Im zweiten Schritt wird die \texttt{Lock\-Dependency\-Relation} reduziert. Dazu
 werden die einzelnen Lockobjekte klassifiziert durch die Zuweisung in eine der
 folgenden Mengen.\autocite[vgl.][4]{MagicLock}
 \begin{enumerate}
-  \item \emph{Independent-set} = $\{m \mid m \in Locks, indegree(m) = 0 \land
+  \item $\textrm{Independent-set} = \{m \mid m \in Locks, indegree(m) = 0 \land
   outdegree(m) = 0\}$
-  \item \emph{Intermediate-set} = $\{m \mid m \in Locks, (indegree(m) = 0 \lor
+  \item $\textrm{Intermediate-set} = \{m \mid m \in Locks, (indegree(m) = 0 \lor
   outdegree(m) = 0) \land \lnot (indegree(m) = 0 \land outdegree(m) = 0)\}$
-  \item \emph{Inner-set} = $\{m \mid m \in Locks, (\exists (t,m,L) \in D,
+  \item $\textrm{Inner-set} = \{m \mid m \in Locks, (\exists (t,m,L) \in D,
   \forall n \in L, n \in \text{Intermediate-set} \cup \text{Inner-set}) \lor
   (\exists (t,n,L) \in D, m \in L \land n \in \text{Intermediate-set} \cup
   \text{Inner-set})\}$
-  \item \emph{Cyclic-set} = $\{m \mid m \in Locks, m \notin
+  \item $\textrm{Cyclic-set} = \{m \mid m \in Locks, m \notin
   \text{Independent-set} \cup \text{Intermediate-set} \cup \text{Inner-set}\}$
 \end{enumerate}
 Dazu werden die Algorithmen \emph{LockReduction(D)},
 \emph{InitClassification(D)} und \emph{LockClassification(D)}
-implementiert\footnote{Entspricht den Algorithmen 1, 2 und 3 aus
-MagicLock\autocite[5]{MagicLock}}. Als erstes wird in
+implementiert\footnote{Entspricht den Algorithmen 1, 2 und 3 aus MagicLock
+\autocite[5]{MagicLock}}. Als erstes wird in
 \cref{lst:LockReduction_InitClassification} mit \emph{InitClassification(D)}
 eine Datenstruktur initialisiert.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=17,lastline=32]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{InitClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{InitClassification(D)}-Algorithmus aus Magiclock \autocite[5]{MagicLock}}
   \label{lst:LockReduction_InitClassification}
 \end{listing}
 Für jede \texttt{Lock\-Dependency} werden die eingehenden und ausgehenden Kanten
@@ -162,24 +162,24 @@ Lockobjekt ausführt oder -1. Die erstellte Datenstruktur ist in
 \cref{lst:MagiclockTypes_InitClassification} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=3,lastline=8]{python}{./Python/magiclockLib/magiclockTypes.py}
-  \caption{magiclockLib/magiclockTypes.py: Datenstruktur der \emph{init\_Classification(D)} Methode}
+  \caption{magiclockLib/magiclockTypes.py: Datenstruktur der \emph{init\_Classi\-fi\-cation(D)}-Methode}
   \label{lst:MagiclockTypes_InitClassification}
 \end{listing}
 Die Klassifizierung der Lockobjekte erfolgt in
 \cref{lst:LockReduction_LockClassification}.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=35,lastline=77]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockClassification(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockClassification(D)}-Algorithmus aus Magiclock \autocite[5]{MagicLock}}
   \label{lst:LockReduction_LockClassification}
 \end{listing}
 Alle Lockobjekte ohne eingehende und ausgehende Kanten werden in den Zeilen~39
-und 40 in das \emph{Independent-set} eingefügt. Diese Lockobjekte können
+und 40 in das \textrm{Independent-set} eingefügt. Diese Lockobjekte können
 ignoriert werden, da ein potenzieller Deadlock mindestens eine ausgehende und
 mindestens eine eingehende Kante besitzen muss. Lockobjekte ohne eingehende oder
 ohne ausgehende Kanten werden in den Zeilen~42 bis 44 in das
-\emph{Intermediate-set} eingefügt. Zusätzlich werden diese auf den Stack
+\textrm{Intermediate-set} eingefügt. Zusätzlich werden diese auf den Stack
 \texttt{s} gelegt. In den Zeilen~46 bis 69 wird die Klassifizierung für das
-\emph{Inner-set} durchgeführt. Das oberste Lockobjekt \texttt{m} vom Stack \texttt{s}
+\textrm{Inner-set} durchgeführt. Das oberste Lockobjekt \texttt{m} vom Stack \texttt{s}
 wird entfernt und überprüft. Dies wird wiederholt bis der Stack keine
 Lockobjekte mehr enthält. Wenn das Lockobjekt \texttt{m} keine eingehenden
 Kanten besitzt, werden alle anderen Lockobjekte mit eingehenden Kanten in den
@@ -187,44 +187,44 @@ Zeilen~49 bis 58 durchlaufen. Die eingehenden Kanten des Lockobjekts \texttt{n}
 können dann um die Anzahl der Kanten von dem Lockobjekt \texttt{m} zu \texttt{n}
 reduziert werden. Wenn das Lockobjekt \texttt{n} anschließend selbst keine
 eingehenden Kanten mehr besitzt, wird es auf den Stack \texttt{s} gelegt und in
-das \emph{Intermediate-set} eingefügt. Anschließend werden in den Zeilen~57 und
-58 die Kanten von dem Lockobjekt \texttt{m} zu \texttt{n} und alle ausgehenden
-Kanten von \texttt{m} auf null gesetzt. Das Gleiche wird für Lockobjekte ohne
-ausgehende Kanten in den Zeilen~59 bis 69 gemacht. Zuletzt werden in den
-Zeilen~71 bis 75 alle Lockobjekte, welche in keiner der bisherigen Mengen
-vorhanden sind, in das \emph{Cyclic-set} eingefügt.
+das \textrm{Intermediate-set} eingefügt. Anschließend werden in den Zeilen~57
+und 58 die Kanten von dem Lockobjekt \texttt{m} zu \texttt{n} und alle
+ausgehenden Kanten von \texttt{m} auf null gesetzt. Das Gleiche wird für
+Lockobjekte ohne ausgehende Kanten in den Zeilen~59 bis 69 gemacht. Zuletzt
+werden in den Zeilen~71 bis 75 alle Lockobjekte, welche in keiner der bisherigen
+Mengen vorhanden sind, in das \textrm{Cyclic-set} eingefügt.
 
 Der Algorithmus zur Reduzierung der \texttt{Lock\-Dependency\-Relation} ist in
 \cref{lst:LockReduction_LockReduction} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=90]{python}{./Python/magiclockLib/lockReduction.py}
-  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockReduction(D)} Algorithmus aus Magiclock\autocite[5]{MagicLock}}
+  \caption{magiclockLib/lockReduction.py: Implementierung des \emph{LockReduction(D)}-Algorithmus aus Magiclock \autocite[5]{MagicLock}}
   \label{lst:LockReduction_LockReduction}
 \end{listing}
 Als erstes wird die Klassifizierung der Lockobjekte in Zeile~91 durchgeführt.
-Anschließend wird in den Zeilen~93 bis 103 das \emph{Cyclic-set} durchlaufen und
-alle Lockobjekte mit einem Mode ungleich -1 aus diesem entfernt. Diese
+Anschließend wird in den Zeilen~93 bis 103 das \textrm{Cyclic-set} durchlaufen
+und alle Lockobjekte mit einem Mode ungleich -1 aus diesem entfernt. Diese
 Lockobjekte können nicht Teil eines potenziellen Deadlocks sein, da sie nur von
 einem einzigen Thread verwendet werden. In der Zeile~105 wird eine neue
 \texttt{Lock\-Dependency\-Relation} erzeugt, welche nur Lockobjekte aus dem
-\emph{Cyclic-set} enthält. Wenn sich diese Relation nicht von der ursprünglichen
-unterscheidet ist die Lock Reduzierung abgeschlossen. Ansonsten wird in
-Zeile~107 die Lock Reduzierung rekursiv mit der eben erzeugten
+\textrm{Cyclic-set} enthält. Wenn sich diese Relation nicht von der
+ursprünglichen unterscheidet ist die Lock-Reduzierung abgeschlossen. Ansonsten
+wird in Zeile~107 die Lock-Reduzierung rekursiv mit der eben erzeugten
 \texttt{Lock\-Dependency\-Relation} erneut aufgerufen.
 
 Nach der Reduzierung der Lockobjekte werden die vorhandenen Lockobjekte aus dem
-\emph{Cyclic-set} in disjunkte Mengen aufgeteilt. Die disjunkten Mengen haben
+\textrm{Cyclic-set} in disjunkte Mengen aufgeteilt. Die disjunkten Mengen haben
 untereinander keine Kanten und sind daher unabhängige Teilgraphen. Die Suche
 nach Zyklen erfolgt anschließend für jeden dieser Teilgraphen. In
 \cref{lst:CycleDetection_DisjoinComponents} wird die Aufteilung in disjunkte
 Mengen durchgeführt. 
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=1,lastline=25]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{Disjoint\-Components\-Finder\-(Cyclic-set)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{Dis\-joint\-Com\-ponents\-Finder\-(Cyclic-set)}-Algorithmus aus Magiclock \autocite[8]{MagicLock}}
   \label{lst:CycleDetection_DisjoinComponents}
 \end{listing}
 In den Zeilen~19 bis 23 werden die einzelnen Lockobjekte aus dem
-\emph{Cyclic-set} durchlaufen und falls noch nicht betrachtet in der Methode
+\textrm{Cyclic-set} durchlaufen und falls noch nicht betrachtet in der Methode
 \texttt{visit\_Edges\_From} betrachtet. In der Methode \texttt{visit\_Edges\_From}
 wird das Lockobjekt, falls noch nicht betrachtet, in die disjunkte Menge
 übernommen. Zusätzlich werden in den Zeilen~6 bis 8 alle erreichbaren
@@ -236,32 +236,33 @@ in \cref{lst:CycleDetection_CycleDetection} in den Zeilen~94 bis 102 Partitionen
 erstellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=78,lastline=108]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{CycleDetection(dc, D)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{CycleDetection(dc, D)}-Algorithmus aus Magiclock \autocite[8]{MagicLock}}
   \label{lst:CycleDetection_CycleDetection}
 \end{listing}
-Es wird für jeden Thread \emph{t} eine Partition erstellt, welche die
-\texttt{Lock\-Dependency} Objekte enthält, bei denen der ausführende Thread
-gleich \emph{t} ist. Zusätzlich werden identische \texttt{Lock\-Dependency}
-Objekte gruppiert. Ein \texttt{Lock\-Dependency} Objekt ist identisch mit einem
-anderen \texttt{Lock\-Dependency} Objekt, wenn der ausführende Thread, das
-betroffene Lockobjekt und die Menge der aktuell in Besitz befindlichen
-Lockobjekte übereinstimmt. Anschließend wird in den Zeilen~105 bis 108 für jeden
-Thread die jeweilige Partition durchlaufen. Jede \texttt{Lock\-Dependency} in
-der Partition wird mit der Methode \texttt{DFS\_Traverse} in
+Es wird für jeden Thread \texttt{t} eine Partition erstellt, welche die
+\texttt{Lock\-Dependency}-Objekte enthält, bei denen der ausführende Thread
+gleich \texttt{t} ist. Zusätzlich werden identische
+\texttt{Lock\-Dependency}-Objekte gruppiert. Ein
+\texttt{Lock\-Dependency}-Objekt ist identisch mit einem anderen
+\texttt{Lock\-Dependency}-Objekt, wenn der ausführende Thread, das betroffene
+Lockobjekt und die Menge der aktuell in Besitz befindlichen Lockobjekte
+übereinstimmen. Anschließend wird in den Zeilen~105 bis 108 für jeden Thread die
+jeweilige Partition durchlaufen. Jede \texttt{Lock\-Dependency} in der Partition
+wird mit der Methode \texttt{DFS\_Traverse} in
 \cref{lst:CycleDetection_DFSTraverse} nach Zyklen durchsucht.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=50,lastline=75]{python}{./Python/magiclockLib/cycleDetection.py}
-  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{DFS\_Traverse(i, S, $\tau$)} Algorithmus aus Magiclock\autocite[8]{MagicLock}}
+  \caption{magiclockLib/cycleDetection.py: Implementierung des \emph{DFS\_Traverse(i, S, $\tau$)}-Algorithmus aus Magiclock \autocite[8]{MagicLock}}
   \label{lst:CycleDetection_DFSTraverse}
 \end{listing}
 
-Zuerst wird in Zeile~61 eine Menge \emph{s} erzeugt, die anfangs nur die
+Zuerst wird in Zeile~61 eine Menge \texttt{s} erzeugt, die anfangs nur die
 aktuelle \texttt{Lock\-Dependency\-Relation} enthält. In Zeile~62 werden alle
 höher sortierten Threads durchlaufen, wobei bereits betrachtete Threads in den
 Zeilen 63 und 64 ignoriert werden. Anschließend werden in den Zeilen~65 bis 75
-die \texttt{Lock\-Dependency} Objekte in der Partition des höheren Threads
+die \texttt{Lock\-Dependency}-Objekte in der Partition des höheren Threads
 durchlaufen. Für jedes dieser Objekte wird in den Zeilen~68 und 69 geprüft, ob
-die aktuelle Menge \emph{s} zusammen mit dieser \texttt{Lock\-Dependency} eine
+die aktuelle Menge \texttt{s} zusammen mit dieser \texttt{Lock\-Dependency} eine
 Zyklische-Lock-Dependency-Chain\footnote{Siehe \cref{section:MagicLock}} bildet.
 Ist dies nicht der Fall, wird die Methode \texttt{DFS\_Traverse} rekursiv für
 die aktuell in der Iteration befindliche \texttt{Lock\-Dependency} aufgerufen.

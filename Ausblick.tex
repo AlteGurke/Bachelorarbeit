@@ -1,11 +1,11 @@
 \section{Offene Punkte}
 \label{section:OffenePunkte}
-In OpenPEARL gibt es neben den \emph{SEMA} Variablen noch \emph{BOLT} Variablen,
-die von der aktuellen Implementierung nicht beachtet werden. Um alle
-Synchronisierungsprobleme in OpenPEARL Anwendungen aufzeigen zu können, muss die
-Unterstützung für \emph{BOLT} Variablen hinzugefügt werden.
+In OpenPEARL gibt es neben den \textrm{SEMA}-Variablen noch
+\textrm{BOLT}-Variablen, die von der aktuellen Implementierung nicht beachtet
+werden. Um alle Synchronisierungsprobleme in OpenPEARL-Anwendungen aufzeigen zu
+können, muss die Unterstützung für \textrm{BOLT}-Variablen hinzugefügt werden.
 
-Die derzeitige Integration in die OpenPEARL Laufzeitumgebung erfüllt noch nicht
+Die derzeitige Integration in die OpenPEARL-Laufzeitumgebung erfüllt noch nicht
 alle Kriterien in Bezug auf Softwarequalität, gerade im Bereich Robustheit. Aus
 diesem Grund ist die Integration noch kein Bestandteil des offiziellen OpenPEARL
 Repository.
@@ -13,12 +13,12 @@ Repository.
 \section{Weiterentwicklung}
 \label{section:Weiterentwicklung}
 Der nächste Entwicklungsschritt ist die Erkennung von potenziellen Deadlocks in
-Echtzeit während der Ausführung einer OpenPEARL Anwendung. Dazu muss die
+Echtzeit während der Ausführung einer OpenPEARL-Anwendung. Dazu muss die
 \texttt{LockTracer}-Implementierung aus \cref{lst:LockTracer} erweitert werden.
 Anstatt die Ereignisse in eine Trace-Datei zu schreiben, müssen diese direkt
-über Interprozesskommunikation von der OpenPEARL Laufzeitumgebung an einen
+über Interprozesskommunikation von der OpenPEARL-Laufzeitumgebung an einen
 zweiten Prozess übertragen werden. Dieser kann dann die Python-Implementierungen
-aus \cref{section:Implementierung:Analyse Programm} und
+aus \cref{section:Implementierung:Analyse-Programm} und
 \cref{section:Implementierung:Visualisierung von potenziellen Deadlocks}
 aufrufen und die Analysen direkt durchführen. Die Visualisierung muss dann in
 regelmäßigen Intervallen aktualisiert werden, um dem Benutzer die Änderungen
