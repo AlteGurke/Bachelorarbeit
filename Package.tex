@@ -20,6 +20,9 @@
 \usepackage{wrapfig}
 \usepackage{float}
 \usepackage{titletoc}
+\titlecontents{figure}[4em]{\addvspace{.1pc}}{\contentslabel{4em}}{} {\titlerule*[1pc]{.}\contentspage}
+\titlecontents{listing}[4em]{\addvspace{.1pc}}{\contentslabel{4em}}{} {\titlerule*[1pc]{.}\contentspage}
+
 %\restylefloat{table}
 %\usepackage{sidenotes}
 %\usepackage{mwe}
@@ -31,7 +34,7 @@
 %end of custom packages not from template
 
 \usepackage{nameref} 
-\usepackage[listformat=empty]{caption}
+\usepackage{caption}
 \captionsetup{justification=raggedright,singlelinecheck=false}
 \usepackage{marginnote}
 \usepackage[export]{adjustbox}
