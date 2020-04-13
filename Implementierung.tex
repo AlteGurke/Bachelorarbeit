@@ -1,4 +1,8 @@
-\section{Trace-Funktion}
+Nachdem im vorigen Kapitel die wesentlichen Designzüge des Grundproblems
+erläutert wurden, ist es das Ziel der folgenden Abschnitte, die Implementierung
+der einzelnen Komponenten zu beschreiben. 
+
+\section{Trace-Funktion für \textrm{SEMA}-Variablen für die OpenPEARL""-Laufzeit"-umgebung}
 \label{section:Implementierung:Trace-Funktion}
 Aus dem in \cref{fig:LockTrace_Design} vorgestellten UML-Diagramm werden drei
 Klassen und eine Enumeration in C++ implementiert.
@@ -17,11 +21,12 @@ dargestellt.
 \end{listing}
 
 Der \texttt{chrono::\-time\_point} wird in Mikrosekunden seit dem 01.01.1970
-umgerechnet. Mikrosekunden wurden als Genauigkeit gewählt, weil Millisekunden
-nicht hochauflösend genug sind, um die chronologische Verwendung von
-Lockobjekten darzustellen. Eine höhere Auflösung als Mikrosekunden würde die
-Darstellung hingegen zu unübersichtlich machen. In \cref{lst:LockTracer} ist ein
-Auszug aus der Implementierung der Klasse \texttt{Lock\-Tracer} dargestellt.
+umgerechnet. Mikrosekunden wurden gewählt, weil Millisekunden nicht ausreichen,
+um die chronologische Verwendung von Lockobjekten darzustellen. Lockereignisse
+unterscheiden sich des Öfteren nur in Mikrosekunden. Um solche Ereignisse
+visuell voneinander unterscheiden zu können, reichen Millisekunden nicht aus. In
+\cref{lst:LockTracer} ist ein Auszug aus der Implementierung der Klasse
+\texttt{Lock\-Tracer} dargestellt.
 \begin{listing}[ht]
   \inputminted[frame=lines,linenos,firstline=11,lastline=58]{cpp}{./cpp/LockTracer.cc}
   \caption{LockTracer.cc: Auszug aus der Implementierung des LockTracers}
@@ -59,7 +64,7 @@ jede Erhöhung auf eins eines Semaphore-Objekts wird die Methode
   \label{lst:OpenPEARLSemaphore}
 \end{listing}
 
-\section{Analyse-Programm}
+\section{Analyse-Programm zur chronologischen Darstellung von Synchronisationsmitteln}
 \label{section:Implementierung:Analyse-Programm}
 Die Implementierung für die Analyse und die chronologische Darstellung der
 Verwendung von \textrm{SEMA}-Objekten wird in Python\footnote{Python Version
@@ -103,7 +108,7 @@ dann mit dem Befehl \texttt{plt.show()} dargestellt werden.
   \label{lst:GenerateTimeline_PlotGraph}
 \end{listing}
 
-\section{Visualisierung von potenziellen Deadlocks}
+\section{Visualisierung von potenziellen Deadlocks als gerichteter Graph}
 \label{section:Implementierung:Visualisierung von potenziellen Deadlocks}
 Im ersten Schritt wird der MagicLock-Algorithmus in Python\footnote{Python
 Version 3.7.3.} implementiert. Das Auslesen der Trace-Datei wurde bereits in
@@ -129,9 +134,10 @@ damit die Ergebnisse deterministisch ausfallen. Die Liste der Threads wird
 später in einer Schleife durchlaufen. Dies führt bei einem Hashset, aufgrund der
 zufälligen Sortierung, zu nicht deterministischen Ergebnissen.
 
-Im zweiten Schritt wird die \texttt{Lock\-Dependency\-Relation} reduziert. Dazu
-werden die einzelnen Lockobjekte klassifiziert durch die Zuweisung in eine der
-folgenden Mengen.\autocite[vgl.][4]{MagicLock}
+Im zweiten Schritt wird die \texttt{Lock\-Dependency\-Relation} reduziert, um
+die Zyklensuche zu optimieren. Dazu werden die einzelnen Lockobjekte
+klassifiziert durch die Zuweisung in eine der folgenden
+Mengen.\autocite[vgl.][4]{MagicLock}
 \begin{enumerate}
   \item $\textrm{Independent-set} = \{m \mid m \in Locks, indegree(m) = 0 \land
   outdegree(m) = 0\}$
@@ -182,12 +188,14 @@ ohne ausgehende Kanten werden in den Zeilen~42 bis 44 in das
 \textrm{Inner-set} durchgeführt. Das oberste Lockobjekt \texttt{m} vom Stack \texttt{s}
 wird entfernt und überprüft. Dies wird wiederholt bis der Stack keine
 Lockobjekte mehr enthält. Wenn das Lockobjekt \texttt{m} keine eingehenden
-Kanten besitzt, werden alle anderen Lockobjekte mit eingehenden Kanten in den
-Zeilen~49 bis 58 durchlaufen. Die eingehenden Kanten des Lockobjekts \texttt{n}
-können dann um die Anzahl der Kanten von dem Lockobjekt \texttt{m} zu \texttt{n}
-reduziert werden. Wenn das Lockobjekt \texttt{n} anschließend selbst keine
-eingehenden Kanten mehr besitzt, wird es auf den Stack \texttt{s} gelegt und in
-das \textrm{Intermediate-set} eingefügt. Anschließend werden in den Zeilen~57
+Kanten besitzt, kann es aus der weiteren Betrachtung entfernt werden. Dies
+geschieht, in dem alle anderen Lockobjekte mit eingehenden Kanten in den
+Zeilen~49 bis 58 durchlaufen werden. Die eingehenden Kanten des Lockobjekts
+\texttt{n} können dann um die Anzahl der Kanten von dem Lockobjekt \texttt{m} zu
+\texttt{n} reduziert werden. Wenn das Lockobjekt \texttt{n} anschließend selbst
+keine eingehenden Kanten mehr besitzt, kann es ebenfalls aus der weiteren
+Betrachtung entfernt werden, indem es auf den Stack \texttt{s} gelegt und in das
+\textrm{Intermediate-set} eingefügt wird. Anschließend werden in den Zeilen~57
 und 58 die Kanten von dem Lockobjekt \texttt{m} zu \texttt{n} und alle
 ausgehenden Kanten von \texttt{m} auf null gesetzt. Das Gleiche wird für
 Lockobjekte ohne ausgehende Kanten in den Zeilen~59 bis 69 gemacht. Zuletzt

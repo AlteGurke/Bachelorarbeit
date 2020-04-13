@@ -7,7 +7,7 @@ Single-Threaded-Anwendungen sind Multi-Threaded-Anwendungen nicht
 deterministisch. Dies kann zu sogenannten \emph{race conditions} (engl.
 Wettlauf-Bedingung) führen. Eine \emph{race condition} tritt zum Beispiel dann
 auf, wenn zwei Threads einen Zähler jeweils um 1 erhöhen wollen\footnote{Vgl.
-"Data races" in \autocite[70]{netzer1992race}}.
+"`Data races"' in \autocite[70]{netzer1992race}}.
 
 Ein einfaches Beispiel: Angenommen der Zähler hat zu Beginn den Wert 3. Beide
 Threads wollen jetzt nahezu gleichzeitig den Zähler um 1 erhöhen. Dazu lesen
@@ -74,7 +74,7 @@ Lockobjekts \autocite[vgl.][212]{bensalem2005dynamic}.
 Ein Event im \emph{execution trace} enthält immer auch eine Positionsangabe in
 Form einer Zeilennummer \autocite[vgl.][212]{bensalem2005dynamic}. Diese
 Positionsangabe  wird hier ignoriert, da sie nicht benötigt wird.\footnote{Vgl.
-"line number lno" in \autocite[212]{bensalem2005dynamic}}
+"`line number lno"' in \autocite[212]{bensalem2005dynamic}}
 
 Das Starten eines neues Threads ist definiert durch ein Thread-Start-Event:
 \begin{quote}
@@ -132,7 +132,7 @@ beschrieben.
 \label{section:PEARL}
 Die Programmiersprache PEARL wurde in den 1970er Jahren vom Institut für
 Regelungstechnik der Universität Hannover entwickelt. PEARL ist eine Abkürzung
-und steht für "Process and Experiment Automation Realtime Language". Die
+und steht für "`Process and Experiment Automation Realtime Language"'. Die
 Programmiersprache erlaubt eine komfortable, sichere und weitgehend
 rechnerunabhängige Programmierung von Multitasking- und Echtzeit-Aufgaben
 \autocite{PEARLHistory}. Das Deutsche Institut für Normung standardisierte PEARL
@@ -150,10 +150,10 @@ es zwei Möglichkeiten: \textrm{SEMA}- und \textrm{BOLT}-Variablen
 
 Eine \textrm{SEMA}-Variable ist ein Semaphor und dient als
 Synchronisationsmittel. Sie kann als Wert nicht negative ganze Zahlen besitzen,
-wobei null den Zustand "gesperrt" und positive Zahlen den Zustand "frei"
+wobei null den Zustand "`gesperrt"' und positive Zahlen den Zustand "`frei"'
 bedeuten \autocite[vgl.][120]{PEARL}. Eine \textrm{SEMA}-Variable hat zu Beginn
 den Wert null. Mit dem Befehl \textrm{RELEASE} wird eine \textrm{SEMA}-Variable
-um den Wert eins erhöht und erhält den Zustand "frei". Mit dem
+um den Wert eins erhöht und erhält den Zustand "`frei"'. Mit dem
 \textrm{REQUEST}-Befehl wird der Wert einer \textrm{SEMA}-Variablen um eins
 verringert. Ist der Wert einer \textrm{SEMA}-Variablen null wird der ausführende
 \textrm{TASK} angehalten und in eine Warteschlange eingereiht. Sobald die
@@ -169,28 +169,28 @@ ist in \cref{fig:SEMA_StateDiagram} dargestellt.
 \end{figure}
 
 \textrm{BOLT}-Variablen haben im Gegensatz zu \textrm{SEMA}-Variablen drei
-Zustände: "gesperrt", "Sperre möglich" und "Sperre nicht möglich"
+Zustände: "`gesperrt"', "`Sperre möglich"' und "`Sperre nicht möglich"'
 \autocite[vgl.][125]{PEARL}. Sie bieten die Möglichkeit für exklusive und nicht
 exklusive Sperren. Zum Beispiel können so simultane Lesezugriffe und exklusive
 Schreibzugriffe realisiert werden. Zu Beginn hat eine
-\textrm{BOLT}-Variable den Zustand "Sperre möglich". Mit dem Befehl \textrm{RESERVE}
+\textrm{BOLT}-Variable den Zustand "`Sperre möglich"'. Mit dem Befehl \textrm{RESERVE}
 wird ein exklusiver Zugriff auf eine \textrm{BOLT}-Variable angefordert. Wenn
-die Variable im Zustand "Sperre möglich" ist, erhält diese den Zustand
-"gesperrt". Ansonsten wird ähnlich zu der \textrm{REQUEST}-Anweisung für
+die Variable im Zustand "`Sperre möglich"' ist, erhält diese den Zustand
+"`gesperrt"'. Ansonsten wird ähnlich zu der \textrm{REQUEST}-Anweisung für
 \textrm{SEMA}-Variablen der ausführende \textrm{TASK} angehalten und in eine
 Warteschlange eingereiht. Mit dem Befehl \textrm{FREE} erhält eine
-\textrm{BOLT}-Variable den Zustand "Sperre möglich" und alle \textrm{TASKs} in
+\textrm{BOLT}-Variable den Zustand "`Sperre möglich"' und alle \textrm{TASKs} in
 der Warteschlange, welche aufgrund einer \textrm{RESERVE}-Anweisung warten,
 werden gemäß ihrer Priorität fortgeführt. Wenn keine \textrm{TASKs} in der
 Warteschlange vorhanden sind, welche auf eine \textrm{RESERVE}-Anweisung warten,
 werden die \textrm{TASKs} in der Warteschlange gemäß ihrer Priorität
 fortgeführt, welche aufgrund einer \textrm{ENTER}-Anweisung warten. Mit der
 \textrm{ENTER}-Anweisung wird ein nicht exklusiver Zugriff angefordert. Wenn die
-\textrm{BOLT}-Variable im Zustand "gesperrt" ist oder ein \textrm{TASK} in der
+\textrm{BOLT}-Variable im Zustand "`gesperrt"' ist oder ein \textrm{TASK} in der
 Warteschlange existiert, welcher einen exklusiven Zugriff mittels einer
 \textrm{RESERVE}-Anweisung angefordert hat, wird der ausführende \textrm{TASK}
 angehalten und in eine Warteschlange eingereiht. Ansonsten erhält die Variable
-den Zustand "Sperre nicht möglich", um den exklusiven Zugriff zu verbieten.
+den Zustand "`Sperre nicht möglich"', um den exklusiven Zugriff zu verbieten.
 Zusätzlich wird die Anzahl der benutzenden \textrm{TASKs} um eins erhöht. Die
 \textrm{LEAVE}-Anweisung verringert die Anzahl der benutzenden \textrm{TASKs} um
 eins. Wenn die Anzahl eins entspricht, funktioniert die \textrm{LEAVE}-Anweisung
@@ -247,13 +247,13 @@ definiert.
 Durch die Kennzeichnung \textrm{MAIN} wird der \textrm{TASK} direkt beim Start
 des Programms ausgeführt \autocite[vgl.][28]{PEARL}. Die Befehle
 \textrm{RELEASE} in den Zeilen~13 und 14 erhöhen den Wert der jeweiligen
-\textrm{SEMA}-Variable um eins, wodurch der Zustand von "gesperrt" auf "frei"
-gesetzt wird. Anschließend werden in den Zeilen~15 und 16 die \textrm{TASKS}
-\textrm{T2} und \textrm{T3} gestartet.
+\textrm{SEMA}-Variable um eins, wodurch der Zustand von "`gesperrt"' auf
+"`frei"' gesetzt wird. Anschließend werden in den Zeilen~15 und 16 die
+\textrm{TASKS} \textrm{T2} und \textrm{T3} gestartet.
 
 Die \textrm{TASKS} \textrm{T2} und \textrm{T3} geben in den Zeilen~22 bis 24 und
-in den Zeilen~32 bis 34 die Zeichenfolge "Hello World T2" bzw. "Hello World T3"
-auf der Standardausgabe aus. Die Synchronisierung des Zugriffs auf die
+in den Zeilen~32 bis 34 die Zeichenfolge "`Hello World T2"' bzw. "`Hello World
+T3"' auf der Standardausgabe aus. Die Synchronisierung des Zugriffs auf die
 Standardausgabe erfolgt mittels der \textrm{SEMA}-Variablen \textrm{L1} und
 \textrm{L2}. Beide \textrm{TASKS} versuchen beide \textrm{SEMA}-Variablen in
 Besitz zu nehmen. \textrm{T2} versucht in den Zeilen~20 und 21 zuerst
@@ -262,7 +262,7 @@ den Zeilen~30 und 31 zuerst \textrm{L2} und dann \textrm{L1} in Besitz zu
 nehmen. Da beide \textrm{TASKS} parallel laufen, kann es passieren, dass
 \textrm{T2} \textrm{L1} in Zeile~20 in Besitz nimmt und gleichzeitig \textrm{T3}
 in Zeile~30 \textrm{L2} in Besitz nimmt. Beide \textrm{SEMA}-Variablen haben
-jetzt den Wert null und den Zustand "gesperrt". Der \textrm{TASK} \textrm{T2}
+jetzt den Wert null und den Zustand "`gesperrt"'. Der \textrm{TASK} \textrm{T2}
 wartet jetzt darauf, dass \textrm{L2} freigegeben wird und
 \textrm{T3} wartet darauf, dass \textrm{L1} freigegeben wird. Beide \textrm{TASKS}
 warten auf den jeweils anderen und verursachen einen Deadlock.

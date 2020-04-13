@@ -77,7 +77,7 @@ der Anwendung stark negativ beeinflussen. Deswegen wird die lock-freie
 Implementierung einer Warteschlange aus \autocite{Moody_Camels_Concurrentqueue}
 verwendet. Die Warteschlange garantiert eine threadsichere Implementierung, aber
 keine Sortierung innerhalb der Warteschlange für mehrere
-Produzenten\footnote{Vgl. "Reasons not to use" in
+Produzenten\footnote{Vgl. "`Reasons not to use"' in
 \autocite{Moody_Camels_Concurrentqueue}}. Da es zur Laufzeit nur eine einzige
 Instanz der \texttt{Lock\-Tracer}-Klasse gibt, ist die Reihenfolge innerhalb der
 Warteschlange dennoch garantiert.
