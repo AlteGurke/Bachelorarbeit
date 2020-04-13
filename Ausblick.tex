@@ -1,25 +1,37 @@
-\section{Offene Punkte}
-\label{section:OffenePunkte}
-In OpenPEARL gibt es neben den \emph{SEMA} Variablen noch \emph{BOLT} Variablen,
-die von der aktuellen Implementierung nicht beachtet werden. Um alle
-Synchronisierungsprobleme in OpenPEARL Anwendungen aufzeigen zu können, muss die
-Unterstützung für \emph{BOLT} Variablen hinzugefügt werden.
+Ziel dieser Arbeit war es, eine Unterstützung für Entwickler zu schaffen, um die
+fehlerhafte Verwendung von Synchronisationsmitteln in der
+Echtzeit-Programmiersprache PEARL zu erkennen.
 
-Die derzeitige Integration in die OpenPEARL Laufzeitumgebung erfüllt noch nicht
-alle Kriterien in Bezug auf Softwarequalität, gerade im Bereich Robustheit. Aus
-diesem Grund ist die Integration noch kein Bestandteil des offiziellen OpenPEARL
-Repository.
+Um dies zu erreichen wurden Verfahren zur Erkennung von Deadlocks vorgestellt
+und implementiert. Es wurde ein Konzept für die OpenPEARL-Laufzeitumgebung
+vorgestellt, um die benötigten Informationen zur Visualisierung von
+Synchronisationsmitteln und zur Erkennung von Deadlocks, in eine Trace-Datei zu
+speichern. Zusätzlich wurden zwei Anwendungen implementiert. Eine Anwendung zur
+Visualisierung der chronologischen Verwendung von Synchronisationsmitteln und
+eine zweite zur Erkennung und Darstellung von potenziellen Deadlocks.
 
-\section{Weiterentwicklung}
-\label{section:Weiterentwicklung}
-Der nächste Entwicklungsschritt ist die Erkennung von potenziellen Deadlocks in
-Echtzeit während der Ausführung einer OpenPEARL Anwendung. Dazu muss die
-\texttt{LockTracer}-Implementierung aus \cref{lst:LockTracer} erweitert werden.
-Anstatt die Ereignisse in eine Trace-Datei zu schreiben, müssen diese direkt
-über Interprozesskommunikation von der OpenPEARL Laufzeitumgebung an einen
-zweiten Prozess übertragen werden. Dieser kann dann die Python-Implementierungen
-aus \cref{section:Implementierung:Analyse Programm} und
-\cref{section:Implementierung:Visualisierung von potenziellen Deadlocks}
-aufrufen und die Analysen direkt durchführen. Die Visualisierung muss dann in
-regelmäßigen Intervallen aktualisiert werden, um dem Benutzer die Änderungen
-anzuzeigen.
+Die entwickelten Funktionalitäten konnten erfolgreich getestet werden.
+Zusätzlich konnten Empfehlungen zur Konfiguration der Trace""-Funktionalität in
+der OpenPEARL""-Laufzeitumgebung gemacht werden. Diese Empfehlungen können
+verwendet werden, um einen guten Kompromiss zwischen Laufzeit und
+Speicherauslastung auf dem jeweiligen Zielsystem zu erreichen.
+
+Bei der Betrachtung der Synchronisationsmittel in PEARL wurden in dieser Arbeit
+nur \textrm{SEMA}-Variablen einbezogen. Die erstellten Hilfsmittel für
+Entwickler sind demnach limitiert und können zum Beispiel keine Deadlocks
+erkennen, in denen \textrm{BOLT}-Variablen involviert sind. Die erzielten
+Ergebnisse liefern eine gute Grundlage, um die Unterstützung für
+\textrm{BOLT}-Variablen hinzuzufügen.
+
+Die Integration der Trace-Funktionalität in die OpenPEARL-Laufzeitumgebung ist
+derzeit kein Bestandteil des OpenPEARL-Projekts. Um dies zu erreichen müssen
+noch Anpassungen gemacht werden. Die Robustheit der Funktionalität muss
+überprüft und sichergestellt werden, damit Anwendungen zur Laufzeit kein
+ungewolltes Verhalten aufweisen. Zusätzlich sollte der Weg über eine Trace-Datei
+verbessert werden. Eine effizientere Lösung wäre es, die benötigten
+Informationen anstatt in eine Datei direkt über Interprozesskommunikation an
+einen zweiten Prozess zu übermitteln. Dieser kann die Informationen asynchron in
+eine Datenbank ablegen. Die in dieser Arbeit vorgestellten Implementierungen
+können mit den Informationen in der Datenbank die benötigten Analysen
+durchführen und dem Entwickler die Ergebnisse über eine Webschnittstelle zur
+Verfügung stellen.
