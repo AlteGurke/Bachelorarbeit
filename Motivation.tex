@@ -1,9 +1,9 @@
-Bei der parallelen Programmierung ist Nebenläufigkeit ein bewusst genutztes
-Mittel um die gleichzeitige Ausführung von mehreren Aufgaben zu realisieren. Die
-Ausführung von nebenläufigen Programmen ist nicht deterministisch. Mehrere
-parallele Aufgaben können bei jeder Ausführung eines solchen Programms in einer
-anderen Reihenfolge abgearbeitet werden. Dies führt dazu, dass Zugriffe auf
-gemeinsam genutzte Ressourcen synchronisiert werden müssen.
+Bei der parallelen Entwicklung werden nebenläufige Anwendungen erstellt, in
+denen Aufgaben definiert werden, deren Ausführungsreihenfolge nicht festgelegt
+ist. Die Ausführung von nebenläufigen Programmen ist nicht deterministisch.
+Mehrere parallele Aufgaben können bei jeder Ausführung eines solchen Programms
+in einer anderen Reihenfolge abgearbeitet werden. Dies führt dazu, dass Zugriffe
+auf gemeinsam genutzte Ressourcen synchronisiert werden müssen.
 
 Bei der Synchronisierung können zur Laufzeit sogenannte Deadlocks (engl.
 Verklemmungen) auftreten. Für Entwickler stellen Deadlocks ein großes Problem
@@ -11,16 +11,16 @@ dar, da sie oft erst zur Laufzeit auffallen. Während der Entwicklung kann ein
 Entwickler Nebenläufigkeitsprobleme, die zu Deadlocks führen können, nur sehr
 schwer erkennen. Gerade in komplexen Anwendungen, in denen viele parallele
 Aufgaben ausgeführt werden, ist es für den Entwickler nicht mehr möglich,
-potenzielle Deadlocks zu erkennen. Automatisierte Tests können das Erkennen
-solcher Probleme zwar verbessern, durch die nicht deterministische Ausführung
-bleiben jedoch viele Probleme unerkannt. Für die Echtzeit-Programmiersprache
-PEARL gibt es derzeit keine Unterstützung für den Entwickler, um solche Probleme
-effektiv zu erkennen. Um den Entwickler besser unterstützen zu können, soll in
-dieser Arbeit ein Verfahren vorgestellt und implementiert werden, welches die
-chronologische Abfolge von verwendeten Synchronisationsmitteln darstellen und
-potenzielle Deadlocks erkennen kann. Das Ziel dieser Arbeit besteht darin
-Entwicklern eine einfache Möglichkeit zu bieten potentielle Deadlocks in
-PEARL-Programmen zu finden.
+potenzielle Deadlocks zu erkennen. Durch automatisierte Tests können solche
+Probleme zwar teilweise nachgewiesen werden, durch die nicht deterministische
+Ausführung bleiben jedoch viele Probleme unerkannt. Für die
+Echtzeit-Programmiersprache PEARL gibt es derzeit keine Unterstützung für den
+Entwickler, um solche Probleme effektiv zu erkennen. Um den Entwickler besser
+unterstützen zu können, soll in dieser Arbeit ein Verfahren vorgestellt und
+implementiert werden, welches die chronologische Abfolge von verwendeten
+Synchronisationsmitteln darstellen und potenzielle Deadlocks erkennen kann. Das
+Ziel dieser Arbeit besteht darin Entwicklern eine einfache Möglichkeit zu bieten
+potentielle Deadlocks in PEARL-Programmen zu finden.
 
 In \cref{section:Deadlock-Erkennung allgemein} wird das grundlegende Verfahren
 zur Identifizierung von potenziellen Deadlocks vorgestellt. Es wird beschrieben,
