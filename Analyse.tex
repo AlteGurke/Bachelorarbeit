@@ -1,5 +1,5 @@
-\section{Deadlockerkennung allgemein}
-\label{section:Deadlockerkennung allgemein}
+\section{Deadlock-Erkennung allgemein}
+\label{section:Deadlock-Erkennung allgemein}
 Üblicherweise gliedern sich Programme in  Single-Threaded- und
 Multi-Threaded-Anwendungen, das heißt Anwendungen die entweder nur von einem
 Thread ausgeführt werden oder von mehreren gleichzeitig. Im Gegensatz zu
@@ -47,17 +47,17 @@ Lockobjekte \textrm{L1} und \textrm{L2}. Angenommen, \textrm{T1} besitzt
 \textrm{L1} und zur gleichen Zeit erlangt \textrm{T2} das Lockobjekt
 \textrm{L2}. Wenn jetzt der Thread \textrm{T1} das Lockobjekt \textrm{L2}
 anfordert und der Thread \textrm{T2} das Lockobjekt \textrm{L1}, kommt es zu
-einem Deadlock.\autocite[vgl.][70]{coffman1971system} Die Ausführung des
+einem Deadlock \autocite[vgl.][70]{coffman1971system}. Die Ausführung des
 Programms terminiert nicht, da beide Threads auf den jeweils anderen Thread
 warten und sich gegenseitig blockieren.
 
 Solche potenziellen Deadlocks zu erkennen, ist die Aufgabe von statischen und
-dynamischen Methoden zur Deadlockerkennung. Bei der statischen Deadlockerkennung
-wird der Quellcode direkt analysiert. Dieses Verfahren wird hier nicht näher
-betrachtet.
+dynamischen Methoden zur Deadlock-Erkennung. Bei der statischen
+Deadlock-Erkennung wird der Quellcode direkt analysiert. Dieses Verfahren wird
+hier nicht näher betrachtet.
 
-Bei der dynamischen Deadlockerkennung wird die Anwendung zur Laufzeit analysiert
-und läuft in folgenden drei Schritten ab
+Bei der dynamischen Deadlock-Erkennung wird die Anwendung zur Laufzeit
+analysiert und läuft in folgenden drei Schritten ab
 \autocite[vgl.][212-213]{bensalem2005dynamic}:
 \begin{enumerate}
   \item Erstellung eines \emph{execution traces},
@@ -68,8 +68,10 @@ und läuft in folgenden drei Schritten ab
 \end{enumerate}
 Ein \emph{execution trace} ist eine Abfolge von Events. Ein Event \textrm{$e_i$}
 wird durch eine der folgenden Methoden definiert: Starten eines Threads,
-Betreten eines Threads, Inbesitznahme eines Lockobjekts und Freigabe eines
-Lockobjekts \autocite[vgl.][212]{bensalem2005dynamic}.
+Betreten eines bereits gestarteten Threads, Inbesitznahme eines Lockobjekts und
+Freigabe eines Lockobjekts \autocite[vgl.][212]{bensalem2005dynamic}. Beim
+Betreten eines bereits gestarteten Threads \textrm{t} wird die Ausführung des
+Programms so lange blockiert, bis der Thread \textrm{t} beendet wird.
 
 Ein Event im \emph{execution trace} enthält immer auch eine Positionsangabe in
 Form einer Zeilennummer \autocite[vgl.][212]{bensalem2005dynamic}. Diese
@@ -120,7 +122,7 @@ Lockgraph erstellt.
 die Menge aller Lockpaare. Ein Lockpaar ist definiert durch das Tupel
 \textrm{(L1, L2)} für das gilt: Es existiert ein Thread, welcher das Lockobjekt
 \textrm{L1} besitzt, während er einen Lock auf \textrm{L2}
-anfordert.\cites[vgl.][72]{coffman1971system}[213]{bensalem2005dynamic}
+anfordert \cites[vgl.][72]{coffman1971system}[213]{bensalem2005dynamic}.
 
 Im letzten Schritt wird der erstellte Lockgraph nach potenziellen Deadlocks
 durchsucht. Ein potenzieller Deadlock repräsentiert einen Zyklus im Lockgraphen
@@ -220,14 +222,16 @@ OpenPEARL besteht aus drei wesentlichen Komponenten
   \item Inter Module Checker.
 \end{enumerate}
 Der Compiler ist in Java geschrieben und übersetzt PEARL-Code in C++-Code. Die
-Laufzeitumgebung stellt dem Compiler eine API zur Verfügung. Dem Compiler werden
-durch die API sichere Implementierungen der PEARL-Datentypen zur Verfügung
-gestellt. Zusätzlich enthält die Laufzeitumgebung plattformspezifische Anteile
-für zum Beispiel die Implementierung für das Scheduling der Tasks.
-PEARL-Anwendungen können aus mehreren Modulen bestehen, welche unabhängig
-voneinander kompiliert werden. Um Inkonsistenzen bei der Erstellung der
-Anwendung zu verhindern, prüft der Inter Module Checker die Export- und
-Importschnittstellen aller Module und deren Kompatibilität
+Laufzeitumgebung stellt dem Compiler eine API (engl. "`application programming
+interface"') zur Verfügung. Eine API ist eine Programmierschnittstelle und dient
+dazu die Interaktionen zwischen Anwendungen auf Quelltext-Ebene zu
+standardisieren. Dem Compiler werden durch die API sichere Implementierungen der
+PEARL-Datentypen zur Verfügung gestellt. Zusätzlich enthält die Laufzeitumgebung
+plattformspezifische Anteile für zum Beispiel die Implementierung für das
+Scheduling der Tasks. PEARL-Anwendungen können aus mehreren Modulen bestehen,
+welche unabhängig voneinander kompiliert werden. Um Inkonsistenzen bei der
+Erstellung der Anwendung zu verhindern, prüft der Inter Module Checker die
+Export- und Importschnittstellen aller Module und deren Kompatibilität
 \autocite{OpenPEARL_Structure}.
 
 In \cref{lst:ExampleDeadlock} ist ein Beispielprogramm in der Programmiersprache
@@ -269,7 +273,7 @@ warten auf den jeweils anderen und verursachen einen Deadlock.
 
 \section{MagicLock}
 \label{section:MagicLock}
-MagicLock ist ein Algorithmus zur dynamischen Deadlockerkennung. Während der
+MagicLock ist ein Algorithmus zur dynamischen Deadlock-Erkennung. Während der
 Entwicklung wurde der Fokus auf die Skalierung und Effizienz des Algorithmus
 gesetzt. Ziel war es, mit großen Multithreaded-Anwendungen skalieren und diese
 effizient analysieren zu können \autocite[vgl.][1]{MagicLock}.

@@ -4,9 +4,9 @@ Die OpenPEARL-Laufzeitumgebung wird um eine Trace-Funktionalität für
 \textrm{SEMA}-Objekte erweitert. Dazu wird die \textrm{SEMA}-Implementierung in
 der OpenPEARL-Laufzeitumgebung angepasst. Diese Trace-Funktionalität wird über
 eine Umgebungsvariable gesteuert. Das Schreiben auf die Festplatte ist sehr
-zeitintensiv, deswegen werden Lockereignisse zwischengespeichert und erst beim
-Erreichen eines definierten Werts in die Trace-Datei geschrieben. Dieser Wert
-wird ebenfalls über eine Umgebungsvariable definiert.
+zeitintensiv, deswegen werden Lockereignisse im Hauptspeicher gepuffert und erst
+beim Erreichen eines definierten Werts in die Trace-Datei geschrieben. Dieser
+Wert wird ebenfalls über eine Umgebungsvariable definiert.
 
 Die erzeugte Trace-Datei dient als Eingabe für die Anwendung zur Generierung und
 Darstellung der chronologischen Verwendung der \textrm{SEMA}-Objekte.
@@ -130,7 +130,7 @@ mögliche Darstellung ist in \cref{fig:Timeline_Example} skizziert.
 Als Eingabe dient wieder die Trace-Datei aus \cref{section:Erzeugung der
 Trace-Datei}. Die Lockereignisse werden Zeile für Zeile aus der Trace-Datei
 ausgelesen und in einen \emph{execution trace} überführt\footnote{Siehe
-\cref{section:Deadlockerkennung allgemein}}. Dieser wird als Eingabe für den
+\cref{section:Deadlock-Erkennung allgemein}}. Dieser wird als Eingabe für den
 Algorithmus aus \cref{section:MagicLock} verwendet. Der Algorithmus liefert
 einen Lockgraphen mit potenziellen Deadlocks, welche als Zyklen im Graphen zu
 erkennen sind, zurück. Der Lockgraph wird dem Anwender, wie in
