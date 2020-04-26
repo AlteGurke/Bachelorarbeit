@@ -16,6 +16,14 @@ der OpenPEARL""-Laufzeitumgebung gemacht werden. Diese Empfehlungen können
 verwendet werden, um einen guten Kompromiss zwischen Laufzeit und
 Speicherauslastung auf dem jeweiligen Zielsystem zu erreichen.
 
+Das Ergebnis dieser Arbeit ist eine Unterstützung für Entwickler von
+PEARL-Programmen in Bezug auf Nebenläufigkeitsprobleme. Entwickler können sich
+die chronologische Belegung von Synchronisationsmitteln und potentielle
+Deadlocks darstellen lassen. Mit diesen Informationen ist es den Entwicklern
+möglich die Probleme zu lokalisieren. Zusätzlich kann zum Beispiel das Entfernen
+eines potentiellen Deadlocks überprüft werden, in dem ein zweiter Testlauf
+durchgeführt und erneut auf potentielle Deadlocks untersucht wird.
+
 Bei der Betrachtung der Synchronisationsmittel in PEARL wurden in dieser Arbeit
 nur \textrm{SEMA}-Variablen einbezogen. Die erstellten Hilfsmittel für
 Entwickler sind demnach limitiert und können zum Beispiel keine Deadlocks
@@ -27,11 +35,44 @@ Die Integration der Trace-Funktionalität in die OpenPEARL-Laufzeitumgebung ist
 derzeit kein Bestandteil des OpenPEARL-Projekts. Um dies zu erreichen müssen
 noch Anpassungen gemacht werden. Die Robustheit der Funktionalität muss
 überprüft und sichergestellt werden, damit Anwendungen zur Laufzeit kein
-ungewolltes Verhalten aufweisen. Zusätzlich sollte der Weg über eine Trace-Datei
-verbessert werden. Eine effizientere Lösung wäre es, die benötigten
-Informationen anstatt in eine Datei direkt über Interprozesskommunikation an
-einen zweiten Prozess zu übermitteln. Dieser kann die Informationen asynchron in
-eine Datenbank ablegen. Die in dieser Arbeit vorgestellten Implementierungen
-können mit den Informationen in der Datenbank die benötigten Analysen
-durchführen und dem Entwickler die Ergebnisse über eine Webschnittstelle zur
-Verfügung stellen.
+ungewolltes Verhalten aufweisen.
+
+\section{Ausblick}
+Bei der Implementierung der Analyse-Anwendungen wurde darauf geachtet, dass die
+Ausführung der PEARL-Anwendung so wenig wie möglich beeinflusst wird. Deswegen
+werden die Informationen für die Analysen zwar zur Laufzeit erstellt, die
+Analysen selbst werden aber nachfolgend in externen Prozessen durchgeführt. Die
+Lockereignisse werden von den Analysen in einer chronologischen Reihenfolge
+benötigt. Diese Reihenfolge wird von der Implementierung garantiert. Dadurch ist
+es möglich die Analysen auch direkt zur Laufzeit auszuführen, zum Beispiel genau
+dann wenn ein neues Lockereignis auftritt.
+
+Der Vorteil einer Analyse direkt zur Laufzeit liegt darin, dass Entwickler die
+Informationen direkt dargestellt bekommen und schneller Fehler erkennen und
+darauf reagieren können. Ein möglicher Nachteil kann der deutlich erhöhte Bedarf
+an Prozessorleistung und Hauptspeicher sein. Das Sammeln der Informationen
+beeinflusst die Laufzeit nur geringfügig und führt nur zu einer moderaten
+Erhöhung der Speicherauslastung der Anwendung, wenn die Puffergröße entsprechend
+gewählt wurde. 
+
+Würden die Analysen direkt zur Laufzeit durchgeführt werden, müssten immer alle
+Lockereignisse in den Hauptspeicher geladen werden. Zusätzlich werden während
+der Analysen weitere Datenstrukturen erzeugt, welche den Speicherbedarf weiter
+erhöhen würden. Die Speicherauslastung wäre damit garantiert höher als die
+Speicherauslastung der aktuellen Implementierung mit maximaler Puffergröße.
+
+Das Erstellen und Puffern der Lockereignisse erhöht die Laufzeit nur marginal.
+Den größten Einfluss auf die Laufzeit hat das Schreiben der Lockereignisse in
+die Trace-Datei. Bei der Analyse zur Laufzeit könnte dieser Schritt entfallen,
+wodurch sich die Laufzeit verringern würde. Die Analysen durchlaufen immer alle
+Lockereignisse. Beim Durchführen der Analysen beim Auftreten eines
+Lockereignisses, würde sich die Laufzeit der Analyse jedes Mal erhöhen. Dadurch
+würde die Laufzeit der PEARL-Anwendung für jedes Auftreten eines Lockereignisses
+immer stärker beeinflusst werden. Bei Zielsystemen mit langsamen Speicher
+könnten die Analysen, bis zu einer gewissen Anzahl an Lockereignissen, die
+Laufzeit weniger stark beeinflussen als das Speichern der Trace-Datei.
+
+Die in dieser Arbeit vorgestellten Analysen und deren Implementierungen können
+für die Analyse direkt zur Laufzeit verwendet werden. Die Ergebnisse dieser
+Arbeit können somit als Ausgangspunkt für die Weiterentwicklung verwendet
+werden.
